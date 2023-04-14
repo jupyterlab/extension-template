@@ -9,6 +9,7 @@ kind:
   default: frontend
   choices:
     - frontend
+    - mimerenderer
     - server
     - theme
 
@@ -57,3 +58,35 @@ repository:
   type: str
   help: Git remote repository URL
   placeholder: https://github.com/github_username/my-extension
+
+viewer_name:
+  when: "{{ kind == 'mimerenderer' }}"
+  type: str
+  help: What is the MIME type viewer name?
+  placeholder: My Viewer
+
+mimetype:
+  when: "{{ kind == 'mimerenderer' }}"
+  type: str
+  help: MIME type
+  placeholder: "application/vnd.my_organization.my_type"
+
+mimetype_name:
+  when: "{{ kind == 'mimerenderer' }}"
+  type: str
+  help: MIME type name
+  placeholder: my_type
+
+file_extension:
+  when: "{{ kind == 'mimerenderer' }}"
+  type: str
+  help: MIME type file extension
+  placeholder: .my_type
+
+data_format:
+  when: "{{ kind == 'mimerenderer' }}"
+  type: str
+  help: MIME type content format
+  choices:
+    - string
+    - json

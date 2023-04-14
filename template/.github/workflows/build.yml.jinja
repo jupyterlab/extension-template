@@ -35,8 +35,8 @@ jobs:
       run: |
         set -eux
         python -m pip install .[test]
-{% if kind.lower() == 'server' %}
-        pytest -vv -r ap --cov {{ python_name }}
+{% if kind.lower() == 'server' %}{% if test %}
+        pytest -vv -r ap --cov {{ python_name }}{% endif %}
         jupyter server extension list
         jupyter server extension list 2>&1 | grep -ie "{{ python_name }}.*OK"
 {% endif %}
