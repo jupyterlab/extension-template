@@ -1,0 +1,59 @@
+_min_copier_version: "7.1.0"
+_subdirectory: template
+_jinja_extensions:
+    - jinja2_time.TimeExtension
+
+kind:
+  type: str
+  help: What is your extension kind?
+  default: frontend
+  choices:
+    - frontend
+    - server
+    - theme
+
+author_name:
+  type: str
+  help: Extension author name
+  placeholder: "My Name"
+
+author_email:
+  type: str
+  help: Extension author email
+  default: ""
+  placeholder: "me@test.com"
+
+labextension_name:
+  type: str
+  help: JavaScript package name
+  default: "{% if kind == 'theme' %}mytheme{% else %}myextension{% endif %}"
+
+python_name:
+  type: str
+  help: Python package name
+  default: "{{ labextension_name | replace('-', '_') }}"
+
+project_short_description:
+  type: str
+  help: Extension short description
+  default: "A JupyterLab extension."
+
+has_settings:
+  type: bool
+  help: Does the extension have user settings?
+  default: no
+
+has_binder:
+  type: bool
+  help: Do you want to set up Binder example?
+  default: no
+
+test:
+  type: bool
+  help: Do you want to set up tests for the extension?
+  default: yes
+
+repository:
+  type: str
+  help: Git remote repository URL
+  placeholder: https://github.com/github_username/my-extension
