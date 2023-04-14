@@ -237,7 +237,10 @@ jobs:
           jupyter labextension uninstall myextension
           python -m pip uninstall -y myextension jupyterlab
 
+      - run: |
+          set -eux
           rm -rf myextension
+        shell: bash
 
       - name: Install server extension from a tarball
         run: |
