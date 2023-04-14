@@ -45,7 +45,7 @@ jobs:
         run: |
           set -eux
           mkdir ${NAME}
-          python -m copier -l -d -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . ${NAME}
+          python -m copier -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . ${NAME}
           pushd ${NAME}
           python -m pip install "jupyterlab>=4.0.0b0,<5"
           jlpm
@@ -180,7 +180,6 @@ jobs:
 
       - name: Create server extension pip install
         run: |
-          set -eux
           mkdir myextension
           python -m copier -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
           cd myextension
@@ -207,7 +206,6 @@ jobs:
 
       - name: Create server extension pip develop
         run: |
-          set -eux
           mkdir myextension
           python -m copier -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
           cd myextension
@@ -243,7 +241,6 @@ jobs:
 
       - name: Install server extension from a tarball
         run: |
-          set -eux
           mkdir myextension
           python -m copier -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
           cd myextension
