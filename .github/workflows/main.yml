@@ -29,6 +29,11 @@ jobs:
       - name: Base Setup
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
 
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Install dependencies
         run: |
           python -m pip install "copier>=7.1.0" jinja2-time
@@ -40,7 +45,7 @@ jobs:
         run: |
           set -eux
           mkdir ${NAME}
-          python -m copier -l -d -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" repository="https://github.com/test/lab-extension" --vcs-ref HEAD . ${NAME}
+          python -m copier -l -d -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . ${NAME}
           pushd ${NAME}
           python -m pip install "jupyterlab>=4.0.0b0,<5"
           jlpm
@@ -75,6 +80,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install copier>=7.1.0 jinja2-time
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create pure frontend extension
         run: |
@@ -114,6 +124,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install copier>=7.1.0 jinja2-time
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create pure frontend extension
         run: |
@@ -157,6 +172,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install "copier>=7.1.0" jinja2-time build
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create server extension pip install
         run: |
@@ -317,6 +337,11 @@ jobs:
         run: |
           python -m pip install "copier>=7.1.0" jinja2-time build
 
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Create pure frontend extension
         run: |
           set -eux
@@ -354,6 +379,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install "copier>=7.1.0" jinja2-time
+
+      - name: Setup Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create pure frontend extension
         env:

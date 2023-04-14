@@ -12,8 +12,16 @@ a JupyterLab extension. Three kinds of extension are supported:
 
 1. Install copier and some plugins.
 
+With `pip`:
+
 ```sh
-pip install "copier>=7.1.0" jinja2-time
+pip install copier jinja2-time
+```
+
+Or with `conda` / `mamba`:
+
+```sh
+conda install -c conda-forge copier jinja2-time
 ```
 
 2. Go into the extension directory
@@ -32,7 +40,7 @@ copier https://github.com/jupyterlab/extension-template .
 If you'd like to generate a package for a older release, use the `--vcs-ref` option and give a tag or commit from this repository.
 
 ```sh
-copier --vcs-ref v4.0.0 https://github.com/jupyterlab/extension-template
+copier --vcs-ref v4.0.0 https://github.com/jupyterlab/extension-template .
 ```
 
 > If you are looking for a template compatible with JupyterLab version prior to 4.0.0, look at 
