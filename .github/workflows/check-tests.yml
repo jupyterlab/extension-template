@@ -2,7 +2,8 @@ name: Tests validation
 
 on:
   push:
-    branches: ["*.0"]
+    branches:
+      - main
   pull_request:
     branches: ["*"]
   schedule:
