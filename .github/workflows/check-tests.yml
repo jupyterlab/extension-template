@@ -73,7 +73,66 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: myextension-playwright-tests
+          name: extension-playwright-tests
+          path: |
+            myextension/ui-tests/test-results
+            myextension/ui-tests/playwright-report
+
+  test-mimerenderer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Install dependencies
+        run: python -m pip install -U "copier>=7.1.0" jinja2-time "jupyterlab>=4.0.0b0,<5"
+
+      - name: Create the extension
+        run: |
+          set -eux
+          mkdir myextension
+          python -m copier -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+
+      - name: Install the extension
+        working-directory: myextension
+        run: |
+          set -eux
+          python -m pip install -v .
+
+      - name: List extensions
+        run: |
+          jupyter labextension list
+
+      - name: Install dependencies
+        working-directory: myextension/ui-tests
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: jlpm install
+
+      - name: Set up browser cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/pw-browsers
+          key: ${{ runner.os }}-${{ hashFiles('myextension/ui-tests/yarn.lock') }}
+
+      - name: Install browser
+        run: jlpm playwright install chromium
+        working-directory: myextension/ui-tests
+
+      - name: Execute integration tests
+        working-directory: myextension/ui-tests
+        run: |
+          jlpm playwright test
+
+      - name: Upload Playwright Test report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: mimerenderer-playwright-tests
           path: |
             myextension/ui-tests/test-results
             myextension/ui-tests/playwright-report

@@ -40,6 +40,7 @@ project_short_description:
   default: "A JupyterLab extension."
 
 has_settings:
+  when: "{{ kind != 'mimerenderer' }}"
   type: bool
   help: Does the extension have user settings?
   default: no
@@ -63,24 +64,28 @@ viewer_name:
   when: "{{ kind == 'mimerenderer' }}"
   type: str
   help: What is the MIME type viewer name?
+  default: ""
   placeholder: My Viewer
 
 mimetype:
   when: "{{ kind == 'mimerenderer' }}"
   type: str
   help: MIME type
+  default: ""
   placeholder: "application/vnd.my_organization.my_type"
 
 mimetype_name:
   when: "{{ kind == 'mimerenderer' }}"
   type: str
   help: MIME type name
+  default: ""
   placeholder: my_type
 
 file_extension:
   when: "{{ kind == 'mimerenderer' }}"
   type: str
   help: MIME type file extension
+  default: ""
   placeholder: .my_type
 
 data_format:
@@ -90,3 +95,4 @@ data_format:
   choices:
     - string
     - json
+  default: string

@@ -1,6 +1,6 @@
 import { expect, test } from '@jupyterlab/galata';
 
-/**
+{% if kind != 'mimerenderer' %}/**
  * Don't load JupyterLab webpage before running the tests.
  * This is required to ensure we capture all log messages.
  */
@@ -19,3 +19,49 @@ test('should emit an activation console message', async ({ page }) => {
     logs.filter(s => s === 'JupyterLab extension {{ labextension_name }} is activated!')
   ).toHaveLength(1);
 });
+{% else %}test('should display {{ mimetype_name }} data file', async ({ page }) => {
+  const filename = 'test.{{ file_extension }}';
+  await page.menu.clickMenuItem('File>New>Text File');
+
+  // Set MIME type content in fill
+  await page.getByRole('main').getByRole('textbox').fill('');
+
+  await page.menu.clickMenuItem('File>Save Text');
+
+  await page.locator('.jp-Dialog').getByRole('textbox').fill(filename);
+
+  await page.getByRole('button', { name: 'Rename' }).click();
+
+  await page.filebrowser.open(filename);
+
+  const view = page.getByRole('main').locator('.mimerenderer-{{ mimetype_name }}');
+
+  expect(await view.screenshot()).toMatchSnapshot('{{ mimetype_name }}-file.png');
+});
+
+test('should display notebook {{ mimetype_name }} output', async ({ page }) => {
+  await page.menu.clickMenuItem('File>New>Notebook');
+
+  await page.getByRole('button', { name: 'Select' }).click();
+
+  await page.notebook.setCell(
+    0,
+    'code',
+    `from IPython.display import display
+# Example of MIME type content
+output = {
+    "{{ mimetype }}": ""
+}
+
+display(output, raw=True)`
+  );
+
+  await page.notebook.run();
+
+  const outputs = page
+    .getByRole('main')
+    .locator('.mimerenderer-{{ mimetype_name }}.jp-OutputArea-output');
+
+  expect(await outputs.screenshot()).toMatchSnapshot('{{ mimetype_name }}-notebook.png');
+});
+{% endif %}

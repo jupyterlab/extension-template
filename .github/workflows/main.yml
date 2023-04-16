@@ -363,6 +363,50 @@ jobs:
           popd
           rm -rf mytheme
 
+  mimerenderer:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # This will be used by the base setup action
+        python-version: ["3.8", "3.11"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Install dependencies
+        run: |
+          python -m pip install "copier>=7.1.0" jinja2-time build
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create pure frontend extension
+        run: |
+          set -eux
+          mkdir myextension
+          python -m copier -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          pushd myextension
+          python -m pip install "jupyterlab>=4.0.0b0,<5"
+          jlpm
+          jlpm lint:check
+          python -m pip install -e .
+          jupyter labextension develop . --overwrite
+          jupyter labextension list
+          jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
+          python -m jupyterlab.browser_check
+
+          jupyter labextension uninstall myextension
+          python -m pip uninstall -y myextension jupyterlab
+
+          popd
+          rm -rf myextension
+
   pnpm_linker:
     runs-on: ubuntu-latest
     strategy:
