@@ -126,6 +126,8 @@ jobs:
       - name: Execute integration tests
         working-directory: myextension/ui-tests
         run: |
+          # Generate reference snapshot first
+          jlpm playwright test -u
           jlpm playwright test
 
       - name: Upload Playwright Test report
