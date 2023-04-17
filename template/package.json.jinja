@@ -59,11 +59,12 @@
     "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
-    "@jupyterlab/application": "^4.0.0-beta.0"{% if kind.lower() == 'theme' %},
+    {% if kind.lower() != 'mimerenderer' %}"@jupyterlab/application": "^4.0.0-beta.0"{% if kind.lower() == 'theme' %},
     "@jupyterlab/apputils": "^4.0.0-beta.0"{% endif %}{% if has_settings %},
     "@jupyterlab/settingregistry": "^4.0.0-beta.0"{% endif %}{% if kind.lower() == 'server' %},
     "@jupyterlab/coreutils": "^6.0.0-beta.0",
-    "@jupyterlab/services": "^7.0.0-beta.0"{% endif %}
+    "@jupyterlab/services": "^7.0.0-beta.0"{% endif %}{% else %}"@jupyterlab/rendermime-interfaces": "^3.8.0-beta.0",
+    "@lumino/widgets": "^2.1.0"{% endif %}
   },
   "devDependencies": {
     "@jupyterlab/builder": "^4.0.0-beta.0",{% if test %}
@@ -111,8 +112,9 @@
           "name": "{{ python_name }}"
         }
       }
-    },{% endif %}
-    "extension": true,
+    },{% endif %}{% if kind.lower() == 'mimerenderer' %}
+    "mimeExtension": true,{% else %}
+    "extension": true,{% endif %}
     "outputDir": "{{python_name}}/labextension"{% if has_settings %},
     "schemaDir": "schema"{% endif %}{% if kind.lower() == 'theme' %},
     "themePath": "style/index.css"{% endif %}

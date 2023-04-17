@@ -1,4 +1,4 @@
-import {
+{% if kind.lower() != 'mimerenderer' %}import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';{% if kind.lower() == 'theme' %}
@@ -14,6 +14,7 @@ import { requestAPI } from './handler';{% endif %}
  */
 const plugin: JupyterFrontEndPlugin<void> = {
   id: '{{ labextension_name }}:plugin',
+  description: '{{ project_short_description }}',
   autoStart: true,{% if kind.lower() == 'theme' %}
   requires: [IThemeManager],{% endif %}{% if has_settings %}
   optional: [ISettingRegistry],{% endif %}
@@ -52,3 +53,81 @@ const plugin: JupyterFrontEndPlugin<void> = {
 };
 
 export default plugin;
+{% else %}import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
+{% if data_format == 'json' %}
+import { JSONObject } from '@lumino/coreutils';
+{% endif %}
+import { Widget } from '@lumino/widgets';
+
+/**
+ * The default mime type for the extension.
+ */
+const MIME_TYPE = '{{ mimetype }}';
+
+/**
+ * The class name added to the extension.
+ */
+const CLASS_NAME = 'mimerenderer-{{ mimetype_name }}';
+
+/**
+ * A widget for rendering {{ mimetype_name }}.
+ */
+export class OutputWidget extends Widget implements IRenderMime.IRenderer {
+  /**
+   * Construct a new output widget.
+   */
+  constructor(options: IRenderMime.IRendererOptions) {
+    super();
+    this._mimeType = options.mimeType;
+    this.addClass(CLASS_NAME);
+  }
+
+  /**
+   * Render {{mimetype_name}} into this widget's node.
+   */
+  renderModel(model: IRenderMime.IMimeModel): Promise<void> {
+    {% if data_format == 'json' %}const data = model.data[this._mimeType] as JSONObject;
+    this.node.textContent = JSON.stringify(data);
+    {% else %}const data = model.data[this._mimeType] as string;
+    this.node.textContent = data.slice(0, 16384);{% endif %}
+    return Promise.resolve();
+  }
+
+  private _mimeType: string;
+}
+
+/**
+ * A mime renderer factory for {{ mimetype_name }} data.
+ */
+export const rendererFactory: IRenderMime.IRendererFactory = {
+  safe: true,
+  mimeTypes: [MIME_TYPE],
+  createRenderer: options => new OutputWidget(options)
+};
+
+/**
+ * Extension definition.
+ */
+const extension: IRenderMime.IExtension = {
+  id: '{{labextension_name}}:plugin',
+  // description: 'Adds MIME type renderer for {{ mimetype_name }} content',
+  rendererFactory,
+  rank: 100,
+  dataType: '{{ data_format }}',
+  fileTypes: [
+    {
+      name: '{{ mimetype_name }}',
+      mimeTypes: [MIME_TYPE],
+      extensions: ['{{ file_extension }}']
+    }
+  ],
+  documentWidgetFactoryOptions: {
+    name: '{{ viewer_name }}',
+    primaryFileType: '{{ mimetype_name }}',
+    fileTypes: ['{{ mimetype_name }}'],
+    defaultFor: ['{{ mimetype_name }}']
+  }
+};
+
+export default extension;
+{% endif %}
