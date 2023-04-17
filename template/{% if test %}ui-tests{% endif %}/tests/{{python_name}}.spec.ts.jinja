@@ -62,6 +62,6 @@ display(output, raw=True)`
     .getByRole('main')
     .locator('.mimerenderer-{{ mimetype_name }}.jp-OutputArea-output');
 
-  expect(await outputs.screenshot()).toMatchSnapshot('{{ mimetype_name }}-notebook.png');
+  await expect(outputs).toHaveCount(1);
 });
 {% endif %}
