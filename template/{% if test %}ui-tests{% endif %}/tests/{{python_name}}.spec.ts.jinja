@@ -20,7 +20,7 @@ test('should emit an activation console message', async ({ page }) => {
   ).toHaveLength(1);
 });
 {% else %}test('should display {{ mimetype_name }} data file', async ({ page }) => {
-  const filename = 'test.{{ file_extension }}';
+  const filename = 'test{{ file_extension }}';
   await page.menu.clickMenuItem('File>New>Text File');
 
   // Set MIME type content in fill
