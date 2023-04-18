@@ -38,6 +38,9 @@ cd myextension
 copier https://github.com/jupyterlab/extension-template .
 ```
 
+> If you are using Visual Studio Code, you may be interested in the 
+> [configuration template](https://github.com/jupyterlab/vscode-config-template) for JupyterLab extension.
+
 ---
 
 If you'd like to generate an extension for a older release, use the `--vcs-ref` option and give a tag or commit from this repository.
