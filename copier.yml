@@ -32,7 +32,7 @@ labextension_name:
 python_name:
   type: str
   help: Python package name
-  default: "{{ labextension_name | replace('-', '_') }}"
+  default: "{{ labextension_name | replace('-', '_') | replace('/', '_') | trim('@') }}"
 
 project_short_description:
   type: str
