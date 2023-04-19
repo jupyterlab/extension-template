@@ -40,7 +40,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         });
     }{% endif %}{% if kind.lower() == 'server' %}
 
-    requestAPI<any>('get_example')
+    requestAPI<any>('get-example')
       .then(data => {
         console.log(data);
       })
