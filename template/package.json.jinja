@@ -59,16 +59,16 @@
     "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
-    {% if kind.lower() != 'mimerenderer' %}"@jupyterlab/application": "^4.0.0-beta.0"{% if kind.lower() == 'theme' %},
-    "@jupyterlab/apputils": "^4.0.0-beta.0"{% endif %}{% if has_settings %},
-    "@jupyterlab/settingregistry": "^4.0.0-beta.0"{% endif %}{% if kind.lower() == 'server' %},
-    "@jupyterlab/coreutils": "^6.0.0-beta.0",
-    "@jupyterlab/services": "^7.0.0-beta.0"{% endif %}{% else %}"@jupyterlab/rendermime-interfaces": "^3.8.0-beta.0",
+    {% if kind.lower() != 'mimerenderer' %}"@jupyterlab/application": "^4.0.0"{% if kind.lower() == 'theme' %},
+    "@jupyterlab/apputils": "^4.0.0"{% endif %}{% if has_settings %},
+    "@jupyterlab/settingregistry": "^4.0.0"{% endif %}{% if kind.lower() == 'server' %},
+    "@jupyterlab/coreutils": "^6.0.0",
+    "@jupyterlab/services": "^7.0.0"{% endif %}{% else %}"@jupyterlab/rendermime-interfaces": "^3.8.0",
     "@lumino/widgets": "^2.1.0"{% endif %}
   },
   "devDependencies": {
-    "@jupyterlab/builder": "^4.0.0-beta.0",{% if test %}
-    "@jupyterlab/testutils": "^4.0.0-beta.0",
+    "@jupyterlab/builder": "^4.0.0",{% if test %}
+    "@jupyterlab/testutils": "^4.0.0",
     "@types/jest": "^29.2.0",{% endif %}
     "@types/json-schema": "^7.0.11",
     "@types/react": "^18.0.26",
