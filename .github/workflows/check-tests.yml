@@ -20,13 +20,13 @@ jobs:
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
 
       - name: Install dependencies
-        run: python -m pip install -U "copier>=7.1.0" jinja2-time "jupyterlab>=4.0.0,<5"
+        run: python -m pip install -U "copier>=8.0.0" jinja2-time "jupyterlab>=4.0.0,<5"
 
       - name: Create the extension
         run: |
           set -eux
           mkdir myextension
-          python -m copier -l -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cat myextension/pyproject.toml
 
       - name: Test the extension
@@ -88,13 +88,13 @@ jobs:
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
 
       - name: Install dependencies
-        run: python -m pip install -U "copier>=7.1.0" jinja2-time "jupyterlab>=4.0.0,<5"
+        run: python -m pip install -U "copier>=8.0.0" jinja2-time "jupyterlab>=4.0.0,<5"
 
       - name: Create the extension
         run: |
           set -eux
           mkdir myextension
-          python -m copier -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
 
       - name: Install the extension
         working-directory: myextension
