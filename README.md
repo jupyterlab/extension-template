@@ -16,7 +16,7 @@ a JupyterLab extension. Three kinds of extension are supported:
 With `pip`:
 
 ```sh
-pip install copier jinja2-time
+pip install "copier~=7.2" jinja2-time
 ```
 
 Or with `conda` / `mamba`:
@@ -35,8 +35,10 @@ cd myextension
 3. Use copier to generate an extension, following the prompts to fill all required information.
 
 ```
-copier https://github.com/jupyterlab/extension-template .
+copier copy https://github.com/jupyterlab/extension-template .
 ```
+
+> If you use copier v8+, you will need to pass the flag `--UNSAFE` (see [documentation](https://copier.readthedocs.io/en/stable/configuring/#unsafe)).
 
 > If you are using Visual Studio Code, you may be interested in the 
 > [configuration template](https://github.com/jupyterlab/vscode-config-template) for JupyterLab extension.
@@ -46,8 +48,10 @@ copier https://github.com/jupyterlab/extension-template .
 If you'd like to generate an extension for a older release, use the `--vcs-ref` option and give a tag or commit from this repository.
 
 ```sh
-copier --vcs-ref v4.0.0 https://github.com/jupyterlab/extension-template .
+copier --vcs-ref v4.0.0 copy https://github.com/jupyterlab/extension-template .
 ```
+
+> If you use copier v8+, you will need to pass the flag `--UNSAFE` (see [documentation](https://copier.readthedocs.io/en/stable/configuring/#unsafe)).
 
 > If you are looking for a template compatible with JupyterLab version prior to 4.0.0, look at 
 > the [cookiecutter template](https://github.com/jupyterlab/extension-cookiecutter-ts) or the
@@ -65,6 +69,8 @@ with a newer version of the template by executing the command:
 ```sh
 copier update
 ```
+
+> If you use copier v8+, you will need to pass the flag `--UNSAFE` (see [documentation](https://copier.readthedocs.io/en/stable/configuring/#unsafe)).
 
 ## A simple example
 

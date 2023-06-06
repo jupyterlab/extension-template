@@ -36,7 +36,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=7.1.0" jinja2-time
+          python -m pip install "copier>=8.0.0" jinja2-time
 
       - name: Create pure frontend extension
         env:
@@ -45,7 +45,7 @@ jobs:
         run: |
           set -eux
           mkdir ${NAME}
-          python -m copier -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . ${NAME}
+          python -m copier copy -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . ${NAME}
           pushd ${NAME}
           python -m pip install "jupyterlab>=4.0.0,<5"
           jlpm
@@ -79,7 +79,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install copier>=7.1.0 jinja2-time
+          python -m pip install copier>=8.0.0 jinja2-time
 
       - name: Setup Git
         run: |
@@ -90,7 +90,7 @@ jobs:
         run: |
           set -eux
           mkdir myextension
-          python -m copier -l -d author_name="My Name" -d test=n -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d author_name="My Name" -d test=n -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           pip install "jupyterlab>=4.0.0,<5"
           jlpm
@@ -123,7 +123,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install copier>=7.1.0 jinja2-time
+          python -m pip install copier>=8.0.0 jinja2-time
 
       - name: Setup Git
         run: |
@@ -134,7 +134,7 @@ jobs:
         run: |
           set -eux
           mkdir myextension
-          python -m copier -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           pip install "jupyterlab>=4.0.0,<5"
           jlpm
@@ -171,7 +171,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=7.1.0" jinja2-time build
+          python -m pip install "copier>=8.0.0" jinja2-time build
 
       - name: Setup Git
         run: |
@@ -181,7 +181,7 @@ jobs:
       - name: Create server extension pip install
         run: |
           mkdir myextension
-          python -m copier -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           cat pyproject.toml
           pip install .
@@ -207,7 +207,7 @@ jobs:
       - name: Create server extension pip develop
         run: |
           mkdir myextension
-          python -m copier -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           python -m pip install -e .[test]
           python -m pip install "jupyterlab>=4.0.0,<5"
@@ -245,7 +245,7 @@ jobs:
       - name: Install server extension from a tarball
         run: |
           mkdir myextension
-          python -m copier -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
@@ -335,7 +335,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=7.1.0" jinja2-time build
+          python -m pip install "copier>=8.0.0" jinja2-time build
 
       - name: Setup Git
         run: |
@@ -346,7 +346,7 @@ jobs:
         run: |
           set -eux
           mkdir mytheme
-          python -m copier -l -d kind=theme -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . mytheme
+          python -m copier copy -l -d kind=theme -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . mytheme
           pushd mytheme
           python -m pip install "jupyterlab>=4.0.0,<5"
           jlpm
@@ -379,7 +379,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=7.1.0" jinja2-time build
+          python -m pip install "copier>=8.0.0" jinja2-time build
 
       - name: Setup Git
         run: |
@@ -390,7 +390,7 @@ jobs:
         run: |
           set -eux
           mkdir myextension
-          python -m copier -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           python -m pip install "jupyterlab>=4.0.0,<5"
           jlpm
@@ -422,7 +422,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=7.1.0" jinja2-time
+          python -m pip install "copier>=8.0.0" jinja2-time
 
       - name: Setup Git
         run: |
@@ -435,7 +435,7 @@ jobs:
         run: |
           set -eux
           mkdir myextension
-          python -m copier -l -d kind=${KIND} -d author_name="My Name" -d labextension_name=myextension -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD . myextension
+          python -m copier copy -l -d kind=${KIND} -d author_name="My Name" -d labextension_name=myextension -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           sed -i 's/^\(nodeLinker:\s\).*$/\1pnpm/' .yarnrc.yml
           python -m pip install "jupyterlab>=4.0.0,<5"
