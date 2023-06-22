@@ -1,9 +1,10 @@
 name: Update releaser worflows
 
 on:
-  pull_request_target:
+  workflow_dispatch:
   schedule:
-    - cron: '0 2 21 * *'
+    # Monthly on the 23th
+    - cron: '0 2 23 * *'
 
 jobs:
   releaser_workflows:
@@ -19,8 +20,8 @@ jobs:
         uses: actions/checkout@v3
       - run: |
           set -eux
-          wget -O prep-release.yml https://github.com/jupyter-server/jupyter_releaser/blob/main/example-workflows/prep-release.yml
-          wget -O publish-release.yml https://github.com/jupyter-server/jupyter_releaser/blob/main/example-workflows/publish-release.yml
+          wget -O prep-release.yml https://raw.githubusercontent.com/jupyter-server/jupyter_releaser/main/example-workflows/prep-release.yml
+          wget -O publish-release.yml https://raw.githubusercontent.com/jupyter-server/jupyter_releaser/main/example-workflows/publish-release.yml
         working-directory: template/.github/workflows
 
       - name: List files changed
@@ -44,10 +45,18 @@ jobs:
 
           git pull --no-tags
 
+          export SHA=$(git rev-parse --short HEAD)
+          export BRANCH_NAME=new-releaser-workflows-${SHA}
+          git checkout -b "${BRANCH_NAME}"
+
+          # Needed for hub to create the pull request correctly
+          # Ref: https://github.com/github/hub/issues/1538 https://github.com/github/hub/pull/1705
+          git remote set-head origin --auto
+
           git add *
           git commit -m "Automatic update of the releaser workflows"
 
-          git config push.default upstream
-          git push
+          git push --set-upstream origin "${BRANCH_NAME}"
+          hub pull-request -b "main" -m "Updated releaser workflows available at ${SHA}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
