@@ -16,7 +16,7 @@ a JupyterLab extension. Four kinds of extension are supported:
 With `pip`:
 
 ```sh
-pip install "copier~=7.2" jinja2-time
+pip install "copier~=7.2" jinja2-time "pydantic<2.0.0"
 ```
 
 Or with `conda` / `mamba`:
