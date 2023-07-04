@@ -36,7 +36,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=8.0.0" jinja2-time
+          python -m pip install "copier>=8.0.0" jinja2-time "pydantic<2.0.0"
 
       - name: Create pure frontend extension
         env:
@@ -79,7 +79,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install copier>=8.0.0 jinja2-time
+          python -m pip install "copier>=8.0.0" jinja2-time "pydantic<2.0.0"
 
       - name: Setup Git
         run: |
@@ -123,7 +123,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install copier>=8.0.0 jinja2-time
+          python -m pip install "copier>=8.0.0" jinja2-time "pydantic<2.0.0"
 
       - name: Setup Git
         run: |
@@ -171,7 +171,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=8.0.0" jinja2-time build
+          python -m pip install "copier>=8.0.0" jinja2-time build "pydantic<2.0.0"
 
       - name: Setup Git
         run: |
@@ -335,7 +335,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=8.0.0" jinja2-time build
+          python -m pip install "copier>=8.0.0" jinja2-time build "pydantic<2.0.0"
 
       - name: Setup Git
         run: |
@@ -379,7 +379,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=8.0.0" jinja2-time build
+          python -m pip install "copier>=8.0.0" jinja2-time build "pydantic<2.0.0"
 
       - name: Setup Git
         run: |
@@ -422,7 +422,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install "copier>=8.0.0" jinja2-time
+          python -m pip install "copier>=8.0.0" jinja2-time "pydantic<2.0.0"
 
       - name: Setup Git
         run: |
