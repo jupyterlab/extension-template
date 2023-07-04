@@ -35,6 +35,10 @@ test = [
     "pytest-jupyter[server]>=0.6.0"
 ]
 {% endif %}
+[project.urls]
+Source = "{{ repository }}"
+Issues = "{{ repository }}/issues"
+
 [tool.hatch.version]
 source = "nodejs"
 
