@@ -49,7 +49,6 @@ jobs:
           pushd ${NAME}
           python -m pip install "jupyterlab>=4.0.0,<5"
           jlpm
-          jlpm stylelint-config-prettier-check
           jlpm lint:check
           python -m pip install -e .
           jupyter labextension develop . --overwrite
