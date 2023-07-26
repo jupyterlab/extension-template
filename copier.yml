@@ -18,7 +18,7 @@ author_name:
   help: Extension author name
   placeholder: "My Name"
   validator: >-
-    {% if not (author_name | regex_search('^[^\s]+$')) %}
+    {% if not (author_name | regex_search('^[^\s].*$')) %}
     author_name cannot be empty.
     {% endif %}
 
