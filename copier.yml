@@ -19,7 +19,7 @@ author_name:
   placeholder: "My Name"
   validator: >-
     {% if not (author_name | regex_search('^[^\s].*$')) %}
-    author_name cannot be empty.
+    author_name cannot be empty nor start with a blank character.
     {% endif %}
 
 author_email:
