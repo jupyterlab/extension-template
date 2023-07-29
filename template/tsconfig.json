@@ -17,8 +17,7 @@
     "rootDir": "src",
     "strict": true,
     "strictNullChecks": true,
-    "target": "ES2018"{% if test %},
-    "types": ["jest"]{% endif %}
+    "target": "ES2018"
   },
   "include": ["src/*"]
 }
