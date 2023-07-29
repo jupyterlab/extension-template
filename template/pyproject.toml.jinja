@@ -48,7 +48,7 @@ exclude = [".github", "binder"]
 [tool.hatch.build.targets.wheel.shared-data]
 "{{ python_name }}/labextension" = "share/jupyter/labextensions/{{ labextension_name }}"
 "install.json" = "share/jupyter/labextensions/{{ labextension_name }}/install.json"{% if kind.lower() == "server" %}
-"jupyter-config/server-config" = "etc/jupyter/jupyter_server_config.d"
+"jupyter-config/server-config" = "etc/jupyter/jupyter_server_config.d"{% endif %}
 
 [tool.hatch.build.hooks.version]
 path = "{{ python_name }}/_version.py"
