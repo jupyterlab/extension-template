@@ -178,12 +178,14 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create server extension pip install
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           cat pyproject.toml
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false pip install .
+          pip install .
           pip install "jupyterlab>=4.0.0,<5"
           jlpm
           jlpm lint:check
@@ -204,11 +206,13 @@ jobs:
         shell: bash
 
       - name: Create server extension pip develop
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m pip install -e .[test]
+          python -m pip install -e .[test]
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension develop . --overwrite
           jupyter server extension enable myextension
@@ -242,13 +246,15 @@ jobs:
         shell: bash
 
       - name: Install server extension from a tarball
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m build
+          python -m build
           cd dist
           python -m pip install myextension-0.1.0.tar.gz
 
