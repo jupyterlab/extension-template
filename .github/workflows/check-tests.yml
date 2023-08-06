@@ -33,7 +33,7 @@ jobs:
         working-directory: myextension
         run: |
           set -eux
-          jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm test
 
       - name: Install the extension
@@ -100,7 +100,7 @@ jobs:
         working-directory: myextension
         run: |
           set -eux
-          python -m pip install -v .
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m pip install -v .
 
       - name: List extensions
         run: |

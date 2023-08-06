@@ -48,7 +48,7 @@ jobs:
           python -m copier copy -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . ${NAME}
           pushd ${NAME}
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
           python -m pip install -e .
           jupyter labextension develop . --overwrite
@@ -92,7 +92,7 @@ jobs:
           python -m copier copy -l -d author_name="My Name" -d test=n -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           pip install "jupyterlab>=4.0.0,<5"
-          jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
           pip install -e .
           jupyter labextension develop . --overwrite
@@ -136,7 +136,7 @@ jobs:
           python -m copier copy -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           pip install "jupyterlab>=4.0.0,<5"
-          jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           # It is not easily possible to get this version compatible with linter rules
           jlpm lint
           jlpm lint:check
@@ -183,7 +183,7 @@ jobs:
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           cat pyproject.toml
-          pip install .
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false pip install .
           pip install "jupyterlab>=4.0.0,<5"
           jlpm
           jlpm lint:check
@@ -208,7 +208,7 @@ jobs:
           mkdir myextension
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
-          python -m pip install -e .[test]
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m pip install -e .[test]
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension develop . --overwrite
           jupyter server extension enable myextension
@@ -248,7 +248,7 @@ jobs:
           cd myextension
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
-          python -m build
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m build
           cd dist
           python -m pip install myextension-0.1.0.tar.gz
 
@@ -348,7 +348,7 @@ jobs:
           python -m copier copy -l -d kind=theme -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . mytheme
           pushd mytheme
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
           python -m pip install -e .
           jupyter labextension develop . --overwrite
@@ -392,7 +392,7 @@ jobs:
           python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
           python -m pip install -e .
           jupyter labextension develop . --overwrite
@@ -438,7 +438,7 @@ jobs:
           pushd myextension
           sed -i 's/^\(nodeLinker:\s\).*$/\1pnpm/' .yarnrc.yml
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           if [ ! -d node_modules/.store ] ; then echo 'nodes_module directory should contain a .store directory when using pnpm nodeLinker'; exit 1; fi;
           jlpm build
           popd
