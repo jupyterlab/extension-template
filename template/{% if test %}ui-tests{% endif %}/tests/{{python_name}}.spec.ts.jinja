@@ -32,6 +32,9 @@ test('should emit an activation console message', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Rename' }).click();
 
+  // Close file opened as editor
+  await page.activity.closePanel('test.my_type');
+
   await page.filebrowser.open(filename);
 
   const view = page.getByRole('main').locator('.mimerenderer-{{ mimetype_name }}');
