@@ -1,0 +1,5 @@
+#!/bin/sh
+# This script should be installed as pre-commit git hook (see https://www.atlassian.com/git/tutorials/git-hooks)
+
+# Check frontend files are linted
+jlpm lint:check

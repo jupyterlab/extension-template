@@ -45,13 +45,11 @@ jobs:
         run: |
           set -eux
           mkdir ${NAME}
-          python -m copier copy -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . ${NAME}
+          python -m copier copy -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . ${NAME}
           pushd ${NAME}
           python -m pip install "jupyterlab>=4.0.0,<5"
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
-          jlpm lint:check
-          python -m pip install -e .
-          jupyter labextension develop . --overwrite
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
+          ./scripts/pre-commit
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "${NAME}.*OK"
           python -m jupyterlab.browser_check
@@ -89,13 +87,12 @@ jobs:
         run: |
           set -eux
           mkdir myextension
-          python -m copier copy -l -d author_name="My Name" -d test=n -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d author_name="My Name" -d test=n -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           pip install "jupyterlab>=4.0.0,<5"
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
-          jlpm lint:check
-          pip install -e .
-          jupyter labextension develop . --overwrite
+          ./scripts/pre-commit
+
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
           python -m jupyterlab.browser_check
@@ -133,15 +130,14 @@ jobs:
         run: |
           set -eux
           mkdir myextension
-          python -m copier copy -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           pip install "jupyterlab>=4.0.0,<5"
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           # It is not easily possible to get this version compatible with linter rules
           jlpm lint
-          jlpm lint:check
-          pip install -e .
-          jupyter labextension develop . --overwrite
+          ./scripts/pre-commit
+
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
           python -m jupyterlab.browser_check
@@ -182,13 +178,11 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           cat pyproject.toml
           pip install .
           pip install "jupyterlab>=4.0.0,<5"
-          jlpm
-          jlpm lint:check
 
       - name: Check pip install method
         run: |
@@ -210,12 +204,10 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
-          python -m pip install -e .[test]
+          python bootstrap.py
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jupyter labextension develop . --overwrite
-          jupyter server extension enable myextension
 
           # Check unit tests are passing
           python -m pytest -vv -r ap --cov myextension
@@ -232,9 +224,14 @@ jobs:
           python -m jupyterlab.browser_check
         shell: bash
 
+      - name: Check rerunning bootstrap.py
+        run: |
+          set -eux
+          python bootstrap.py
+        shell: bash
+
       - name: Build server extension in develop mode
         run: |
-          jupyter labextension develop ./myextension --overwrite
           jupyter labextension build ./myextension
 
           jupyter labextension uninstall myextension
@@ -250,7 +247,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
@@ -351,13 +348,12 @@ jobs:
         run: |
           set -eux
           mkdir mytheme
-          python -m copier copy -l -d kind=theme -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . mytheme
+          python -m copier copy -l -d kind=theme -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . mytheme
           pushd mytheme
           python -m pip install "jupyterlab>=4.0.0,<5"
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
-          jlpm lint:check
-          python -m pip install -e .
-          jupyter labextension develop . --overwrite
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
+          ./scripts/pre-commit
+
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "mytheme.*OK"
           python -m jupyterlab.browser_check
@@ -395,13 +391,13 @@ jobs:
         run: |
           set -eux
           mkdir myextension
-          python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           python -m pip install "jupyterlab>=4.0.0,<5"
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
-          jlpm lint:check
-          python -m pip install -e .
-          jupyter labextension develop . --overwrite
+
+          ./scripts/pre-commit
+
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
           python -m jupyterlab.browser_check
@@ -411,6 +407,48 @@ jobs:
 
           popd
           rm -rf myextension
+
+  conda_boostrap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          activate-environment: ""
+
+      - name: Install dependencies
+        run: |
+          python -m pip install "copier>=8.0.0" jinja2-time "pydantic<2.0.0"
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create server extension with conda
+        run: |
+          mkdir myextension
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+
+      - name: Check conda environment
+        run: |
+          set -eux
+          conda env list | grep -ie "myextension_dev"
+          conda activate myextension_dev
+          jupyter server extension list
+          jupyter server extension list 2>&1 | grep -ie "myextension.*OK"
+          jupyter labextension list
+          jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
+
+          # This test should be made outside the extension folder
+          python -m jupyterlab.browser_check
+
+          pip uninstall -y myextension jupyterlab
+          rm -rf myextension
+        shell: bash
 
   pnpm_linker:
     runs-on: ubuntu-latest

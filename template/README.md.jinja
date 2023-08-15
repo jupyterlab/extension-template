@@ -60,12 +60,8 @@ The `jlpm` command is JupyterLab's pinned version of
 ```bash
 # Clone the repo to your local environment
 # Change directory to the {{ python_name }} directory
-# Install package in development mode
-pip install -e ".{% if test and kind.lower() == 'server' %}[test]{% endif %}"
-# Link your development version of the extension with JupyterLab
-jupyter labextension develop . --overwrite{% if kind.lower() == 'server' %}
-# Server extension must be manually installed in develop mode
-jupyter server extension enable {{ python_name }}{% endif %}
+python bootstrap.py
+
 # Rebuild extension Typescript source after making changes
 jlpm build
 ```

@@ -34,16 +34,13 @@ cd myextension
 
 3. Use copier to generate an extension, following the prompts to fill all required information.
 
-```
+```sh
 copier copy https://github.com/jupyterlab/extension-template .
 ```
 
 > If you use copier v8+, you will need to pass the flag `--UNSAFE` (see [documentation](https://copier.readthedocs.io/en/stable/configuring/#unsafe)).
 
-> If you are using Visual Studio Code, you may be interested in the 
-> [configuration template](https://github.com/jupyterlab/vscode-config-template) for JupyterLab extension.
-
----
+<details><summary><em>How to use a template specific version</em></summary>
 
 If you'd like to generate an extension for a older release, use the `--vcs-ref` option and give a tag or commit from this repository.
 
@@ -53,6 +50,17 @@ copier --vcs-ref v4.0.0 copy https://github.com/jupyterlab/extension-template .
 
 > If you use copier v8+, you will need to pass the flag `--UNSAFE` (see [documentation](https://copier.readthedocs.io/en/stable/configuring/#unsafe)).
 
+---
+
+</details>
+
+4. What's next
+
+At this point, you repository has been [initialize with git](https://www.atlassian.com/git/tutorials/setting-up-a-repository) as code versioning tool and a development environment has been set up if you picked `conda` or `venv`. You should be all set. Open your preferred code editor and start coding.
+
+> If you are using Visual Studio Code, you may be interested in the 
+> [configuration template](https://github.com/jupyterlab/vscode-config-template) for JupyterLab extension.
+
 > If you are looking for a template compatible with JupyterLab version prior to 4.0.0, look at 
 > the [cookiecutter template](https://github.com/jupyterlab/extension-cookiecutter-ts) or the
 > [mimerenderer template](https://github.com/jupyterlab/mimerender-cookiecutter-ts).
@@ -61,7 +69,7 @@ copier --vcs-ref v4.0.0 copy https://github.com/jupyterlab/extension-template .
 
 > This only works with an older version of the _copier_ template. It does not work
 > with an extension generated using the cookiecutter template. In that case, you
-> could try the script `python -m jupyterlab.upgrade_extension`.
+> could try to execute the script `python -m jupyterlab.upgrade_extension .` first.
 
 Extension generated from the copier template can be [updated](https://copier.readthedocs.io/en/stable/updating/)
 with a newer version of the template by executing the command:
