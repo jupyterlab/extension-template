@@ -48,7 +48,6 @@ jobs:
           
           python -m copier copy -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           pushd $tmpfolder
-          python -m pip install "jupyterlab>=4.0.0,<5"
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           ./scripts/pre-commit
           jupyter labextension list
@@ -92,7 +91,6 @@ jobs:
           python -m copier copy -l -d author_name="My Name" -d test=n -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           pushd $tmpfolder
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
-          pip install "jupyterlab>=4.0.0,<5"
           ./scripts/pre-commit
 
           jupyter labextension list
@@ -135,7 +133,6 @@ jobs:
           
           python -m copier copy -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           pushd $tmpfolder
-          pip install "jupyterlab>=4.0.0,<5"
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           # It is not easily possible to get this version compatible with linter rules
           jlpm lint
@@ -212,7 +209,6 @@ jobs:
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           cd $tmpfolder
           python bootstrap.py
-          python -m pip install "jupyterlab>=4.0.0,<5"
 
           # Check unit tests are passing
           python -m pytest -vv -r ap --cov myextension
@@ -356,7 +352,6 @@ jobs:
           mkdir mytheme
           python -m copier copy -l -d kind=theme -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . mytheme
           pushd mytheme
-          python -m pip install "jupyterlab>=4.0.0,<5"
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           ./scripts/pre-commit
 
@@ -401,7 +396,6 @@ jobs:
           python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           pushd $tmpfolder
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
-          python -m pip install "jupyterlab>=4.0.0,<5"
 
           ./scripts/pre-commit
 

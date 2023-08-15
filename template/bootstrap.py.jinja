@@ -74,7 +74,7 @@ def install_extension():{% if venv == "conda" %}
 
     try:
         # Install package in development mode
-        check_output(pre_command + ["pip", "install", "-e", ".{% if test and kind.lower() == 'server' %}[test]{% endif %}"])
+        check_output(pre_command + ["pip", "install", "-e", ".[dev{% if test and kind.lower() == 'server' %}, test{% endif %}]"])
         # Link your development version of the extension with JupyterLab
         check_output(pre_command + ["jupyter", "labextension", "develop", ".", "--overwrite"]){% if kind.lower() == 'server' %}
         # Server extension must be manually installed in develop mode
