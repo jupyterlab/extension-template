@@ -253,7 +253,7 @@ jobs:
           cd $tmpfolder
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
-          python -m build
+          python -m build $tmpfolder
           cd dist
           python -m pip install myextension-0.1.0.tar.gz
 
