@@ -86,9 +86,10 @@ jobs:
       - name: Create pure frontend extension
         run: |
           set -eux
-          mkdir myextension
+          tmpfolder=$(mktemp -d)
+          mkdir $tmpfolder
           python -m copier copy -l -d author_name="My Name" -d test=n -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
-          pushd myextension
+          pushd $tmpfolder
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           pip install "jupyterlab>=4.0.0,<5"
           ./scripts/pre-commit
@@ -101,7 +102,7 @@ jobs:
           pip uninstall -y myextension jupyterlab
 
           popd
-          rm -rf myextension
+          rm -rf $tmpfolder
 
   settings:
     runs-on: ubuntu-latest
@@ -129,9 +130,10 @@ jobs:
       - name: Create pure frontend extension
         run: |
           set -eux
-          mkdir myextension
-          python -m copier copy -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
-          pushd myextension
+          tmpfolder=$(mktemp -d)
+          mkdir $tmpfolder
+          python -m copier copy -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
+          pushd $tmpfolder
           pip install "jupyterlab>=4.0.0,<5"
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           # It is not easily possible to get this version compatible with linter rules
@@ -146,7 +148,7 @@ jobs:
           pip uninstall -y myextension jupyterlab
 
           popd
-          rm -rf myextension
+          rm -rf $tmpfolder
 
   server:
     runs-on: ${{ matrix.os }}
@@ -177,9 +179,10 @@ jobs:
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
-          mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
-          cd myextension
+          tmpfolder=$(mktemp -d)
+          mkdir $tmpfolder
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
+          cd $tmpfolder
           cat pyproject.toml
           pip install .
           pip install "jupyterlab>=4.0.0,<5"
@@ -196,16 +199,17 @@ jobs:
           python -m jupyterlab.browser_check
 
           pip uninstall -y myextension jupyterlab
-          rm -rf myextension
+          rm -rf $tmpfolder
         shell: bash
 
       - name: Create server extension pip develop
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
-          mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
-          cd myextension
+          tmpfolder=$(mktemp -d)
+          mkdir $tmpfolder
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
+          cd $tmpfolder
           python bootstrap.py
           python -m pip install "jupyterlab>=4.0.0,<5"
 
@@ -232,23 +236,24 @@ jobs:
 
       - name: Build server extension in develop mode
         run: |
-          jupyter labextension build ./myextension
+          jupyter labextension build $tmpfolder
 
           jupyter labextension uninstall myextension
           python -m pip uninstall -y myextension jupyterlab
 
       - run: |
           set -eux
-          rm -rf myextension
+          rm -rf $tmpfolder
         shell: bash
 
       - name: Install server extension from a tarball
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
-          mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
-          cd myextension
+          tmpfolder=$(mktemp -d)
+          mkdir $tmpfolder
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
+          cd $tmpfolder
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
           python -m build
@@ -267,10 +272,10 @@ jobs:
 
           python -m jupyterlab.browser_check
 
-          cp myextension/dist/*.tar.gz myextension.tar.gz
-          cp myextension/dist/*.whl myextension.whl
+          cp $tmpfolder/dist/*.tar.gz myextension.tar.gz
+          cp $tmpfolder/dist/*.whl myextension.whl
           python -m pip uninstall -y myextension jupyterlab
-          rm -rf myextension
+          rm -rf $tmpfolder
         shell: bash
 
       - uses: actions/upload-artifact@v2
@@ -390,9 +395,10 @@ jobs:
       - name: Create pure frontend extension
         run: |
           set -eux
-          mkdir myextension
-          python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
-          pushd myextension
+          tmpfolder=$(mktemp -d)
+          mkdir $tmpfolder
+          python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
+          pushd $tmpfolder
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           python -m pip install "jupyterlab>=4.0.0,<5"
 
@@ -406,7 +412,7 @@ jobs:
           python -m pip uninstall -y myextension jupyterlab
 
           popd
-          rm -rf myextension
+          rm -rf $tmpfolder
 
   conda_boostrap:
     runs-on: ubuntu-latest
@@ -430,8 +436,9 @@ jobs:
 
       - name: Create server extension with conda
         run: |
-          mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          tmpfolder=$(mktemp -d)
+          mkdir $tmpfolder
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . $tmpfolder
 
       - name: Check conda environment
         run: |
@@ -447,7 +454,7 @@ jobs:
           python -m jupyterlab.browser_check
 
           pip uninstall -y myextension jupyterlab
-          rm -rf myextension
+          rm -rf $tmpfolder
         shell: bash
 
   pnpm_linker:
@@ -477,13 +484,14 @@ jobs:
           KIND: ${{ matrix.kind }}
         run: |
           set -eux
-          mkdir myextension
-          python -m copier copy -l -d kind=${KIND} -d author_name="My Name" -d labextension_name=myextension -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
-          pushd myextension
+          tmpfolder=$(mktemp -d)
+          mkdir $tmpfolder
+          python -m copier copy -l -d kind=${KIND} -d author_name="My Name" -d labextension_name=myextension -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . $tmpfolder
+          pushd $tmpfolder
           sed -i 's/^\(nodeLinker:\s\).*$/\1pnpm/' .yarnrc.yml
           python -m pip install "jupyterlab>=4.0.0,<5"
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           if [ ! -d node_modules/.store ] ; then echo 'nodes_module directory should contain a .store directory when using pnpm nodeLinker'; exit 1; fi;
           jlpm build
           popd
-          rm -rf myextension
+          rm -rf $tmpfolder
