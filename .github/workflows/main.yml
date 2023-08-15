@@ -44,9 +44,10 @@ jobs:
           PYNAME: ${{ matrix.pyname }}
         run: |
           set -eux
-          mkdir ${NAME}
-          python -m copier copy -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . ${NAME}
-          pushd ${NAME}
+          tmpfolder=$(mktemp -d)
+          
+          python -m copier copy -l -d author_name="My Name" -d labextension_name="${NAME}" -d python_name="${PYNAME}" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
+          pushd $tmpfolder
           python -m pip install "jupyterlab>=4.0.0,<5"
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
           ./scripts/pre-commit
@@ -58,7 +59,7 @@ jobs:
           python -m pip uninstall -y ${NAME} jupyterlab
 
           popd
-          rm -rf ${NAME}
+          rm -rf $tmpfolder
 
   no-tests:
     runs-on: ubuntu-latest
@@ -87,7 +88,7 @@ jobs:
         run: |
           set -eux
           tmpfolder=$(mktemp -d)
-          mkdir $tmpfolder
+          
           python -m copier copy -l -d author_name="My Name" -d test=n -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           pushd $tmpfolder
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
@@ -131,7 +132,7 @@ jobs:
         run: |
           set -eux
           tmpfolder=$(mktemp -d)
-          mkdir $tmpfolder
+          
           python -m copier copy -l -d author_name="My Name" -d has_settings=y -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           pushd $tmpfolder
           pip install "jupyterlab>=4.0.0,<5"
@@ -180,7 +181,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           tmpfolder=$(mktemp -d)
-          mkdir $tmpfolder
+          
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           cd $tmpfolder
           cat pyproject.toml
@@ -207,7 +208,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           tmpfolder=$(mktemp -d)
-          mkdir $tmpfolder
+          
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           cd $tmpfolder
           python bootstrap.py
@@ -251,7 +252,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           tmpfolder=$(mktemp -d)
-          mkdir $tmpfolder
+          
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           cd $tmpfolder
           python -m pip install "jupyterlab>=4.0.0,<5"
@@ -396,7 +397,7 @@ jobs:
         run: |
           set -eux
           tmpfolder=$(mktemp -d)
-          mkdir $tmpfolder
+          
           python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           pushd $tmpfolder
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python bootstrap.py
@@ -437,7 +438,7 @@ jobs:
       - name: Create server extension with conda
         run: |
           tmpfolder=$(mktemp -d)
-          mkdir $tmpfolder
+          
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . $tmpfolder
 
       - name: Check conda environment
@@ -485,7 +486,7 @@ jobs:
         run: |
           set -eux
           tmpfolder=$(mktemp -d)
-          mkdir $tmpfolder
+          
           python -m copier copy -l -d kind=${KIND} -d author_name="My Name" -d labextension_name=myextension -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . $tmpfolder
           pushd $tmpfolder
           sed -i 's/^\(nodeLinker:\s\).*$/\1pnpm/' .yarnrc.yml
