@@ -33,7 +33,7 @@ jobs:
         working-directory: myextension
         run: |
           set -eux
-          jlpm
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm test
 
       - name: Install the extension
@@ -47,10 +47,11 @@ jobs:
         run: |
           jupyter labextension list
 
-      - name: Install dependencies
+      - name: Install UI tests dependencies
         working-directory: myextension/ui-tests
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: jlpm install
 
       - name: Set up browser cache
@@ -100,16 +101,17 @@ jobs:
         working-directory: myextension
         run: |
           set -eux
-          python -m pip install -v .
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m pip install -v .
 
       - name: List extensions
         run: |
           jupyter labextension list
 
-      - name: Install dependencies
+      - name: Install UI tests dependencies
         working-directory: myextension/ui-tests
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false 
         run: jlpm install
 
       - name: Set up browser cache
