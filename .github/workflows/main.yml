@@ -231,6 +231,7 @@ jobs:
           set -eux
           python bootstrap.py
         shell: bash
+        working-directory: ${{ steps.create-extension-2.outputs.extension_folder }}
 
       - name: Build server extension in develop mode
         run: |
