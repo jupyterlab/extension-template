@@ -59,7 +59,7 @@ def create_conda_environment():
         print(f"Conda environment '{ENVIRONMENT_NAME}' {command}d. Execute '{conda_exe} activate {ENVIRONMENT_NAME}' to use it.\n")
 
 {% endif %}
-def install_extension():{% if venv == "conda" %}
+def install_extension():
     """Install the extension in development mode{% if venv == "conda" %} in the conda environment.
     """
     mamba = which("mamba")
