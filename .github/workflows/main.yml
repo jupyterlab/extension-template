@@ -421,21 +421,25 @@ jobs:
           activate-environment: ""
 
       - name: Install dependencies
+        shell: bash -el {0}
         run: |
           python -m pip install "copier>=8.0.0" jinja2-time "pydantic<2.0.0"
 
       - name: Setup Git
+        shell: bash -el {0}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create server extension with conda
+        shell: bash -el {0}
         run: |
           tmpfolder=$(mktemp -d)
           
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . $tmpfolder
 
       - name: Check conda environment
+        shell: bash -el {0}
         run: |
           set -eux
           conda env list | grep -ie "myextension_dev"
@@ -450,7 +454,6 @@ jobs:
 
           pip uninstall -y myextension jupyterlab
           rm -rf $tmpfolder
-        shell: bash
 
   pnpm_linker:
     runs-on: ubuntu-latest
