@@ -81,7 +81,7 @@ def install_extension():
         if not answer.lower().startswith('y'):
             return
 {% endif %}
-    if os.environ("COPIER_SKIP_INSTALL_TASK", "0") != "0":
+    if os.environ.get("COPIER_SKIP_INSTALL_TASK", "0") != "0":
         print("Skipping installation task")
         return
 
