@@ -11,18 +11,38 @@ a JupyterLab extension. Four kinds of extension are supported:
 
 ## Use the template to create extension
 
+0. Pre-requisites
+
+We strongly advice you to use conda package manager.
+To do so, you can install [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
+
+Once you have it installed, open a _Anaconda Prompt_ (on Windows) or any shell
+(on Linux and macOS) and execute the following commands:
+
+```sh
+conda config --add channels conda-forge
+conda install -yc conda-forge mamba
+```
+
+The first one will give you access to the community driven package repository
+[conda-forge](https://conda-forge.org/docs/user/introduction.html). And the
+second will install a faster package manager than conda, [mamba](https://mamba.readthedocs.io).
+It is fully compatible with _conda_ and uses the same command syntax.
+
 1. Install copier and some plugins.
+
+With `conda` / `mamba` (the two commands have the same API):
+
+```sh
+mamba install -c conda-forge "copier>=7,<8" jinja2-time
+```
+
+or
 
 With `pip`:
 
 ```sh
 pip install "copier~=7.2" jinja2-time "pydantic<2.0.0"
-```
-
-Or with `conda` / `mamba`:
-
-```sh
-conda install -c conda-forge "copier>=7,<8" jinja2-time
 ```
 
 2. Create an extension directory and go to it.
