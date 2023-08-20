@@ -5,17 +5,23 @@
 import json
 import os
 from pathlib import Path
-from shutil import copy, which
+from shutil import which
 from subprocess import CalledProcessError, PIPE, check_call, check_output, run
 
 
+# Git error looked for to determined if the extension folder is already using Git
 NOT_GIT_REPO = "fatal: not a git repository (or any of the parent directories): .git"
+# Conda development environment name; defined by the environment variable CONDA_ENVIRONMENT_NAME and default to the 'python package name_dev'
 ENVIRONMENT_NAME = os.environ.get("CONDA_ENVIRONMENT_NAME", "{{ python_name }}_dev")
+# Conda development environment specification; defined the environment variable CONDA_ENVIRONMENT_FILE and default to 'environment.yml'
 ENVIRONMENT_FILE = os.environ.get("CONDA_ENVIRONMENT_FILE", "environment.yml")
 
 
 def initialize_git_repository():
-    """Initialize git repository"""
+    """Initialize git repository.
+    
+    The git repository is initialized with the default branch 'main'
+    """
     git_status = run(["git", "status"], stdout=PIPE, stderr=PIPE, encoding="utf-8")
     if git_status.returncode > 0 and git_status.stderr.strip() == NOT_GIT_REPO:
         print("\nInitializing git...")
@@ -25,13 +31,18 @@ def initialize_git_repository():
         except CalledProcessError as e:
             print(f"Failed to initialize git repository:\n{e!s}\n")
         else:
-            print("Git initialized for the extension\n")
-
-    # Copy pre-commit hook
-    copy("scripts/pre-commit", ".git/hooks")
+            print("Git initialized with default branch 'main' for the extension\n")
 
 {% if venv == "conda" %}
 def create_conda_environment():
+    """Create a development Conda environment.
+    
+    The default environment name is defined by the constant ENVIRONMENT_NAME
+    The environment specification are defined in ENVIRONMENT_FILE (see the
+    documentation for more information https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file)
+
+    It will use 'mamba' instead of 'conda' if it is found.
+    """
     mamba = which("mamba")
     conda_exe = "mamba" if mamba is not None else "conda"
 
@@ -49,10 +60,13 @@ def create_conda_environment():
 
 {% endif %}
 def install_extension():{% if venv == "conda" %}
+    """Install the extension in development mode{% if venv == "conda" %} in the conda environment.
+    """
     mamba = which("mamba")
     conda_exe = "mamba" if mamba is not None else "conda"
     pre_command = [conda_exe, "run", "--name", ENVIRONMENT_NAME]
 {% else %}
+    """
     pre_command = []
     # Checking nodeJS is available
     try:

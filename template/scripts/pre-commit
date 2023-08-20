@@ -1,5 +1,7 @@
 #!/bin/sh
-# This script should be installed as pre-commit git hook (see https://www.atlassian.com/git/tutorials/git-hooks)
+# This script can be installed as pre-commit git hook (see https://www.atlassian.com/git/tutorials/git-hooks)
+# by copying it in '.git/hooks' folder. It will allow to catch
+# linter error early.
 
 # Check frontend files are linted
 jlpm lint:check
