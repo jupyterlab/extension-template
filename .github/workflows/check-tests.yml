@@ -24,12 +24,14 @@ jobs:
 
       - name: Create the extension
         id: create-extension
+        env:
+          COPIER_SKIP_INSTALL_TASK: '1'
         run: |
           set -eux
           tmpfolder=$(mktemp -d)
           echo "extension_folder=${tmpfolder}" >> "$GITHUB_OUTPUT"
-          python -m copier copy -l -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
-          cat $tmpfolder/pyproject.toml
+          python -m copier copy -l -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . ${tmpfolder}
+          cat ${tmpfolder}/pyproject.toml
 
       - name: Test the extension
         working-directory: ${{ steps.create-extension.outputs.extension_folder }}
@@ -95,11 +97,13 @@ jobs:
 
       - name: Create the extension
         id: create-extension
+        env:
+          COPIER_SKIP_INSTALL_TASK: '1'
         run: |
           set -eux
           tmpfolder=$(mktemp -d)
-          python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . myextension
           echo "extension_folder=${tmpfolder}" >> "$GITHUB_OUTPUT"
+          python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . ${tmpfolder}
 
       - name: Install the extension
         working-directory: ${{ steps.create-extension.outputs.extension_folder }}

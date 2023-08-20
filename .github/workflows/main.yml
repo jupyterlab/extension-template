@@ -174,10 +174,12 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create server extension pip install
+        id: create-extension-1
         env:
           COPIER_SKIP_INSTALL_TASK: '1'
         run: |
           tmpfolder=$(mktemp -d)
+          echo "extension_folder=${tmpfolder}" >> "$GITHUB_OUTPUT"
           
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
           cd $tmpfolder
@@ -197,15 +199,17 @@ jobs:
           python -m jupyterlab.browser_check
 
           pip uninstall -y myextension jupyterlab
-          rm -rf $tmpfolder
+          rm -rf "${{ steps.create-extension-1.outputs.extension_folder }}"
         shell: bash
 
       - name: Create server extension pip develop
+        id: create-extension-2
         run: |
           tmpfolder=$(mktemp -d)
+          echo "extension_folder=${tmpfolder}" >> "$GITHUB_OUTPUT"
           
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
-          cd $tmpfolder
+          cd ${tmpfolder}
 
           # Check unit tests are passing
           python -m pytest -vv -r ap --cov myextension
@@ -230,27 +234,29 @@ jobs:
 
       - name: Build server extension in develop mode
         run: |
-          jupyter labextension build $tmpfolder
+          jupyter labextension build "${{ steps.create-extension-2.outputs.extension_folder }}"
 
           jupyter labextension uninstall myextension
           python -m pip uninstall -y myextension jupyterlab
 
       - run: |
           set -eux
-          rm -rf $tmpfolder
+          rm -rf "${{ steps.create-extension-2.outputs.extension_folder }}"
         shell: bash
 
       - name: Install server extension from a tarball
+        id: create-extension-3
         env:
           COPIER_SKIP_INSTALL_TASK: '1'
         run: |
           tmpfolder=$(mktemp -d)
+          echo "extension_folder=${tmpfolder}" >> "$GITHUB_OUTPUT"
           
           python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
-          cd $tmpfolder
+          cd ${tmpfolder}
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
-          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m build $tmpfolder
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m build ${tmpfolder}
           cd dist
           python -m pip install myextension-0.1.0.tar.gz
 
@@ -266,10 +272,10 @@ jobs:
 
           python -m jupyterlab.browser_check
 
-          cp $tmpfolder/dist/*.tar.gz myextension.tar.gz
-          cp $tmpfolder/dist/*.whl myextension.whl
+          cp "${{ steps.create-extension-3.outputs.extension_folder }}"/dist/*.tar.gz myextension.tar.gz
+          cp "${{ steps.create-extension-3.outputs.extension_folder }}"/dist/*.whl myextension.whl
           python -m pip uninstall -y myextension jupyterlab
-          rm -rf $tmpfolder
+          rm -rf "${{ steps.create-extension-3.outputs.extension_folder }}"
         shell: bash
 
       - uses: actions/upload-artifact@v2
@@ -427,9 +433,11 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create server extension with conda
+        id: create-extension
         shell: bash -el {0}
         run: |
           tmpfolder=$(mktemp -d)
+          echo "extension_folder=${tmpfolder}" >> "$GITHUB_OUTPUT"
           
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . $tmpfolder
 
@@ -448,7 +456,7 @@ jobs:
           python -m jupyterlab.browser_check
 
           pip uninstall -y myextension jupyterlab
-          rm -rf $tmpfolder
+          rm -rf "${{ steps.create-extension.outputs.extension_folder }}"
 
   pnpm_linker:
     runs-on: ubuntu-latest
