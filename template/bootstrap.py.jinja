@@ -81,6 +81,10 @@ def install_extension():
         if not answer.lower().startswith('y'):
             return
 {% endif %}
+    if os.environ("COPIER_SKIP_INSTALL_TASK", "0") != "0":
+        print("Skipping installation task")
+        return
+
     print("\nInstalling the extension in development mode...")
 
     # Force uninstalling the extension to avoid trouble when installing in dev mode
