@@ -27,6 +27,11 @@ author_email:
   help: Extension author email
   default: ""
   placeholder: "me@test.com"
+  # Allow empty email or test it against regex
+  validator: >-
+    {% if author_email and not (author_email | regex_search('^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')) %}
+    author_email must be a valid email address.
+    {% endif %}
 
 labextension_name:
   type: str
