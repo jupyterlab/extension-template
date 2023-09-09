@@ -60,13 +60,16 @@ def create_conda_environment():
 
 {% endif %}
 def install_extension():
-    """Install the extension in development mode{% if venv == "conda" %} in the conda environment.
+    """Install the extension in development mode{% if venv == "conda" %} in the conda environment.{% endif %}
     """
+    if os.environ.get("COPIER_SKIP_INSTALL_TASK", "0") != "0":
+        print("Skipping installation task")
+        return
+{% if venv == "conda" %}
     mamba = which("mamba")
     conda_exe = "mamba" if mamba is not None else "conda"
     pre_command = [conda_exe, "run", "--name", ENVIRONMENT_NAME]
 {% else %}
-    """
     pre_command = []
     # Checking nodeJS is available
     try:
@@ -81,9 +84,6 @@ def install_extension():
         if not answer.lower().startswith('y'):
             return
 {% endif %}
-    if os.environ.get("COPIER_SKIP_INSTALL_TASK", "0") != "0":
-        print("Skipping installation task")
-        return
 
     print("\nInstalling the extension in development mode...")
 

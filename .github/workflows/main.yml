@@ -253,13 +253,17 @@ jobs:
           tmpfolder=$(mktemp -d)
           echo "extension_folder=${tmpfolder}" >> "$GITHUB_OUTPUT"
           
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . $tmpfolder
-          cd ${tmpfolder}
+          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" -d venv="none" --vcs-ref HEAD --UNSAFE . ${tmpfolder}
+          
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
           YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m build ${tmpfolder}
-          cd dist
-          python -m pip install myextension-0.1.0.tar.gz
+
+          cp ${tmpfolder}/dist/*.tar.gz myextension.tar.gz
+          cp ${tmpfolder}/dist/*.whl myextension.whl
+
+          tar list -f ${tmpfolder}/dist/myextension-0.1.0.tar.gz
+          python -m pip install ${tmpfolder}/dist/myextension-0.1.0.tar.gz
 
       - name: Check install tarball method
         run: |
@@ -272,15 +276,12 @@ jobs:
           jupyter lab build --dev-build --no-minimize
 
           python -m jupyterlab.browser_check
-
-          cp "${{ steps.create-extension-3.outputs.extension_folder }}"/dist/*.tar.gz myextension.tar.gz
-          cp "${{ steps.create-extension-3.outputs.extension_folder }}"/dist/*.whl myextension.whl
           python -m pip uninstall -y myextension jupyterlab
           rm -rf "${{ steps.create-extension-3.outputs.extension_folder }}"
         shell: bash
 
-      - uses: actions/upload-artifact@v2
-        if: startsWith(runner.os, 'Linux')
+      - uses: actions/upload-artifact@v3
+        if: startsWith(runner.os, 'Linux') && always()
         with:
           name: myextension-sdist
           path: |
@@ -310,7 +311,7 @@ jobs:
           restore-keys: |
             pip-3.7-
             pip-
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: myextension-sdist
       - name: Install and Test
