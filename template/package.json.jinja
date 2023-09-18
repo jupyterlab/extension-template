@@ -27,10 +27,7 @@
     "repository": {
         "type": "git",
         "url": "{{ repository }}.git"
-    },{% if test %}
-    "workspaces": [
-        "ui-tests"
-    ],{% endif %}
+    },
     "scripts": {
         "build": "jlpm build:lib && jlpm build:labextension:dev",
         "build:prod": "jlpm clean && jlpm build:lib:prod && jlpm build:labextension",
