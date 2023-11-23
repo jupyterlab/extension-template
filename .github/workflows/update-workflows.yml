@@ -57,6 +57,6 @@ jobs:
           git commit -m "Automatic update of the releaser workflows"
 
           git push --set-upstream origin "${BRANCH_NAME}"
-          gh pr create -B "main" -t "Updated releaser workflows available at ${SHA}"
+          gh pr create -B "main" -t "Updated releaser workflows available at ${SHA}" -b "Update releaser workflows from official GitHub repository"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
