@@ -1,7 +1,7 @@
 {
     "name": "{{ labextension_name }}",
     "version": "0.1.0",
-    "description": "{{ project_short_description }}",
+    "description": "{{ project_short_description | replace('"', '\\"') }}",
     "keywords": [
         "jupyter",
         "jupyterlab",
