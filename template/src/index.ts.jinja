@@ -14,7 +14,7 @@ import { requestAPI } from './handler';{% endif %}
  */
 const plugin: JupyterFrontEndPlugin<void> = {
   id: '{{ labextension_name }}:plugin',
-  description: '{{ project_short_description }}',
+  description: '{{ project_short_description | replace("'", "\\'") }}',
   autoStart: true,{% if kind.lower() == 'theme' %}
   requires: [IThemeManager],{% endif %}{% if has_settings %}
   optional: [ISettingRegistry],{% endif %}
