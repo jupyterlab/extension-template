@@ -18,7 +18,8 @@
     },{% else %}"{{ author_name }}",{% endif %}
     "files": [
         "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
-        "style/**/*.{css,js,eot,gif,html,jpg,json,png,svg,woff2,ttf}"{% if has_settings %},
+        "style/**/*.{css,js,eot,gif,html,jpg,json,png,svg,woff2,ttf}",
+        "src/**/*.{ts,tsx}"{% if has_settings %},
         "schema/*.json"{% endif %}
     ],
     "main": "lib/index.js",
