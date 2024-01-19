@@ -2,16 +2,18 @@ _min_copier_version: "7.1.0"
 _subdirectory: template
 _jinja_extensions:
     - jinja2_time.TimeExtension
+_tasks:
+  - ["{{ _copier_python }}", bootstrap.py]
 
 kind:
   type: str
   help: What is your extension kind?
   default: frontend
   choices:
-    - frontend
-    - mimerenderer
-    - server
-    - theme
+    Pure frontend: frontend
+    Mimetype renderer: mimerenderer
+    Frontend and backend: server
+    Theme: theme
 
 author_name:
   type: str
@@ -68,6 +70,14 @@ repository:
   type: str
   help: Git remote repository URL
   placeholder: https://github.com/github_username/my-extension
+
+venv:
+  type: str
+  help: What tool are you using to handle virtual environments?
+  default: conda
+  choices:
+    Conda environment (https://docs.conda.io/projects/conda/en/latest/index.html): "conda"
+    None (nothing set up): "none"
 
 viewer_name:
   when: "{{ kind == 'mimerenderer' }}"
