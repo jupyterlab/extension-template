@@ -16,13 +16,13 @@ a JupyterLab extension. Four kinds of extension are supported:
 With `pip`:
 
 ```sh
-pip install "copier~=7.2" jinja2-time "pydantic<2.0.0"
+pip install "copier~=7.2" jinja2-time "pydantic<2.0.0" "pyyaml-include<2.0"
 ```
 
 Or with `conda` / `mamba`:
 
 ```sh
-conda install -c conda-forge "copier>=7,<8" jinja2-time
+conda install -c conda-forge "copier>=7,<8" jinja2-time "pyyaml-include<2.0"
 ```
 
 2. Create an extension directory and go to it.
