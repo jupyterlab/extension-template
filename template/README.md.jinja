@@ -1,7 +1,7 @@
 # {{ python_name }}
 
 [![Github Actions Status]({{ repository }}/workflows/Build/badge.svg)]({{ repository }}/actions/workflows/build.yml)
-{%- if has_binder -%}
+{% if has_binder -%}
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/{{ repository|replace("https://github.com/", "") }}/main?urlpath=lab)
 
 {%- endif %}
