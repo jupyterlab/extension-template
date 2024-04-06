@@ -3,8 +3,8 @@
 [![Github Actions Status]({{ repository }}/workflows/Build/badge.svg)]({{ repository }}/actions/workflows/build.yml)
 {% if has_binder -%}
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/{{ repository|replace("https://github.com/", "") }}/main?urlpath=lab)
-
 {%- endif %}
+
 {{ project_short_description }}
 {% if kind.lower() == 'server' %}
 This extension is composed of a Python package named `{{ python_name }}`
