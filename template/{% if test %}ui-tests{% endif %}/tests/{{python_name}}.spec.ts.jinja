@@ -31,6 +31,7 @@ test('should emit an activation console message', async ({ page }) => {
   await page.locator('.jp-Dialog').getByRole('textbox').fill(filename);
 
   await page.getByRole('button', { name: 'Rename' }).click();
+  await page.waitForTimeout(200);
 
   // Close file opened as editor
   await page.activity.closePanel('test.my_type');
