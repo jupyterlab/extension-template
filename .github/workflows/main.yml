@@ -324,7 +324,7 @@ jobs:
           rm -rf myextension
         shell: bash
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: startsWith(runner.os, 'Linux')
         with:
           name: myextension-sdist-${{ matrix.python-version }}
