@@ -9,7 +9,7 @@
     ],
     "homepage": "{{ repository }}",
     "bugs": {
-        "url": "{{ repository }}/issues"
+        "url": "{{ repository | trim('/') }}/issues"
     },
     "license": "BSD-3-Clause",
     "author": {% if author_email %}{
@@ -27,7 +27,7 @@
     "style": "style/index.css",{% endif %}
     "repository": {
         "type": "git",
-        "url": "{{ repository }}.git"
+        "url": "{{ repository | trim('/') }}.git"
     },
     "scripts": {
         "build": "jlpm build:lib && jlpm build:labextension:dev",
