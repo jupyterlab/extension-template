@@ -51,7 +51,7 @@ project_short_description:
 has_settings:
   when: "{{ kind != 'mimerenderer' }}"
   type: bool
-  help: Does the extension have user settings?
+  help: Does the extension have user settings or schema-defined UI elements?
   default: no
 
 has_binder:
