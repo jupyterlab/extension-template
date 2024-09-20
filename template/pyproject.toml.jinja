@@ -11,8 +11,10 @@ classifiers = [
     "Framework :: Jupyter",
     "Framework :: Jupyter :: JupyterLab",
     "Framework :: Jupyter :: JupyterLab :: 4",
-    "Framework :: Jupyter :: JupyterLab :: Extensions",
-    "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",
+    "Framework :: Jupyter :: JupyterLab :: Extensions",{% if kind.lower() == "mimerenderer" %}
+    "Framework :: Jupyter :: JupyterLab :: Extensions :: Mime Renderers",{% endif %}
+    "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",{% if kind.lower() == "theme" %}
+    "Framework :: Jupyter :: JupyterLab :: Extensions :: Themes",{% endif %}
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
