@@ -1,0 +1,52 @@
+image: python
+
+rules:
+  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  - if: $CI_COMMIT_BRANCH == "main"
+  - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+    when: never
+
+stages:
+  - build
+{% if test %}
+  - test
+{% endif %}
+
+build:
+  stage: build
+  before_script:
+    # install dependencies
+    - apt update
+    - apt install -y nodejs npm
+    - python -m pip install -U "jupyterlab>=4.0.0,<5"
+    # lint checks
+    - set -eux
+    - jlpm
+    - jlpm run lint:check
+  script:
+    - set -eux
+    - python -m pip install .[test]
+{% if kind.lower() == 'server' %}
+    - jupyter server extension list
+    - jupyter server extension list 2>&1 | grep -ie "{{ python_name }}.*OK"
+{% endif %}
+    - jupyter labextension list
+    - jupyter labextension list 2>&1 | grep -ie "{{ labextension_name }}.*OK"
+    # Install dependencies for browser check
+    - npx playwright install-deps
+    - python -m jupyterlab.browser_check --allow-root
+
+{% if test %}
+test:
+  stage: test
+  before_script:
+    # install dependencies
+    - apt update
+    - apt install -y nodejs npm
+  script:
+    - set -eux
+    - python -m pip install .[test]
+    - jlpm run test
+{% if kind.lower() == 'server' %}
+    - pytest -vv -r ap --cov {{ python_name }}
+{% endif %}{% endif %}
