@@ -35,6 +35,12 @@ build:
     # Install dependencies for browser check
     - npx playwright install-deps
     - python -m jupyterlab.browser_check --allow-root
+    # Package the extension
+    - pip install build
+    - python -m build
+  artifacts:
+    paths:
+      - dist
 
 {% if test %}
 test:
