@@ -71,7 +71,7 @@ jobs:
     strategy:
       matrix:
         # This will be used by the base setup action
-        python-version: ["3.12"]
+        python-version: ["3.13"]
 
     steps:
       - name: Checkout
@@ -115,7 +115,7 @@ jobs:
     strategy:
       matrix:
         # This will be used by the base setup action
-        python-version: ["3.12"]
+        python-version: ["3.13"]
 
     steps:
       - name: Checkout
@@ -159,7 +159,7 @@ jobs:
     strategy:
       matrix:
         # This will be used by the base setup action
-        python-version: ["3.8", "3.12"]
+        python-version: ["3.9", "3.13"]
 
     steps:
       - name: Checkout
@@ -207,7 +207,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         # This will be used by the base setup action
-        python-version: ["3.8", "3.12"]
+        python-version: ["3.9", "3.13"]
 
     steps:
       - name: Checkout
@@ -337,7 +337,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.12"]
+        python-version: ["3.9", "3.13"]
 
     steps:
       - name: Checkout
@@ -377,7 +377,7 @@ jobs:
     strategy:
       matrix:
         # This will be used by the base setup action
-        python-version: ["3.8", "3.12"]
+        python-version: ["3.9", "3.13"]
 
     steps:
       - name: Checkout
@@ -421,7 +421,7 @@ jobs:
     strategy:
       matrix:
         # This will be used by the base setup action
-        python-version: ["3.8", "3.12"]
+        python-version: ["3.9", "3.13"]
 
     steps:
       - name: Checkout
