@@ -64,6 +64,14 @@ test:
   help: Do you want to set up tests for the extension?
   default: yes
 
+ci:
+  type: str
+  help: What Continuous Integration service do you want to use?
+  choices:
+    GitHub CI: github
+    GitLab CI: gitlab
+  default: github
+
 repository:
   type: str
   help: Git remote repository URL
