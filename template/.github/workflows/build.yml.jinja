@@ -134,6 +134,7 @@ jobs:
 {% endraw %}
     - name: Install browser
       run: |
+        set -eux
         jlpm playwright install-deps
         jlpm playwright install chromium
       working-directory: ui-tests
