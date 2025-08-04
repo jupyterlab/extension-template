@@ -230,7 +230,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d kind=frontend-and-server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           cat pyproject.toml
           pip install .
@@ -258,7 +258,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d kind=frontend-and-server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           python -m pip install -e .[test]
           python -m pip install "jupyterlab>=4.0.0,<5" setuptools
@@ -298,7 +298,7 @@ jobs:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
         run: |
           mkdir myextension
-          python -m copier copy -l -d kind=server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          python -m copier copy -l -d kind=frontend-and-server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter lab clean --all
@@ -464,7 +464,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        kind: ["frontend", "server", "theme"]
+        kind: ["frontend", "frontend-and-server", "theme"]
 
     steps:
       - name: Checkout

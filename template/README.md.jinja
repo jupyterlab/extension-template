@@ -6,7 +6,7 @@
 
 {% endif %}
 {{ project_short_description }}
-{% if kind.lower() == 'server' %}
+{% if kind.lower() == 'frontend-and-server' %}
 This extension is composed of a Python package named `{{ python_name }}`
 for the server extension and a NPM package named `{{ labextension_name }}`
 for the frontend extension.
@@ -30,7 +30,7 @@ To remove the extension, execute:
 ```bash
 pip uninstall {{ python_name }}
 ```
-{% if kind.lower() == 'server' %}
+{% if kind.lower() == 'frontend-and-server' %}
 ## Troubleshoot
 
 If you are seeing the frontend extension, but it is not working, check
@@ -61,9 +61,9 @@ The `jlpm` command is JupyterLab's pinned version of
 # Clone the repo to your local environment
 # Change directory to the {{ python_name }} directory
 # Install package in development mode
-pip install -e ".{% if test and kind.lower() == 'server' %}[test]{% endif %}"
+pip install -e ".{% if test and kind.lower() == 'frontend-and-server' %}[test]{% endif %}"
 # Link your development version of the extension with JupyterLab
-jupyter labextension develop . --overwrite{% if kind.lower() == 'server' %}
+jupyter labextension develop . --overwrite{% if kind.lower() == 'frontend-and-server' %}
 # Server extension must be manually installed in develop mode
 jupyter server extension enable {{ python_name }}{% endif %}
 # Rebuild extension Typescript source after making changes
@@ -89,7 +89,7 @@ jupyter lab build --minimize=False
 
 ### Development uninstall
 
-```bash{% if kind.lower() == 'server' %}
+```bash{% if kind.lower() == 'frontend-and-server' %}
 # Server extension must be manually disabled in develop mode
 jupyter server extension disable {{ python_name }}{% endif %}
 pip uninstall {{ python_name }}
@@ -99,7 +99,7 @@ In development mode, you will also need to remove the symlink created by `jupyte
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
 folder is located. Then you can remove the symlink named `{{ labextension_name }}` within that folder.
 {% if test %}
-### Testing the extension{% if kind.lower() == 'server' %}
+### Testing the extension{% if kind.lower() == 'frontend-and-server' %}
 
 #### Server tests
 

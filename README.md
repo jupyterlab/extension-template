@@ -6,7 +6,7 @@ A [copier](https://copier.readthedocs.io) template for creating
 a JupyterLab extension. Four kinds of extension are supported:
 - _frontend_: Pure frontend extension written in TypeScript.
 - _mimerenderer_: MIME renderer extension.
-- _server_: Extension with frontend (in TypeScript) and backend (in Python) parts.
+- _frontend-and-server_: Extension with frontend (in TypeScript) and backend (in Python) parts.
 - _theme_: Theme for JupyterLab (using CSS variables).
 
 ## Use the template to create extension
@@ -38,7 +38,7 @@ cd myextension
 copier copy --trust https://github.com/jupyterlab/extension-template .
 ```
 
-> If you are using Visual Studio Code, you may be interested in the 
+> If you are using Visual Studio Code, you may be interested in the
 > [configuration template](https://github.com/jupyterlab/vscode-config-template) for JupyterLab extension.
 
 ---
@@ -49,7 +49,7 @@ If you'd like to generate an extension for a older release, use the `--vcs-ref` 
 copier copy --vcs-ref v4.0.0 --trust https://github.com/jupyterlab/extension-template .
 ```
 
-> If you are looking for a template compatible with JupyterLab version prior to 4.0.0, look at 
+> If you are looking for a template compatible with JupyterLab version prior to 4.0.0, look at
 > the [cookiecutter template](https://github.com/jupyterlab/extension-cookiecutter-ts) or the
 > [mimerenderer template](https://github.com/jupyterlab/mimerender-cookiecutter-ts).
 

@@ -1,7 +1,7 @@
 _min_copier_version: "7.1.0"
 _subdirectory: template
 _jinja_extensions:
-    - jinja2_time.TimeExtension
+  - jinja2_time.TimeExtension
 
 kind:
   type: str
@@ -10,7 +10,7 @@ kind:
   choices:
     - frontend
     - mimerenderer
-    - server
+    - frontend-and-server
     - theme
 
 author_name:

@@ -5,7 +5,7 @@
 
 import { IThemeManager } from '@jupyterlab/apputils';{% endif %}{% if has_settings %}
 
-import { ISettingRegistry } from '@jupyterlab/settingregistry';{% endif %}{% if kind.lower() == 'server' %}
+import { ISettingRegistry } from '@jupyterlab/settingregistry';{% endif %}{% if kind.lower() == 'frontend-and-server' %}
 
 import { requestAPI } from './handler';{% endif %}
 
@@ -38,7 +38,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
         .catch(reason => {
           console.error('Failed to load settings for {{ labextension_name }}.', reason);
         });
-    }{% endif %}{% if kind.lower() == 'server' %}
+    }{% endif %}{% if kind.lower() == 'frontend-and-server' %}
 
     requestAPI<any>('get-example')
       .then(data => {

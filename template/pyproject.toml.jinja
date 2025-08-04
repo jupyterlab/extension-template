@@ -24,11 +24,11 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
-dependencies = [{% if kind.lower() == "server" %}
+dependencies = [{% if kind.lower() == "frontend-and-server" %}
     "jupyter_server>=2.4.0,<3"{% endif %}
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
-{% if test and kind.lower() == 'server' %}
+{% if test and kind.lower() == 'frontend-and-server' %}
 [project.optional-dependencies]
 test = [
     "coverage",
@@ -50,7 +50,7 @@ exclude = [".github", "binder"]
 
 [tool.hatch.build.targets.wheel.shared-data]
 "{{ python_name }}/labextension" = "share/jupyter/labextensions/{{ labextension_name }}"
-"install.json" = "share/jupyter/labextensions/{{ labextension_name }}/install.json"{% if kind.lower() == "server" %}
+"install.json" = "share/jupyter/labextensions/{{ labextension_name }}/install.json"{% if kind.lower() == "frontend-and-server" %}
 "jupyter-config/server-config" = "etc/jupyter/jupyter_server_config.d"{% endif %}
 
 [tool.hatch.build.hooks.version]
