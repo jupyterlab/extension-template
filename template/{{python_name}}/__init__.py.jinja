@@ -6,7 +6,7 @@ except ImportError:
     # the package from a stable release or in editable mode: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
     import warnings
     warnings.warn("Importing '{{ python_name }}' outside a proper installation.")
-    __version__ = "dev"{% if kind.lower() == 'server' %}
+    __version__ = "dev"{% if kind.lower() == 'frontend-and-server' %}
 from .handlers import setup_handlers{% endif %}
 
 
@@ -14,7 +14,7 @@ def _jupyter_labextension_paths():
     return [{
         "src": "labextension",
         "dest": "{{ labextension_name }}"
-    }]{% if kind.lower() == 'server' %}
+    }]{% if kind.lower() == 'frontend-and-server' %}
 
 
 def _jupyter_server_extension_points():
