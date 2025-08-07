@@ -1,0 +1,156 @@
+---
+description: JupyterLab Extension Development – coding standards, naming, integration, and template alignment
+globs:
+alwaysApply: true
+---
+
+### JupyterLab Extension Development – Project Rules
+
+These rules guide AI-generated code to align with JupyterLab community standards and keep the extension maintainable. They adapt based on the selected template kind.
+
+Kind selected: {{ kind }}
+
+## Coding Standards
+
+{% if kind == 'frontend-and-server' %}- **Python (PEP 8)**: Use 4-space indentation and meaningful names. Class names use CamelCase; functions, variables, and methods use lowercase_with_underscores. Private/internal names use a single leading underscore. Align with Jupyter’s coding style guidelines.
+{% endif %}- **TypeScript/JavaScript**: Use PascalCase for class and interface names (e.g., `MyPanelWidget`) and camelCase for functions, methods, and variables. Avoid `any` whenever possible—prefer explicit types. Use Prettier/ESLint defaults (2-space indent, etc.) for clean, uniform formatting.
+- **Descriptive naming and comments**: Choose clear, descriptive names for classes, commands, and modules (e.g., `DataUploadHandler` instead of `MyHandler`). Include JSDoc for TS and{% if kind == 'frontend-and-server' %} docstrings for Python{% endif %} to describe the purpose of modules, classes, and complex functions.
+- **No unused or duplicate code**: {% if kind == 'frontend-and-server' %}Avoid duplicating logic across front and back ends. Centralize processing when possible and pass data across the boundary. {% endif %}Do not produce dead code or leave TODOs—implement features fully or not at all.
+
+## Naming and Project Structure
+
+{% if kind == 'frontend-and-server' %}- **Python package names**: Use short, all-lowercase names without dashes. Use underscores if needed (e.g., `jupyterlab_myext`). For the PyPI distribution name, using a dash is acceptable/common (e.g., `jupyterlab-myext`) as long as the importable Python module uses underscores.
+{% endif %}- **Frontend package name**: Use the same base name as the project for the npm package (e.g., `"jupyterlab-myext"` or `@<organization>/myext`). Keep naming consistent to avoid confusion.
+- **Plugin and command IDs**: Prefix with your extension name. Example plugin id: `'<your-ext-name>:plugin'`; command IDs like `'<your-ext-name>:do-action'`. Keep IDs lowercase; use hyphens or camelCase for multi-word actions (e.g., `myext:open-file`).
+- **File and class names**: Name sources after their function. For a React widget, `MyWidget.tsx` containing class `MyWidget` is appropriate. Avoid catch-all files like `utils.ts`; partition logically (e.g., `api.ts` for API calls{% if kind == 'frontend-and-server' %}, `handlers.py` for Tornado handlers{% endif %}). Organize frontend under `src/`{% if kind == 'frontend-and-server' %} and Python code in the package directory{% endif %}.
+
+{% if kind == 'theme' %}## Theme Extensions
+
+- **No backend**: Theme extensions are frontend-only. Keep all assets under `style/`.
+- **CSS organization**: Use `style/variables.css` for custom properties and `style/index.css` for imports and global theme selectors. Avoid global resets; extend JupyterLab tokens.
+- **Support light and dark**: Scope colors with attribute selectors like `[data-jp-theme-light='true']` and `[data-jp-theme-light='false']`.
+- **Register the theme**: Register via `IThemeManager` and load CSS from `style/index.css`.
+
+```ts
+import { IThemeManager } from '@jupyterlab/apputils';
+import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+
+const plugin: JupyterFrontEndPlugin<void> = {
+  id: '<your-ext-name>:theme',
+  autoStart: true,
+  requires: [IThemeManager],
+  activate: (app: JupyterFrontEnd, manager: IThemeManager) => {
+    const style = 'style/index.css';
+    manager.register({
+      name: '<Human Theme Name>',
+      isLight: true, // set appropriately
+      load: () => manager.loadCSS(style),
+      unload: () => Promise.resolve()
+    });
+  }
+};
+
+export default plugin;
+```
+
+- **Use CSS variables**: Prefer CSS custom properties to ensure compatibility with other extensions and JupyterLab updates.
+{% endif %}
+
+{% if kind == 'mimerender' %}## MIME Renderer Extensions
+
+- **No backend**: MIME renderers are frontend-only. Implement an `IRenderMime.IExtension` to render a MIME type.
+- **Renderer factory**: Provide `mimeTypes`, `dataType` (`'json' | 'string' | 'object'`), and `safe` indicating whether the renderer is safe for untrusted content.
+- **Widget implementation**: Extend `Widget` and implement `renderModel`.
+
+```ts
+import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
+import { Widget } from '@lumino/widgets';
+
+class MyRenderer extends Widget implements IRenderMime.IRenderer {
+  constructor(options: IRenderMime.IRendererOptions) {
+    super();
+    this.addClass('myext-Renderer');
+  }
+  async renderModel(model: IRenderMime.IMimeModel): Promise<void> {
+    const data = model.data['text/plain'] as string;
+    this.node.textContent = data;
+  }
+}
+
+const extension: IRenderMime.IExtension = {
+  id: '<your-ext-name>:renderer',
+  rendererFactory: {
+    safe: true,
+    mimeTypes: ['text/plain'],
+    createRenderer: opts => new MyRenderer(opts)
+  },
+  rank: 50,
+  dataType: 'string'
+};
+
+export default extension;
+```
+
+- **Security**: If using HTML, sanitize before injecting. Set `safe: false` only when necessary and handle untrusted content carefully.
+- **Styling**: Namespace CSS classes (e.g., `myext-*`). Avoid mutating global styles.
+- **Performance**: Keep `renderModel` fast; avoid blocking the main thread. Use async operations where appropriate.
+{% endif %}
+
+{% if kind == 'frontend-and-server' %}## Backend–Frontend Integration
+
+- **RESTful endpoints with Tornado**: Create a handler extending Jupyter Server’s `APIHandler` and register routes on startup.
+
+```python
+from jupyter_server.base.handlers import APIHandler
+from jupyter_server.utils import url_path_join
+
+class HelloWorldHandler(APIHandler):
+    def get(self):
+        self.finish({"data": "Hello, world!"})
+
+def setup_handlers(web_app):
+    host_pattern = r".*$"
+    base_url = web_app.settings.get("base_url", "/")
+    route_pattern = url_path_join(base_url, "myext", "hello")
+    web_app.add_handlers(host_pattern, [(route_pattern, HelloWorldHandler)])
+```
+
+- **HTTP methods**: `GET` for retrieval, `POST`/`PUT` for actions/updates. Use `self.get_json_body()` or `self.get_body_argument()` to read request data.
+- **Frontend calls via `requestAPI`**: Call your server endpoints from TypeScript.
+
+```ts
+import { requestAPI } from './handler'; // path provided by template
+
+interface HelloResponse { data: string }
+
+export async function fetchHello(): Promise<string> {
+  try {
+    const response = await requestAPI<HelloResponse>('myext/hello', { method: 'GET' });
+    return response.data;
+  } catch (err) {
+    console.error('Request failed', err);
+    throw err;
+  }
+}
+```
+
+- **Keep back and front in sync**: When server responses change, update TS types and UI accordingly. Avoid unused routes and calls to nonexistent endpoints.
+- **Consistent JSON naming**: Use the same keys on both sides (e.g., `{"result": ...}` ↔ `response.result`). Consider shared constants for routes and command names.
+{% endif %}
+
+## Best Practices and Template Alignment
+
+- **Leverage the template structure**: Keep changes aligned with the copier scaffold. Do not rename or move core files without updating configuration. {% if kind == 'frontend-and-server' %}Use `handlers.py` for API handlers and the provided server setup.{% else %}Place UI logic in `src/` and organize modules by feature.{% endif %}
+- **Version consistency**: {% if kind == 'frontend-and-server' %}Keep Python package and npm package versions in sync for releases.{% else %}Maintain semantic versioning in `package.json` and update consistently across release artifacts.{% endif %}
+- **Follow community examples**: Start minimal (e.g., “Server Hello World” for combined extensions or simple UI command for frontend-only) and iterate. Use JupyterLab APIs and patterns shown in official examples.
+- **Thorough testing**: Exercise features in a running JupyterLab. Use browser console{% if kind == 'frontend-and-server' %} and server logs{% endif %} for debugging. Add unit/integration tests for non-trivial features.
+
+### Sources
+
+- Jupyter Coding Style Guidelines
+- JupyterLab Community Forum – Naming Conventions (dash vs underscore)
+- JupyterLab Extension Examples – Combined Extension Structure
+- Jupyter Community Forum – Server Handler Example (Cookiecutter)
+- Jupyter Server Documentation – What is a Server Extension
+
+
