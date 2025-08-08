@@ -137,6 +137,17 @@ More precisely, the JupyterLab helper [Galata](https://github.com/jupyterlab/jup
 
 More information are provided within the [ui-tests](./ui-tests/README.md) README.
 {% endif %}
+## Cursor Project Rules
+
+This template includes a Cursor Project Rule to help the AI follow JupyterLab best practices for the selected extension kind.
+
+- **Location**: `.cursor/rules/jupyterlab-extension.mdc`
+- **What it covers**: coding standards, naming, and project structure{% if kind.lower() == 'frontend-and-server' %}, plus Python `APIHandler` patterns and frontend `requestAPI` usage{% endif %}{% if kind.lower() == 'theme' %}, theme registration via `IThemeManager` and CSS structure under `style/`{% endif %}{% if kind.lower() == 'mimerender' %}, MIME renderer factory and `IRenderMime.IExtension` setup{% endif %}.
+- **Scope and activation**: The rule is always applied by default. You can edit the file front matter to control behavior:
+  - Set `alwaysApply: false` to avoid automatic inclusion
+  - Set `globs:` to an array of path patterns to auto-attach when matching files are referenced
+- **Customize**: Edit the rule content to reflect your team’s conventions. You can also add more rules by creating additional `.mdc` files under `.cursor/rules/`.
+
 ### Packaging the extension
 
 See [RELEASE](RELEASE.md)
