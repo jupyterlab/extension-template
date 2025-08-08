@@ -2,7 +2,7 @@
 
 [![Github Actions Status](https://github.com/orbrx/extension-template/workflows/CI/badge.svg)](https://github.com/orbrx/extension-template/actions/workflows/main.yml)
 
-This repository is a fork of https://github.com/jupyterlab/extension-template with added Cursor Rules for AI-powered development.
+> This repository is a fork of [jupyterlab/extension-template](https://github.com/jupyterlab/extension-template) with added Cursor Rules for AI-powered development.
 
 A [copier](https://copier.readthedocs.io) template for creating
 a JupyterLab extension. Four kinds of extension are supported:
