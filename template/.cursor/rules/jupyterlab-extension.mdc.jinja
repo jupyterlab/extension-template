@@ -138,6 +138,39 @@ export async function fetchHello(): Promise<string> {
 - **Consistent JSON naming**: Use the same keys on both sides (e.g., `{"result": ...}` ↔ `response.result`). Consider shared constants for routes and command names.
 {% endif %}
 
+## Development builds
+
+### Initial build by Cursor
+
+Run once after cloning or when setting up a fresh environment:
+
+```bash
+pip install -e ".{% if test and kind.lower() == 'frontend-and-server' %}[test]{% endif %}"
+jupyter labextension develop . --overwrite{% if kind.lower() == 'frontend-and-server' %}
+jupyter server extension enable {{ python_name }}{% endif %}
+jlpm build
+```
+
+Notes:
+- Ensure the commands run inside the same environment where JupyterLab is installed (conda/mamba/venv). If `jlpm` is not found, verify your environment.
+- If the labextension symlink breaks, re-run `jupyter labextension develop . --overwrite`.
+
+### Incremental builds by Cursor
+
+When changes are made during development, rebuild incrementally:
+
+```bash
+# Frontend-only changes
+jlpm build
+
+{% if kind.lower() == 'frontend-and-server' %}# Backend (Python) changes
+pip install -e .{% endif %}
+```
+
+Tips:
+- Restart JupyterLab if changes don’t appear (`Ctrl+C` then `jupyter lab`).
+- Use a single JS package manager. Prefer `jlpm`/`yarn` with `yarn.lock`; avoid mixing with `npm`/`package-lock.json` to prevent resolution issues.
+
 ## Best Practices and Template Alignment
 
 - **Leverage the template structure**: Keep changes aligned with the copier scaffold. Do not rename or move core files without updating configuration. {% if kind == 'frontend-and-server' %}Use `handlers.py` for API handlers and the provided server setup.{% else %}Place UI logic in `src/` and organize modules by feature.{% endif %}
