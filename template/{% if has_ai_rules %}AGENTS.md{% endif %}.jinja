@@ -1,0 +1,537 @@
+# JupyterLab Extension Development
+
+This guide provides coding standards and best practices for developing JupyterLab extensions. Follow these rules to align with community standards and keep your extension maintainable.
+
+**Extension type**: {{ kind }}
+
+---
+
+## External Documentation
+
+For complete API reference and advanced topics, see:
+
+- [JupyterLab Extension Developer Guide](https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html)
+- [JupyterLab Extension Examples](https://github.com/jupyterlab/extension-examples){% if kind == 'frontend-and-server' %}
+- [Jupyter Server API](https://jupyter-server.readthedocs.io/){% endif %}
+- Project-specific docs: See `README.md` and `RELEASE.md` in project root
+
+---
+
+## Code Quality Rules
+
+### Logging and Debugging
+
+**✅ Do**: Use structured logging or user-facing notifications
+```typescript
+// In TypeScript files like src/index.ts
+import { INotification } from '@jupyterlab/apputils';
+app.commands.notifyCommandChanged();
+```
+
+**❌ Don't**: Use `console.log()` in production code
+
+### Type Safety
+
+**✅ Do**: Define explicit interfaces (see example patterns in `src/index.ts`)
+```typescript
+interface PluginConfig {
+  enabled: boolean;
+  apiEndpoint: string;
+}
+```
+
+**❌ Don't**: Use the `any` type in TypeScript files
+
+### File-Scoped Validation
+
+After editing TypeScript files, run:
+```bash
+npx tsc --noEmit src/index.ts  # Check single file
+npx tsc --noEmit               # Check all files
+```
+
+After editing Python files{% if kind == 'frontend-and-server' %} (like `{{ python_name }}/handlers.py`){% endif %}:
+```bash
+python -m py_compile {{ python_name }}/__init__.py  # Check single file
+ruff check {{ python_name }}/                       # Lint directory
+```
+
+## Coding Standards
+
+### Naming Conventions
+
+{% if kind == 'frontend-and-server' %}**Python** (in `{{ python_name }}/*.py` files):
+- **✅ Do**: Use PEP 8 style with 4-space indentation
+  - Classes: `DataProcessor`, `HelloWorldHandler`
+  - Functions/methods: `setup_handlers()`, `process_request()`
+  - Private: `_internal_method()`
+- **❌ Don't**: Use camelCase for Python or mix styles
+
+{% endif %}**TypeScript/JavaScript** (in `src/*.ts` files):
+- **✅ Do**: Use consistent casing
+  - Classes/interfaces: `MyPanelWidget`, `PluginConfig`
+  - Functions/variables: `activatePlugin()`, `buttonCount`
+  - Use 2-space indentation (Prettier default)
+- **❌ Don't**: Use snake_case or inconsistent formatting
+
+### Documentation
+
+**✅ Do**: Add JSDoc for TypeScript{% if kind == 'frontend-and-server' %} and docstrings for Python{% endif %}
+```typescript
+/**
+ * Activates the extension plugin.
+ * @param app - JupyterLab application instance
+ */
+function activate(app: JupyterFrontEnd): void { }
+```
+
+**❌ Don't**: Leave complex logic undocumented or use vague names like `MyHandler`—prefer `DataUploadHandler`
+
+### Code Organization
+
+{% if kind == 'frontend-and-server' %}**✅ Do**: Keep backend and frontend logic separate
+- Backend processing in `{{ python_name }}/handlers.py`
+- Frontend calls in `src/handler.ts` using `requestAPI()`
+
+**❌ Don't**: Duplicate business logic across TypeScript and Python
+
+{% endif %}**✅ Do**: Implement features completely or not at all
+
+**❌ Don't**: Leave TODO comments or dead code in committed files
+
+## Project Structure and Naming
+
+### Package Naming
+
+{% if kind == 'frontend-and-server' %}**Python package** (directory name and imports):
+- **✅ Do**: `{{ python_name }}/` with underscores, all lowercase
+- **❌ Don't**: Use dashes in the directory name
+
+**PyPI distribution name** (in `pyproject.toml`):
+- **✅ Do**: Can use dashes like `jupyterlab-myext`
+- Match it to the npm package name for consistency
+
+{% endif %}**NPM package** (in `package.json`):
+- **✅ Do**: Use lowercase with dashes: `"jupyterlab-myext"` or scoped `"@org/myext"`
+- **❌ Don't**: Mix naming styles between package.json{% if kind == 'frontend-and-server' %} and pyproject.toml{% endif %}
+
+### Plugin and Command IDs
+
+Define these in `src/index.ts`:
+
+**✅ Do**: Use consistent, prefixed IDs
+```typescript
+const PLUGIN_ID = '{{ python_name }}:plugin';
+const COMMAND_ID = '{{ python_name }}:open-panel';
+```
+
+**❌ Don't**: Use generic IDs like `'mycommand'` or mix casing styles
+
+### File Organization
+
+**✅ Do**: Name files by their purpose
+- Widget components: `src/widgets/DataPanel.tsx` (class `DataPanel`)
+- API utilities: `src/api.ts` (not `src/utils.ts`){% if kind == 'frontend-and-server' %}
+- Backend handlers: `{{ python_name }}/handlers.py` (class `DataHandler`){% endif %}
+- Frontend logic: `src/` directory
+{% if kind == 'frontend-and-server' %}- Python package: `{{ python_name }}/` directory{% endif %}
+
+**❌ Don't**: Create catch-all files like `utils.ts` or `helpers.py`—partition by feature instead
+
+{% if kind == 'theme' %}## Theme Extensions
+
+Theme extensions are **frontend-only**—no backend code needed.
+
+### File Structure
+
+**✅ Do**: Organize theme files properly
+- Custom CSS variables: `style/variables.css`
+- Main theme entry: `style/index.css`
+- Theme registration: `src/index.ts`
+
+**❌ Don't**: Put theme files outside `style/` or create global CSS resets
+
+### Light and Dark Mode Support
+
+**✅ Do**: Use attribute selectors in `style/index.css`
+```css
+[data-jp-theme-light='true'] .my-widget {
+  background: var(--jp-layout-color1);
+}
+[data-jp-theme-light='false'] .my-widget {
+  background: var(--jp-layout-color0);
+}
+```
+
+**❌ Don't**: Hardcode colors—always use JupyterLab CSS variables
+
+### Theme Registration
+
+Register in `src/index.ts` via `IThemeManager`:
+
+```ts
+import { IThemeManager } from '@jupyterlab/apputils';
+import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+
+const plugin: JupyterFrontEndPlugin<void> = {
+  id: '<your-ext-name>:theme',
+  autoStart: true,
+  requires: [IThemeManager],
+  activate: (app: JupyterFrontEnd, manager: IThemeManager) => {
+    const style = 'style/index.css';
+    manager.register({
+      name: '<Human Theme Name>',
+      isLight: true, // set appropriately
+      load: () => manager.loadCSS(style),
+      unload: () => Promise.resolve()
+    });
+  }
+};
+
+export default plugin;
+```
+
+**✅ Do**: Use CSS custom properties for all styling
+
+**❌ Don't**: Use hardcoded hex colors or override core JupyterLab styles
+{% endif %}
+
+{% if kind == 'mimerender' %}## MIME Renderer Extensions
+
+MIME renderers are **frontend-only**—no backend code needed.
+
+### Renderer Implementation
+
+Create your renderer class in `src/renderer.ts`:
+
+**✅ Do**: Extend `Widget` and implement `IRenderMime.IRenderer`
+- Set `mimeTypes` for the MIME types you handle
+- Specify `dataType`: `'json'`, `'string'`, or `'object'`
+- Set `safe: true` only if content is trusted
+
+**❌ Don't**: Skip security checks or render untrusted HTML without sanitization
+
+### Widget Structure
+
+Implement in `src/renderer.ts`:
+
+```ts
+import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
+import { Widget } from '@lumino/widgets';
+
+class MyRenderer extends Widget implements IRenderMime.IRenderer {
+  constructor(options: IRenderMime.IRendererOptions) {
+    super();
+    this.addClass('myext-Renderer');
+  }
+  async renderModel(model: IRenderMime.IMimeModel): Promise<void> {
+    const data = model.data['text/plain'] as string;
+    this.node.textContent = data;
+  }
+}
+
+const extension: IRenderMime.IExtension = {
+  id: '<your-ext-name>:renderer',
+  rendererFactory: {
+    safe: true,
+    mimeTypes: ['text/plain'],
+    createRenderer: opts => new MyRenderer(opts)
+  },
+  rank: 50,
+  dataType: 'string'
+};
+
+export default extension;
+```
+
+### Security and Performance
+
+**✅ Do**: Follow these guidelines in `src/renderer.ts`
+- Namespace CSS classes: `.{{ python_name | replace('_', '-') }}-renderer { ... }`
+- Keep `renderModel()` fast and non-blocking
+- Use async operations for expensive work
+
+**❌ Don't**:
+- Inject HTML without sanitization (use DOMPurify if needed)
+- Mutate global styles or block the main thread
+- Set `safe: false` unless absolutely necessary
+{% endif %}
+
+{% if kind == 'frontend-and-server' %}## Backend–Frontend Integration
+
+### Backend Handlers
+
+Create RESTful endpoints in `{{ python_name }}/handlers.py`:
+
+**✅ Do**: Extend `APIHandler` from `jupyter_server.base.handlers`
+```python
+from jupyter_server.base.handlers import APIHandler
+from jupyter_server.utils import url_path_join
+
+class DataHandler(APIHandler):
+    def get(self):
+        """Handle GET requests."""
+        result = {"status": "success", "data": "Hello"}
+        self.finish(result)
+    
+    def post(self):
+        """Handle POST requests."""
+        body = self.get_json_body()
+        # Process body...
+        self.finish({"status": "success"})
+
+def setup_handlers(web_app):
+    base_url = web_app.settings.get("base_url", "/")
+    route = url_path_join(base_url, "{{ python_name }}", "data")
+    web_app.add_handlers(r".*$", [(route, DataHandler)])
+```
+
+**❌ Don't**:
+- Hardcode URL paths—always use `url_path_join()`
+- Use plain `tornado.web.RequestHandler`—use `APIHandler` for CORS support
+- Skip error handling in handlers
+
+### Frontend API Calls
+
+Call backend endpoints from `src/api.ts` (not directly in widgets):
+
+**✅ Do**: Create typed API functions in `src/api.ts`
+```ts
+import { requestAPI } from './handler';
+
+interface DataResponse { 
+  status: 'success' | 'error';
+  data: string;
+}
+
+export async function fetchData(): Promise<string> {
+  try {
+    const response = await requestAPI<DataResponse>('data', { 
+      method: 'GET' 
+    });
+    if (response.status === 'error') {
+      throw new Error('Server returned error');
+    }
+    return response.data;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Unknown error';
+    throw new Error(`API request failed: ${msg}`);
+  }
+}
+```
+
+**❌ Don't**:
+- Call `requestAPI()` directly from widget components — use `src/api.ts`
+- Skip try-catch blocks or error handling
+- Use mismatched response types between Python and TypeScript
+
+### API Sync and Naming
+
+**✅ Do**: Keep backend and frontend in sync
+- Match JSON keys: `{"result": ...}` in Python → `response.result` in TypeScript
+- Update TypeScript interfaces when changing Python responses
+- Define route constants in both `{{ python_name }}/handlers.py` and `src/api.ts`
+
+**❌ Don't**:
+- Create unused routes or orphaned API calls
+- Use inconsistent field naming across languages
+{% endif %}
+
+## Development Workflow
+
+{% set is_full_stack = kind|lower == 'frontend-and-server' %}
+
+### Initial Setup (run once)
+
+```bash
+pip install -e ".{% if test and is_full_stack %}[test]{% endif %}"
+jupyter labextension develop . --overwrite{% if is_full_stack %}
+jupyter server extension enable {{ python_name }}{% endif %}
+jlpm build
+```
+
+### Iterative Development
+
+**After editing TypeScript** (files in `src/`):
+```bash
+jlpm build                          # Rebuild all
+npx tsc --noEmit src/index.ts       # Fast check single file
+```
+
+{% if is_full_stack %}**After editing Python** (files in `{{ python_name }}/`):
+```bash
+pip install -e .                                # Reinstall if structure changed
+```
+
+{% endif %}**Restart JupyterLab** to see changes:
+```bash
+# Press Ctrl+C in the terminal running jupyter lab, then:
+jupyter lab
+```
+
+### Debugging and Diagnostics
+
+```bash
+jupyter labextension list           # Check if extension is installed
+{% if is_full_stack %}jupyter server extension list        # Check backend extension{% endif %}
+jlpm run eslint src/                # Lint frontend code{% if is_full_stack %}
+ruff check {{ python_name }}/       # Lint backend code{% endif %}
+```
+
+### Reset (if build state is broken)
+
+```bash
+jlpm clean
+jlpm build
+jupyter labextension develop . --overwrite{% if is_full_stack %}
+pip install -e .{% endif %}
+```
+
+### Environment Notes
+
+- **Use the same environment** where JupyterLab is installed (conda/mamba/venv)
+- **Use `jlpm` exclusively**—don't mix with `npm` or `yarn` directly
+- **Don't mix lockfiles**—keep only `yarn.lock`, not `package-lock.json`
+
+## Best Practices
+
+### Project Structure Alignment
+
+**✅ Do**: Follow the template structure
+- Keep configuration files in project root: `package.json`, `pyproject.toml`, `tsconfig.json`{% if kind == 'frontend-and-server' %}
+- Backend handlers: `{{ python_name }}/handlers.py`
+- Server extension config: `jupyter-config/server-config/{{ python_name }}.json`{% endif %}
+- Frontend code: `src/index.ts` and other `src/` files
+- Styles: `style/index.css`{% if has_settings %}
+- Settings schema: `schema/plugin.json`{% endif %}
+
+**❌ Don't**: Rename or move core files without updating all references in configuration
+
+### Version Management
+
+{% if kind == 'frontend-and-server' %}**✅ Do**: Keep versions synchronized
+- Update version in both `pyproject.toml` and `package.json` together
+- Use same version string for releases
+
+**❌ Don't**: Let Python and npm package versions drift apart
+{% else %}**✅ Do**: Use semantic versioning consistently
+- Update `package.json` version for all releases
+- Follow semver: MAJOR.MINOR.PATCH
+
+**❌ Don't**: Skip version bumps or use non-semantic versions{% endif %}
+
+### Development Approach
+
+**✅ Do**: Start simple and iterate
+- Begin with minimal functionality (e.g., a single command or widget){% if kind == 'frontend-and-server' %}
+- Add backend endpoints only when frontend needs them{% endif %}
+- Test in running JupyterLab frequently
+- Check browser console{% if kind == 'frontend-and-server' %} and terminal logs{% endif %} for errors
+
+**❌ Don't**: Build complex features without incremental testing
+
+## Common Pitfalls
+
+### Package Management
+
+**✅ Do**: Use `jlpm` consistently (JupyterLab's pinned Yarn)
+```bash
+jlpm install
+jlpm build
+```
+
+**❌ Don't**: Mix package managers or lockfiles
+- Don't use both `yarn.lock` and `package-lock.json`
+- Don't run `npm install` if you started with `jlpm`
+
+### Path Handling
+
+{% if kind == 'frontend-and-server' %}**✅ Do**: Use proper path utilities in `{{ python_name }}/handlers.py`
+```python
+from jupyter_server.utils import url_path_join
+route = url_path_join(base_url, "{{ python_name }}", "endpoint")
+```
+
+**❌ Don't**: Hardcode paths like `"/{{ python_name }}/endpoint"`
+
+{% endif %}**✅ Do**: Use relative imports in TypeScript (`src/` files)
+```typescript
+import { MyWidget } from './widgets/MyWidget';
+```
+
+**❌ Don't**: Use absolute paths or assume specific directory structures
+
+### Error Handling
+
+**✅ Do**: Wrap async operations in try-catch (in `src/api.ts`, widget code)
+```typescript
+try {
+  const data = await fetchData();
+} catch (err) {
+  showErrorMessage('Failed to fetch data');
+}
+```
+
+**❌ Don't**: Let errors propagate silently or crash the extension
+
+### CSS and Styling
+
+**✅ Do**: Namespace all CSS in `style/index.css`
+```css
+.{{ python_name | replace('_', '-') }}-widget {
+  padding: 8px;
+}
+```
+
+**❌ Don't**: Use generic class names like `.widget` or `.button`
+
+### Resource Cleanup
+
+**✅ Do**: Dispose resources in widget `dispose()` methods
+```typescript
+dispose(): void {
+  this._signal.disconnect();
+  super.dispose();
+}
+```
+
+**❌ Don't**: Leave event listeners or signal connections active after disposal
+
+{% if kind == 'frontend-and-server' %}### Backend Integration
+
+**✅ Do**: Use `APIHandler` for CORS support in `{{ python_name }}/handlers.py`
+```python
+from jupyter_server.base.handlers import APIHandler
+
+class MyHandler(APIHandler):
+    pass
+```
+
+**❌ Don't**: Use plain `tornado.web.RequestHandler`
+
+**✅ Do**: Use relative imports within your package
+```python
+from .handlers import setup_handlers
+```
+
+**❌ Don't**: Use absolute imports like `from {{ python_name }}.handlers import ...`
+{% endif %}
+
+## Quick Reference
+
+### Key Identifiers
+
+Use these patterns consistently throughout your code:
+
+- **Plugin ID** (in `src/index.ts`): `'{{ python_name }}:plugin'`
+- **Command IDs** (in `src/index.ts`): `'{{ python_name }}:command-name'`
+- **CSS classes** (in `style/index.css`): `.{{ python_name | replace('_', '-') }}-ClassName`{% if kind == 'frontend-and-server' %}
+- **API routes** (in `{{ python_name }}/handlers.py`): `url_path_join(base_url, "{{ python_name }}", "endpoint")`{% endif %}
+
+### Essential Commands
+
+See [Development Workflow](#development-workflow) section for full command reference.
+
+---
+
+**Note**: This file is living documentation. Update it when you change conventions, add dependencies, or discover new patterns. Include AGENTS.md updates in commits that modify workflows or coding standards.

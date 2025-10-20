@@ -64,6 +64,11 @@ test:
   help: Do you want to set up tests for the extension?
   default: yes
 
+has_ai_rules:
+  type: bool
+  help: Include AI assistant rules (AGENTS.md) for coding standards?
+  default: no
+
 repository:
   type: str
   help: Git remote repository URL

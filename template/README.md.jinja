@@ -137,16 +137,59 @@ More precisely, the JupyterLab helper [Galata](https://github.com/jupyterlab/jup
 
 More information are provided within the [ui-tests](./ui-tests/README.md) README.
 {% endif %}
-## Cursor Project Rules
+{% if has_ai_rules %}
+## AI Coding Assistant Support
 
-This template includes a Cursor Project Rule to help the AI follow JupyterLab best practices for the selected extension kind.
+This project includes an `AGENTS.md` file with coding standards and best practices for JupyterLab extension development. The file follows the [AGENTS.md standard](https://agents.md) for cross-tool compatibility.
 
-- **Location**: `.cursor/rules/jupyterlab-extension.mdc`
-- **What it covers**: coding standards, naming, and project structure{% if kind.lower() == 'frontend-and-server' %}, plus Python `APIHandler` patterns and frontend `requestAPI` usage{% endif %}{% if kind.lower() == 'theme' %}, theme registration via `IThemeManager` and CSS structure under `style/`{% endif %}{% if kind.lower() == 'mimerender' %}, MIME renderer factory and `IRenderMime.IExtension` setup{% endif %}.
-- **Scope and activation**: The rule is always applied by default. You can edit the file front matter to control behavior:
-  - Set `alwaysApply: false` to avoid automatic inclusion
-  - Set `globs:` to an array of path patterns to auto-attach when matching files are referenced
-- **Customize**: Edit the rule content to reflect your team’s conventions. You can also add more rules by creating additional `.mdc` files under `.cursor/rules/`.
+### Compatible AI Tools
+
+`AGENTS.md` works with AI coding assistants that support the standard, including Cursor, GitHub Copilot, Windsurf, Aider, and others. For a current list of compatible tools, see [agents.md](https://agents.md).
+
+### What's Included
+
+The `AGENTS.md` file provides guidance on:
+
+- Code quality rules and file-scoped validation commands
+- Naming conventions for packages, plugins, and files
+- Coding standards (TypeScript{% if kind.lower() == 'frontend-and-server' %}, Python, backend-frontend integration{% endif %})
+- Development workflow and debugging{% if kind.lower() == 'frontend-and-server' %}
+- Backend integration patterns (`APIHandler`, `requestAPI()`, routing){% endif %}{% if kind.lower() == 'theme' %}
+- Theme-specific patterns (CSS organization, light/dark modes, `IThemeManager`){% endif %}{% if kind.lower() == 'mimerender' %}
+- Renderer implementation (`IRenderMime.IExtension`, security, performance){% endif %}
+- Common pitfalls and how to avoid them
+
+### Tool-Specific Files (Optional)
+
+Some AI tools have their own conventions for rule files. You can create symlinks to support these tools while keeping `AGENTS.md` as the single source of truth:
+
+**Create symlinks for tool compatibility:**
+
+```bash
+# On macOS/Linux
+ln -s AGENTS.md CLAUDE.md     # For Claude Code
+ln -s AGENTS.md GEMINI.md     # For Gemini Code Assist
+
+# On Windows (Command Prompt, run as Administrator)
+mklink CLAUDE.md AGENTS.md
+mklink GEMINI.md AGENTS.md
+
+# On Windows (PowerShell, run as Administrator)
+New-Item -ItemType SymbolicLink -Path "CLAUDE.md" -Target "AGENTS.md"
+New-Item -ItemType SymbolicLink -Path "GEMINI.md" -Target "AGENTS.md"
+```
+
+**Other conventions** you might encounter:
+- `.cursorrules` - Cursor's YAML/JSON format (Cursor also supports AGENTS.md natively)
+- `CONVENTIONS.md` / `CONTRIBUTING.md` - For CodeConventions.ai and GitHub bots
+- Project-specific rules in JetBrains AI Assistant settings
+
+These symlinks maintain a single source of truth in `AGENTS.md` while providing compatibility with tools that expect specific file names.
+
+### Customization
+
+You can edit `AGENTS.md` to add project-specific conventions or adjust guidelines to match your team's practices. The file uses plain Markdown with Do/Don't patterns and references to actual project files.
+{% endif %}
 
 ### Packaging the extension
 
