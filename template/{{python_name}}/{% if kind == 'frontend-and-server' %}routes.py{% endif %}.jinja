@@ -17,8 +17,9 @@ class ExampleRouteHandler(APIHandler):
 
 def setup_route_handlers(web_app):
     host_pattern = ".*$"
-
     base_url = web_app.settings["base_url"]
+
     example_route_pattern = url_path_join(base_url, "{{ python_name | replace('_', '-') }}", "get-example")
     handlers = [(example_route_pattern, ExampleRouteHandler)]
+
     web_app.add_handlers(host_pattern, handlers)
