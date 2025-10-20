@@ -1,13 +1,17 @@
 import json
 
 
-async def test_get_example(jp_fetch):
+async def test_hello(jp_fetch):
     # When
-    response = await jp_fetch("{{ python_name | replace('_', '-') }}", "get-example")
+    response = await jp_fetch("{{ python_name | replace('_', '-') }}", "hello")
 
     # Then
     assert response.code == 200
     payload = json.loads(response.body)
     assert payload == {
-        "data": "This is /{{ python_name | replace('_', '-') }}/get-example endpoint!"
-    }
+            "data": (
+                "Hello, world!"
+                " This is the '/{{ python_name | replace('_', '-') }}/hello' endpoint."
+                " Try visiting me in your browser!"
+            ),
+        }
