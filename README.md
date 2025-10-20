@@ -1,8 +1,6 @@
-# JupyterLab extension template for AI-powered development
+# JupyterLab extension template
 
-[![Github Actions Status](https://github.com/orbrx/extension-template-cursor/workflows/CI/badge.svg)](https://github.com/orbrx/extension-template-cursor/actions/workflows/main.yml)
-
-> This repository is a fork of [jupyterlab/extension-template-cursor](https://github.com/jupyterlab/extension-template-cursor) with added Cursor Rules for AI-powered development.
+[![Github Actions Status](https://github.com/jupyterlab/extension-template/workflows/CI/badge.svg)](https://github.com/jupyterlab/extension-template/actions/workflows/main.yml)
 
 A [copier](https://copier.readthedocs.io) template for creating
 a JupyterLab extension. Four kinds of extension are supported:
@@ -37,7 +35,7 @@ cd myextension
 3. Use copier to generate an extension, following the prompts to fill all required information.
 
 ```sh
-copier copy --trust https://github.com/orbrx/extension-template-cursor .
+copier copy --trust https://github.com/jupyterlab/extension-template .
 ```
 
 > If you are using Visual Studio Code, you may be interested in the
@@ -48,7 +46,7 @@ copier copy --trust https://github.com/orbrx/extension-template-cursor .
 If you'd like to generate an extension for a older release, use the `--vcs-ref` option and give a tag or commit from this repository.
 
 ```sh
-copier copy --vcs-ref v4.0.0 --trust https://github.com/orbrx/extension-template-cursor .
+copier copy --vcs-ref v4.0.0 --trust https://github.com/jupyterlab/extension-template .
 ```
 
 > If you are looking for a template compatible with JupyterLab version prior to 4.0.0, look at
