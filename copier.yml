@@ -69,6 +69,18 @@ has_ai_rules:
   help: Include AI assistant rules (AGENTS.md) for coding standards?
   default: no
 
+create_claude_symlink:
+  when: "{{ has_ai_rules }}"
+  type: bool
+  help: Create CLAUDE.md symlink for Claude Code compatibility?
+  default: yes
+
+create_gemini_symlink:
+  when: "{{ has_ai_rules }}"
+  type: bool
+  help: Create GEMINI.md symlink for Gemini Code Assist compatibility?
+  default: yes
+
 repository:
   type: str
   help: Git remote repository URL
@@ -110,3 +122,21 @@ data_format:
     - string
     - json
   default: string
+
+_tasks:
+  # Create CLAUDE.md symlink if requested
+  - command: |
+      {% if has_ai_rules and create_claude_symlink %}
+      python -c "import os, sys; os.symlink('AGENTS.md', 'CLAUDE.md') if not os.path.exists('CLAUDE.md') else None; print('✓ Created CLAUDE.md → AGENTS.md symlink')"
+      {% else %}
+      python -c "print('ℹ Skipping CLAUDE.md symlink creation')"
+      {% endif %}
+    when: "{{ has_ai_rules }}"
+  # Create GEMINI.md symlink if requested
+  - command: |
+      {% if has_ai_rules and create_gemini_symlink %}
+      python -c "import os, sys; os.symlink('AGENTS.md', 'GEMINI.md') if not os.path.exists('GEMINI.md') else None; print('✓ Created GEMINI.md → AGENTS.md symlink')"
+      {% else %}
+      python -c "print('ℹ Skipping GEMINI.md symlink creation')"
+      {% endif %}
+    when: "{{ has_ai_rules }}"

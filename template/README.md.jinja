@@ -159,11 +159,16 @@ The `AGENTS.md` file provides guidance on:
 - Renderer implementation (`IRenderMime.IExtension`, security, performance){% endif %}
 - Common pitfalls and how to avoid them
 
-### Tool-Specific Files (Optional)
+### Tool-Specific Files
 
-Some AI tools have their own conventions for rule files. You can create symlinks to support these tools while keeping `AGENTS.md` as the single source of truth:
+{% if create_claude_symlink or create_gemini_symlink %}This project includes symlinks for tool-specific compatibility:
+{% if create_claude_symlink %}- `CLAUDE.md` → `AGENTS.md` (for Claude Code){% endif %}
+{% if create_gemini_symlink %}- `GEMINI.md` → `AGENTS.md` (for Gemini Code Assist){% endif %}
 
-**Create symlinks for tool compatibility:**
+These symlinks were created automatically during project generation.
+{% endif %}
+
+**Additional symlinks** can be created manually if needed:
 
 ```bash
 # On macOS/Linux
@@ -184,7 +189,7 @@ New-Item -ItemType SymbolicLink -Path "GEMINI.md" -Target "AGENTS.md"
 - `CONVENTIONS.md` / `CONTRIBUTING.md` - For CodeConventions.ai and GitHub bots
 - Project-specific rules in JetBrains AI Assistant settings
 
-These symlinks maintain a single source of truth in `AGENTS.md` while providing compatibility with tools that expect specific file names.
+All tool-specific files should point to `AGENTS.md` as the single source of truth.
 
 ### Customization
 
