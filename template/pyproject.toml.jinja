@@ -30,6 +30,9 @@ dependencies = [{% if kind.lower() == "frontend-and-server" %}
 dynamic = ["version", "description", "authors", "urls", "keywords"]
 {% if test and kind.lower() == 'frontend-and-server' %}
 [project.optional-dependencies]
+dev = [
+    "jupyterlab>=4",
+]
 test = [
     "coverage",
     "pytest",

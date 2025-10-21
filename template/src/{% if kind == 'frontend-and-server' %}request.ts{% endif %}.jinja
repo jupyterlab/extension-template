@@ -3,7 +3,7 @@ import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 
 /**
- * Call the API extension
+ * Call the server extension
  *
  * @param endPoint API REST end point for the extension
  * @param init Initial values for the request
@@ -17,7 +17,7 @@ export async function requestAPI<T>(
   const settings = ServerConnection.makeSettings();
   const requestUrl = URLExt.join(
     settings.baseUrl,
-    '{{ python_name | replace("_", "-") }}', // API Namespace
+    '{{ python_name | replace("_", "-") }}', // our server extension's API namespace
     endPoint
   );
 
