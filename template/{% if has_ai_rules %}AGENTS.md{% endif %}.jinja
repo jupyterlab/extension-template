@@ -49,7 +49,7 @@ npx tsc --noEmit src/index.ts  # Check single file
 npx tsc --noEmit               # Check all files
 ```
 
-After editing Python files{% if kind == 'frontend-and-server' %} (like `{{ python_name }}/handlers.py`){% endif %}:
+After editing Python files{% if kind == 'frontend-and-server' %} (like `{{ python_name }}/routes.py`){% endif %}:
 ```bash
 python -m py_compile {{ python_name }}/__init__.py  # Check single file
 ruff check {{ python_name }}/                       # Lint directory
@@ -61,8 +61,8 @@ ruff check {{ python_name }}/                       # Lint directory
 
 {% if kind == 'frontend-and-server' %}**Python** (in `{{ python_name }}/*.py` files):
 - **✅ Do**: Use PEP 8 style with 4-space indentation
-  - Classes: `DataProcessor`, `HelloWorldHandler`
-  - Functions/methods: `setup_handlers()`, `process_request()`
+  - Classes: `DataProcessor`, `UserDataRouteHandler`
+  - Functions/methods: `setup_route_handlers()`, `process_request()`
   - Private: `_internal_method()`
 - **❌ Don't**: Use camelCase for Python or mix styles
 
@@ -84,13 +84,13 @@ ruff check {{ python_name }}/                       # Lint directory
 function activate(app: JupyterFrontEnd): void { }
 ```
 
-**❌ Don't**: Leave complex logic undocumented or use vague names like `MyHandler`—prefer `DataUploadHandler`
+**❌ Don't**: Leave complex logic undocumented or use vague names like `MyRouteHandler` — prefer `DataUploadRouteHandler`
 
 ### Code Organization
 
 {% if kind == 'frontend-and-server' %}**✅ Do**: Keep backend and frontend logic separate
-- Backend processing in `{{ python_name }}/handlers.py`
-- Frontend calls in `src/handler.ts` using `requestAPI()`
+- Backend processing in `{{ python_name }}/routes.py`
+- Frontend calls in `src/request.ts` using `requestAPI()`
 
 **❌ Don't**: Duplicate business logic across TypeScript and Python
 
@@ -131,7 +131,7 @@ const COMMAND_ID = '{{ python_name }}:open-panel';
 **✅ Do**: Name files by their purpose
 - Widget components: `src/widgets/DataPanel.tsx` (class `DataPanel`)
 - API utilities: `src/api.ts` (not `src/utils.ts`){% if kind == 'frontend-and-server' %}
-- Backend handlers: `{{ python_name }}/handlers.py` (class `DataHandler`){% endif %}
+- Backend routes: `{{ python_name }}/routes.py` (class `DataRouteHandler`){% endif %}
 - Frontend logic: `src/` directory
 {% if kind == 'frontend-and-server' %}- Python package: `{{ python_name }}/` directory{% endif %}
 
@@ -258,16 +258,16 @@ export default extension;
 
 {% if kind == 'frontend-and-server' %}## Backend–Frontend Integration
 
-### Backend Handlers
+### Backend Routes
 
-Create RESTful endpoints in `{{ python_name }}/handlers.py`:
+Create RESTful endpoints in `{{ python_name }}/routes.py`:
 
 **✅ Do**: Extend `APIHandler` from `jupyter_server.base.handlers`
 ```python
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
 
-class DataHandler(APIHandler):
+class DataRouteHandler(APIHandler):
     def get(self):
         """Handle GET requests."""
         result = {"status": "success", "data": "Hello"}
@@ -279,16 +279,16 @@ class DataHandler(APIHandler):
         # Process body...
         self.finish({"status": "success"})
 
-def setup_handlers(web_app):
+def setup_route_handlers(web_app):
     base_url = web_app.settings.get("base_url", "/")
     route = url_path_join(base_url, "{{ python_name }}", "data")
-    web_app.add_handlers(r".*$", [(route, DataHandler)])
+    web_app.add_handlers(r".*$", [(route, DataRouteHandler)])
 ```
 
 **❌ Don't**:
 - Hardcode URL paths — always use `url_path_join()`
 - Use plain `tornado.web.RequestHandler`—use `APIHandler` for CORS support
-- Skip error handling in handlers
+- Skip error handling in routes
 
 ### Frontend API Calls
 
@@ -296,7 +296,7 @@ Call backend endpoints from `src/api.ts` (not directly in widgets):
 
 **✅ Do**: Create typed API functions in `src/api.ts`
 ```ts
-import { requestAPI } from './handler';
+import { requestAPI } from './request';
 
 interface DataResponse { 
   status: 'success' | 'error';
@@ -329,7 +329,7 @@ export async function fetchData(): Promise<string> {
 **✅ Do**: Keep backend and frontend in sync
 - Match JSON keys: `{"result": ...}` in Python → `response.result` in TypeScript
 - Update TypeScript interfaces when changing Python responses
-- Define route constants in both `{{ python_name }}/handlers.py` and `src/api.ts`
+- Define route constants in both `{{ python_name }}/routes.py` and `src/api.ts`
 
 **❌ Don't**:
 - Create unused routes or orphaned API calls
@@ -398,7 +398,7 @@ pip install -e .{% endif %}
 
 **✅ Do**: Follow the template structure
 - Keep configuration files in project root: `package.json`, `pyproject.toml`, `tsconfig.json`{% if kind == 'frontend-and-server' %}
-- Backend handlers: `{{ python_name }}/handlers.py`
+- Backend routes: `{{ python_name }}/routes.py`
 - Server extension config: `jupyter-config/server-config/{{ python_name }}.json`{% endif %}
 - Frontend code: `src/index.ts` and other `src/` files
 - Styles: `style/index.css`{% if has_settings %}
@@ -445,7 +445,7 @@ jlpm build
 
 ### Path Handling
 
-{% if kind == 'frontend-and-server' %}**✅ Do**: Use proper path utilities in `{{ python_name }}/handlers.py`
+{% if kind == 'frontend-and-server' %}**✅ Do**: Use proper path utilities in `{{ python_name }}/routes.py`
 ```python
 from jupyter_server.utils import url_path_join
 route = url_path_join(base_url, "{{ python_name }}", "endpoint")
@@ -498,11 +498,11 @@ dispose(): void {
 
 {% if kind == 'frontend-and-server' %}### Backend Integration
 
-**✅ Do**: Use `APIHandler` for CORS support in `{{ python_name }}/handlers.py`
+**✅ Do**: Use `APIHandler` for CORS support in `{{ python_name }}/routes.py`
 ```python
 from jupyter_server.base.handlers import APIHandler
 
-class MyHandler(APIHandler):
+class MyRouteHandler(APIHandler):
     pass
 ```
 
@@ -510,10 +510,10 @@ class MyHandler(APIHandler):
 
 **✅ Do**: Use relative imports within your package
 ```python
-from .handlers import setup_handlers
+from .routes import setup_route_handlers
 ```
 
-**❌ Don't**: Use absolute imports like `from {{ python_name }}.handlers import ...`
+**❌ Don't**: Use absolute imports like `from {{ python_name }}.routes import ...`
 {% endif %}
 
 ## Quick Reference
@@ -525,7 +525,7 @@ Use these patterns consistently throughout your code:
 - **Plugin ID** (in `src/index.ts`): `'{{ python_name }}:plugin'`
 - **Command IDs** (in `src/index.ts`): `'{{ python_name }}:command-name'`
 - **CSS classes** (in `style/index.css`): `.jp-{{ python_name | replace('_', '-') }}-ClassName`{% if kind == 'frontend-and-server' %}
-- **API routes** (in `{{ python_name }}/handlers.py`): `url_path_join(base_url, "{{ python_name }}", "endpoint")`{% endif %}
+- **API routes** (in `{{ python_name }}/routes.py`): `url_path_join(base_url, "{{ python_name }}", "endpoint")`{% endif %}
 
 ### Essential Commands
 
