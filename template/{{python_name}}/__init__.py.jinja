@@ -7,7 +7,7 @@ except ImportError:
     import warnings
     warnings.warn("Importing '{{ python_name }}' outside a proper installation.")
     __version__ = "dev"{% if kind.lower() == 'frontend-and-server' %}
-from .handlers import setup_handlers{% endif %}
+from .routes import setup_route_handlers{% endif %}
 
 
 def _jupyter_labextension_paths():
@@ -31,6 +31,6 @@ def _load_jupyter_server_extension(server_app):
     server_app: jupyterlab.labapp.LabApp
         JupyterLab application instance
     """
-    setup_handlers(server_app.web_app)
+    setup_route_handlers(server_app.web_app)
     name = "{{ python_name }}"
     server_app.log.info(f"Registered {name} server extension"){% endif %}
