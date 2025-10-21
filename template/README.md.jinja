@@ -173,11 +173,15 @@ The `AGENTS.md` file provides guidance on:
 # On macOS/Linux
 ln -s AGENTS.md CLAUDE.md     # For Claude Code
 ln -s AGENTS.md GEMINI.md     # For Gemini Code Assist
+```
 
+```
 # On Windows (Command Prompt, run as Administrator)
 mklink CLAUDE.md AGENTS.md
 mklink GEMINI.md AGENTS.md
+```
 
+```powershell
 # On Windows (PowerShell, run as Administrator)
 New-Item -ItemType SymbolicLink -Path "CLAUDE.md" -Target "AGENTS.md"
 New-Item -ItemType SymbolicLink -Path "GEMINI.md" -Target "AGENTS.md"
