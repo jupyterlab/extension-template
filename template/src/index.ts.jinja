@@ -7,7 +7,7 @@ import { IThemeManager } from '@jupyterlab/apputils';{% endif %}{% if has_settin
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';{% endif %}{% if kind.lower() == 'frontend-and-server' %}
 
-import { requestAPI } from './handler';{% endif %}
+import { requestAPI } from './request';{% endif %}
 
 /**
  * Initialization data for the {{ labextension_name }} extension.
