@@ -319,10 +319,10 @@ export async function fetchData(): Promise<string> {
 }
 ```
 
-**❌ Don't**:
-- Call `requestAPI()` directly from widget components — use `src/api.ts`
-- Skip try-catch blocks or error handling
-- Use mismatched response types between Python and TypeScript
+**✅ Do**:
+- Always wrap API calls in try-catch blocks with proper error handling
+- Use matching response types between Python and TypeScript
+- Create typed API wrapper functions in `src/api.ts` instead of calling `requestAPI()` directly from widgets
 
 ### API Sync and Naming
 
