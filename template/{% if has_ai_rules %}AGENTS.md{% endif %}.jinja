@@ -425,16 +425,14 @@ pip install -e .{% endif %}
 
 ### Version Management
 
-{% if kind == 'frontend-and-server' %}**✅ Do**: Keep versions synchronized
-- Update version in both `pyproject.toml` and `package.json` together
-- Use same version string for releases
+**✅ Do**: Update version in `package.json` only
+- The `package.json` version is the source of truth
+- `pyproject.toml` automatically syncs from `package.json` via `hatch-nodejs-version`
+- Follow semantic versioning: MAJOR.MINOR.PATCH
 
-**❌ Don't**: Let Python and npm package versions drift apart
-{% else %}**✅ Do**: Use semantic versioning consistently
-- Update `package.json` version for all releases
-- Follow semver: MAJOR.MINOR.PATCH
+**❌ Don't**: Manually edit version in `pyproject.toml` — it's dynamically sourced from `package.json`
 
-**❌ Don't**: Skip version bumps or use non-semantic versions{% endif %}
+**Note**: Releases are handled by GitHub Actions, not manually. AI agents should only update versions when explicitly requested by the user.
 
 ### Development Approach
 
