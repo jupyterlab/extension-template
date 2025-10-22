@@ -507,14 +507,6 @@ dispose(): void {
 
 {% if kind == 'frontend-and-server' %}### Backend Integration
 
-**✅ Do**: Use `APIHandler` for CORS support in `{{ python_name }}/routes.py`
-```python
-from jupyter_server.base.handlers import APIHandler
-
-class MyRouteHandler(APIHandler):
-    pass
-```
-
 **✅ Do**: Use relative imports within your package
 ```python
 from .routes import setup_route_handlers
