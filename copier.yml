@@ -125,18 +125,8 @@ data_format:
 
 _tasks:
   # Create CLAUDE.md symlink if requested
-  - command: |
-      {% if has_ai_rules and create_claude_symlink %}
-      python -c "import os, sys; os.symlink('AGENTS.md', 'CLAUDE.md') if not os.path.exists('CLAUDE.md') else None; print('✓ Created CLAUDE.md → AGENTS.md symlink')"
-      {% else %}
-      python -c "print('ℹ Skipping CLAUDE.md symlink creation')"
-      {% endif %}
-    when: "{{ has_ai_rules }}"
+  - command: python -c "import os; os.symlink('AGENTS.md', 'CLAUDE.md') if not os.path.exists('CLAUDE.md') else None; print('✓ Created CLAUDE.md → AGENTS.md symlink')"
+    when: "{{ has_ai_rules and create_claude_symlink }}"
   # Create GEMINI.md symlink if requested
-  - command: |
-      {% if has_ai_rules and create_gemini_symlink %}
-      python -c "import os, sys; os.symlink('AGENTS.md', 'GEMINI.md') if not os.path.exists('GEMINI.md') else None; print('✓ Created GEMINI.md → AGENTS.md symlink')"
-      {% else %}
-      python -c "print('ℹ Skipping GEMINI.md symlink creation')"
-      {% endif %}
-    when: "{{ has_ai_rules }}"
+  - command: python -c "import os; os.symlink('AGENTS.md', 'GEMINI.md') if not os.path.exists('GEMINI.md') else None; print('✓ Created GEMINI.md → AGENTS.md symlink')"
+    when: "{{ has_ai_rules and create_gemini_symlink }}"
