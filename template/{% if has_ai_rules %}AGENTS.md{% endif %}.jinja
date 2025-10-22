@@ -525,7 +525,7 @@ from .routes import setup_route_handlers
 Use these patterns consistently throughout your code:
 
 - **Plugin ID** (in `src/index.ts`): `'{{ python_name }}:plugin'`
-- **Command IDs** (in `src/index.ts`): `'{{ python_name }}:command-name'`
+- **Command IDs** (in `src/commands.ts`): `'{{ python_name }}:command-name'`
 - **CSS classes** (in `style/index.css`): `.jp-{{ python_name | replace('_', '-') }}-ClassName`{% if kind == 'frontend-and-server' %}
 - **API routes** (in `{{ python_name }}/routes.py`): `url_path_join(base_url, "{{ python_name }}", "endpoint")`{% endif %}
 
