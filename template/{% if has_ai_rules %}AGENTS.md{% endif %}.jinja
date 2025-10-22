@@ -38,10 +38,8 @@ interface PluginConfig {
   apiEndpoint: string;
 }
 ```
-
 **❌ Don't**: Use the `any` type in TypeScript files
-
-**❌ Don't**: Use type casting unless there's no way to avoid it
+**✅ Do**: Prefer typeguards over type casts 
 
 ### File-Scoped Validation
 
