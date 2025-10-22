@@ -260,6 +260,16 @@ export default extension;
 
 {% if kind == 'frontend-and-server' %}## Backend–Frontend Integration
 
+### Integration Workflow (Critical!)
+
+When connecting frontend and backend, **ALWAYS follow this order**:
+
+1. **Read the backend first** — Check `{{ python_name }}/routes.py` to understand the existing API contract
+2. **Write frontend to match** — Create TypeScript interfaces in `src/api.ts` that match backend responses exactly
+3. **Or modify backend intentionally** — If changing the backend, update it first, then write matching frontend code
+
+**Why this matters**: Writing frontend code based on assumptions leads to field name mismatches (e.g., expecting `message` when backend returns `data`), causing empty widgets and debugging cycles. Always verify the actual backend response format first.
+
 ### Backend Routes
 
 Create RESTful endpoints in `{{ python_name }}/routes.py`:
@@ -425,11 +435,14 @@ pip install -e .{% endif %}
 
 **✅ Do**: Start simple and iterate
 - Begin with minimal functionality (e.g., a single command or widget){% if kind == 'frontend-and-server' %}
+- **When integrating backend/frontend**: See [Integration Workflow](#integration-workflow-critical) for the correct order
 - Add backend endpoints only when frontend needs them{% endif %}
 - Test in running JupyterLab frequently
 - Check browser console{% if kind == 'frontend-and-server' %} and terminal logs{% endif %} for errors
 
-**❌ Don't**: Build complex features without incremental testing
+**❌ Don't**: Build complex features without incremental testing{% if kind == 'frontend-and-server' %}
+
+**❌ Don't**: Write frontend interfaces without first checking the backend API contract in `{{ python_name }}/routes.py`{% endif %}
 
 ## Common Pitfalls
 
