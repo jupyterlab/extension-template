@@ -51,7 +51,7 @@ npx tsc --noEmit               # Check all files
 
 After editing Python files{% if kind == 'frontend-and-server' %} (like `{{ python_name }}/routes.py`){% endif %}:
 ```bash
-python -m py_compile {{ python_name }}/__init__.py  # Check single file
+python -m py_compile {{ python_name }}/__init__.py  # Check single file for syntax errors
 ruff check {{ python_name }}/                       # Lint directory
 ```
 
