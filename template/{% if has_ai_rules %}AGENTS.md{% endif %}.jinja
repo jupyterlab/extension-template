@@ -401,9 +401,10 @@ pip install -e .{% endif %}
 
 ### Environment Notes
 
-- **Always use a virtual environment** (conda/mamba/micromamba/venv)
-- **Use `jlpm` exclusively** — don't mix with `npm` or `yarn` directly
-- **Don't mix lockfiles** — keep only `yarn.lock`, not `package-lock.json`
+**✅ Do**: Use a virtual environment (conda/mamba/micromamba/venv)
+**✅ Do**: Use `jlpm` exclusively
+**❌ Don't**: Mix package managers (`npm`, `yarn`) with `jlpm`
+**❌ Don't**: Mix lockfiles — keep only `yarn.lock`, not `package-lock.json`
 
 ## Best Practices
 
