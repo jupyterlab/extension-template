@@ -199,7 +199,7 @@ export default plugin;
 
 {% if kind == 'mimerender' %}## MIME Renderer Extensions
 
-MIME renderers are **frontend-only**—no backend code needed.
+MIME renderers are **frontend-only** — no backend code needed.
 
 ### Renderer Implementation
 
@@ -299,7 +299,7 @@ def setup_route_handlers(web_app):
 
 **❌ Don't**:
 - Hardcode URL paths — always use `url_path_join()`
-- Use plain `tornado.web.RequestHandler`—use `APIHandler` for CORS support
+- Use plain `tornado.web.RequestHandler` — instead, use `APIHandler` from `jupyter_server.base.handlers`
 - Skip error handling in routes
 
 ### Frontend API Calls
@@ -521,8 +521,6 @@ class MyRouteHandler(APIHandler):
     pass
 ```
 
-**❌ Don't**: Use plain `tornado.web.RequestHandler`
-
 **✅ Do**: Use relative imports within your package
 ```python
 from .routes import setup_route_handlers
@@ -545,7 +543,3 @@ Use these patterns consistently throughout your code:
 ### Essential Commands
 
 See [Development Workflow](#development-workflow) section for full command reference.
-
----
-
-**Note**: This file is living documentation. Update it when you change conventions, add dependencies, or discover new patterns. Include `AGENTS.md` updates in commits that modify workflows or coding standards.
