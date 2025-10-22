@@ -128,18 +128,18 @@ const COMMAND_ID = '{{ python_name }}:open-panel';
 
 ### File Organization
 
-**✅ Do**: Name files by their purpose
+**✅ Do**: Name files and directories by their purpose
 - Widget components: `src/widgets/DataPanel.tsx` (class `DataPanel`)
 - API utilities: `src/api.ts` (not `src/utils.ts`){% if kind == 'frontend-and-server' %}
 - Backend routes: `{{ python_name }}/routes.py` (class `DataRouteHandler`){% endif %}
 - Frontend logic: `src/` directory
 {% if kind == 'frontend-and-server' %}- Python package: `{{ python_name }}/` directory{% endif %}
 
-**❌ Don't**: Create catch-all files like `utils.ts` or `helpers.py`—partition by feature instead
+**❌ Don't**: Create catch-all files or directories like `utils.ts` or `helpers.py` or `handlers.py` — partition by feature instead
 
 {% if kind == 'theme' %}## Theme Extensions
 
-Theme extensions are **frontend-only**—no backend code needed.
+Theme extensions are **frontend-only** — no backend code needed.
 
 ### File Structure
 
@@ -148,7 +148,9 @@ Theme extensions are **frontend-only**—no backend code needed.
 - Main theme entry: `style/index.css`
 - Theme registration: `src/index.ts`
 
-**❌ Don't**: Put theme files outside `style/` or create global CSS resets
+**❌ Don't**: Put theme files outside `style/`
+
+**❌ Don't**: Create global CSS resets
 
 ### Light and Dark Mode Support
 
@@ -177,9 +179,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   requires: [IThemeManager],
   activate: (app: JupyterFrontEnd, manager: IThemeManager) => {
-    const style = 'style/index.css';
+      name: '<User-facing Theme Name>',
     manager.register({
-      name: '<Human Theme Name>',
+      name: '<User-facing Theme Name>',
       isLight: true, // set appropriately
       load: () => manager.loadCSS(style),
       unload: () => Promise.resolve()
