@@ -117,13 +117,64 @@ function activate(app: JupyterFrontEnd): void { }
 
 ### Plugin and Command IDs
 
-Define these in `src/index.ts`:
-
-**✅ Do**: Use consistent, prefixed IDs
+**✅ Do**: Define plugin ID in `src/index.ts`:
 ```typescript
 const PLUGIN_ID = '{{ python_name }}:plugin';
-const COMMAND_ID = '{{ python_name }}:open-panel';
 ```
+
+**✅ Do**: For extensions with multiple commands, create a `src/commands.ts` module to centralize command definitions:
+```typescript
+// src/commands.ts
+import { JupyterFrontEnd } from '@jupyterlab/application';
+
+export interface CommandConfig {
+  id: string;
+  label: string;
+  caption?: string;
+  execute: (app: JupyterFrontEnd) => void | Promise<void>;
+}
+
+export const COMMANDS: Record<string, CommandConfig> = {
+  openPanel: {
+    id: '{{ python_name }}:open-panel',
+    label: 'Open Panel',
+    caption: 'Open the extension panel',
+    execute: async (app) => {
+      // Implementation
+    }
+  },
+  refreshData: {
+    id: '{{ python_name }}:refresh-data',
+    label: 'Refresh Data',
+    execute: async (app) => {
+      // Implementation
+    }
+  }
+};
+
+// Register all commands
+export function registerCommands(app: JupyterFrontEnd): void {
+  Object.values(COMMANDS).forEach(cmd => {
+    app.commands.addCommand(cmd.id, {
+      label: cmd.label,
+      caption: cmd.caption,
+      execute: () => cmd.execute(app)
+    });
+  });
+}
+```
+
+Then in `src/index.ts`:
+```typescript
+import { registerCommands } from './commands';
+
+activate: (app: JupyterFrontEnd) => {
+  registerCommands(app);
+  // ... rest of activation
+}
+```
+
+**✅ Do**: For simple extensions with 1-2 commands, you can define them directly in `src/index.ts`
 
 **❌ Don't**: Use generic IDs like `'mycommand'` or mix casing styles
 
@@ -131,6 +182,7 @@ const COMMAND_ID = '{{ python_name }}:open-panel';
 
 **✅ Do**: Organize related files into directories and name by their purpose
 - Widget components: `src/widgets/DataPanel.tsx` (class `DataPanel`)
+- Command definitions (for multiple commands): `src/commands.ts` with `COMMANDS` mapping
 - API utilities: `src/api.ts` (not `src/utils.ts`){% if kind == 'frontend-and-server' %}
 - Backend routes: `{{ python_name }}/routes.py` (class `DataRouteHandler`){% endif %}
 - Frontend logic: `src/` directory
@@ -524,7 +576,9 @@ from .routes import setup_route_handlers
 Use these patterns consistently throughout your code:
 
 - **Plugin ID** (in `src/index.ts`): `'{{ python_name }}:plugin'`
-- **Command IDs** (in `src/commands.ts`): `'{{ python_name }}:command-name'`
+- **Command IDs** (in `src/commands.ts` or `src/index.ts`): `'{{ python_name }}:command-name'`
+  - For multiple commands, create `src/commands.ts` with a centralized `COMMANDS` mapping
+  - For 1-2 commands, define directly in `src/index.ts`
 - **CSS classes** (in `style/index.css`): `.jp-{{ python_name | replace('_', '-') }}-ClassName`{% if kind == 'frontend-and-server' %}
 - **API routes** (in `{{ python_name }}/routes.py`): `url_path_join(base_url, "{{ python_name }}", "endpoint")`{% endif %}
 
