@@ -399,7 +399,8 @@ jlpm clean:all       # Clean build artifacts
 jlpm install         # Only needed if you used 'git clean -fdX'
 jlpm build
 jupyter labextension develop . --overwrite{% if is_full_stack %}
-pip install -e .{% endif %}
+pip install -e .
+jupyter server extension enable {{ python_name }}{% endif %}
 ```
 
 ### Environment Notes
