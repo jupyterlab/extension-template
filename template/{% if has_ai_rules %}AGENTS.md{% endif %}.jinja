@@ -463,15 +463,7 @@ jlpm build
 
 ### Path Handling
 
-{% if kind == 'frontend-and-server' %}**✅ Do**: Use proper path utilities in `{{ python_name }}/routes.py`
-```python
-from jupyter_server.utils import url_path_join
-route = url_path_join(base_url, "{{ python_name }}", "endpoint")
-```
-
-**❌ Don't**: Hardcode paths like `"/{{ python_name }}/endpoint"`
-
-{% endif %}**✅ Do**: Use relative imports in TypeScript (`src/` files)
+**✅ Do**: Use relative imports in TypeScript (`src/` files)
 ```typescript
 import { MyWidget } from './widgets/MyWidget';
 ```
