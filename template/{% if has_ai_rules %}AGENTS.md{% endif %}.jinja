@@ -18,14 +18,16 @@ For complete API reference and advanced topics, see:
 
 ### Logging and Debugging
 
+**❌ Don't**: Use `console.log()`
 **✅ Do**: Use structured logging or user-facing notifications
 ```typescript
 // In TypeScript files like src/index.ts
 import { INotification } from '@jupyterlab/apputils';
 app.commands.notifyCommandChanged();
 ```
+**✅ Do**: Use `console.error()` to log low-level error details that should not be presented to users in the UI
+**✅ Do**: Use `console.warn()` to log non-optimal conditions, e.g. an unexpected response from an external API that's been successfully handled.
 
-**❌ Don't**: Use `console.log()`
 
 ### Type Safety
 
