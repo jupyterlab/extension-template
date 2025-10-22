@@ -252,7 +252,7 @@ export default extension;
 ### Security and Performance
 
 **✅ Do**: Follow these guidelines in `src/renderer.ts`
-- Namespace CSS classes: `.{{ python_name | replace('_', '-') }}-renderer { ... }`
+- Namespace CSS classes: `.jp-{{ python_name | replace('_', '-') }}-renderer { ... }`
 - Keep `renderModel()` fast and non-blocking
 - Use async operations for expensive work
 
