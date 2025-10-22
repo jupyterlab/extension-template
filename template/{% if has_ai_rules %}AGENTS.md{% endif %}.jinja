@@ -111,8 +111,8 @@ function activate(app: JupyterFrontEnd): void { }
 - Match it to the npm package name for consistency
 
 {% endif %}**NPM package** (in `package.json`):
-- **✅ Do**: Use lowercase with dashes: `"jupyterlab-myext"` or scoped `"@org/myext"`
-- **❌ Don't**: Mix naming styles between package.json{% if kind == 'frontend-and-server' %} and pyproject.toml{% endif %}
+- **✅ Do**: Use lowercase with dashes: `"jupyterlab-myext"` or scoped `"@org/myext"`{% if kind == 'frontend-and-server' %}
+- **❌ Don't**: Mix naming styles between package.json and pyproject.toml{% endif %}
 
 ### Plugin and Command IDs
 
