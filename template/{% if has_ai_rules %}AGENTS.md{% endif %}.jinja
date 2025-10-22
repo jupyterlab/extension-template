@@ -307,9 +307,7 @@ def setup_route_handlers(web_app):
 
 ### Frontend API Calls
 
-Call backend endpoints from `src/api.ts` (not directly in widgets):
-
-**✅ Do**: Create typed API functions in `src/api.ts`
+**✅ Do**: Call backend endpoints from typed API functions in `src/api.ts` (not directly in widgets):
 ```ts
 import { requestAPI } from './request';
 
