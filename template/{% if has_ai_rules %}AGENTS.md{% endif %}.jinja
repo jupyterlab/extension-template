@@ -4,7 +4,6 @@ This guide provides coding standards and best practices for developing JupyterLa
 
 **Extension type**: {{ kind }}
 
-
 ## External Documentation
 
 For complete API reference and advanced topics, see:
@@ -20,36 +19,41 @@ For complete API reference and advanced topics, see:
 
 **❌ Don't**: Use `console.log()`
 **✅ Do**: Use structured logging or user-facing notifications
+
 ```typescript
 // In TypeScript files like src/index.ts
 import { INotification } from '@jupyterlab/apputils';
 app.commands.notifyCommandChanged();
 ```
+
 **✅ Do**: Use `console.error()` to log low-level error details that should not be presented to users in the UI
 **✅ Do**: Use `console.warn()` to log non-optimal conditions, e.g. an unexpected response from an external API that's been successfully handled.
-
 
 ### Type Safety
 
 **✅ Do**: Define explicit interfaces (see example patterns in `src/index.ts`)
+
 ```typescript
 interface PluginConfig {
   enabled: boolean;
   apiEndpoint: string;
 }
 ```
+
 **❌ Don't**: Use the `any` type in TypeScript files
-**✅ Do**: Prefer typeguards over type casts 
+**✅ Do**: Prefer typeguards over type casts
 
 ### File-Scoped Validation
 
 After editing TypeScript files, run:
+
 ```bash
 npx tsc --noEmit src/index.ts  # Check single file
 npx tsc --noEmit               # Check all files
 ```
 
 After editing Python files{% if kind == 'frontend-and-server' %} (like `{{ python_name }}/routes.py`){% endif %}:
+
 ```bash
 python -m py_compile {{ python_name }}/__init__.py  # Check single file for syntax errors
 ```
@@ -59,6 +63,7 @@ python -m py_compile {{ python_name }}/__init__.py  # Check single file for synt
 ### Naming Conventions
 
 {% if kind == 'frontend-and-server' %}**Python** (in `{{ python_name }}/*.py` files):
+
 - **✅ Do**: Use PEP 8 style with 4-space indentation
   - Classes: `DataProcessor`, `UserDataRouteHandler`
   - Functions/methods: `setup_route_handlers()`, `process_request()`
@@ -66,6 +71,7 @@ python -m py_compile {{ python_name }}/__init__.py  # Check single file for synt
 - **❌ Don't**: Use camelCase for Python or mix styles
 
 {% endif %}**TypeScript/JavaScript** (in `src/*.ts` files):
+
 - **✅ Do**: Use consistent casing
   - Classes/interfaces: `MyPanelWidget`, `PluginConfig`
   - Functions/variables: `activatePlugin()`, `buttonCount`
@@ -76,12 +82,13 @@ python -m py_compile {{ python_name }}/__init__.py  # Check single file for synt
 ### Documentation
 
 **✅ Do**: Add JSDoc for TypeScript{% if kind == 'frontend-and-server' %} and docstrings for Python{% endif %}
+
 ```typescript
 /**
  * Activates the extension plugin.
  * @param app - JupyterLab application instance
  */
-function activate(app: JupyterFrontEnd): void { }
+function activate(app: JupyterFrontEnd): void {}
 ```
 
 **❌ Don't**: Leave complex logic undocumented or use vague names like `MyRouteHandler` — prefer `DataUploadRouteHandler`
@@ -89,6 +96,7 @@ function activate(app: JupyterFrontEnd): void { }
 ### Code Organization
 
 {% if kind == 'frontend-and-server' %}**✅ Do**: Keep backend and frontend logic separate
+
 - Backend processing in `{{ python_name }}/routes.py`
 - Frontend calls in `src/request.ts` using `requestAPI()`
 
@@ -103,25 +111,30 @@ function activate(app: JupyterFrontEnd): void { }
 ### Package Naming
 
 {% if kind == 'frontend-and-server' %}**Python package** (directory name and imports):
+
 - **✅ Do**: `{{ python_name }}/` with underscores, all lowercase
 - **❌ Don't**: Use dashes in the directory name
 
 **PyPI distribution name** (in `pyproject.toml`):
+
 - **✅ Do**: Use dashes instead of underscores, like `jupyterlab-myext`
 - Match it to the npm package name for consistency
 
 {% endif %}**NPM package** (in `package.json`):
+
 - **✅ Do**: Use lowercase with dashes: `"jupyterlab-myext"` or scoped `"@org/myext"`{% if kind == 'frontend-and-server' %}
 - **❌ Don't**: Mix naming styles between package.json and pyproject.toml{% endif %}
 
 ### Plugin and Command IDs
 
 **✅ Do**: Define plugin ID in `src/index.ts`:
+
 ```typescript
 const PLUGIN_ID = '{{ python_name }}:plugin';
 ```
 
 **✅ Do**: For extensions with multiple commands, create a `src/commands.ts` module to centralize command definitions:
+
 ```typescript
 // src/commands.ts
 import { JupyterFrontEnd } from '@jupyterlab/application';
@@ -138,14 +151,14 @@ export const COMMANDS: Record<string, CommandConfig> = {
     id: '{{ python_name }}:open-panel',
     label: 'Open Panel',
     caption: 'Open the extension panel',
-    execute: async (app) => {
+    execute: async app => {
       // Implementation
     }
   },
   refreshData: {
     id: '{{ python_name }}:refresh-data',
     label: 'Refresh Data',
-    execute: async (app) => {
+    execute: async app => {
       // Implementation
     }
   }
@@ -164,13 +177,14 @@ export function registerCommands(app: JupyterFrontEnd): void {
 ```
 
 Then in `src/index.ts`:
+
 ```typescript
 import { registerCommands } from './commands';
 
 activate: (app: JupyterFrontEnd) => {
   registerCommands(app);
   // ... rest of activation
-}
+};
 ```
 
 **✅ Do**: For simple extensions with 1-2 commands, you can define them directly in `src/index.ts`
@@ -180,6 +194,7 @@ activate: (app: JupyterFrontEnd) => {
 ### File Organization
 
 **✅ Do**: Organize related files into directories and name by their purpose
+
 - Widget components: `src/widgets/DataPanel.tsx` (class `DataPanel`)
 - Command definitions (for multiple commands): `src/commands.ts` with `COMMANDS` mapping
 - API utilities: `src/api.ts` (not `src/utils.ts`){% if kind == 'frontend-and-server' %}
@@ -330,6 +345,7 @@ When connecting frontend and backend, **ALWAYS follow this order**:
 Create RESTful endpoints in `{{ python_name }}/routes.py`:
 
 **✅ Do**: Extend `APIHandler` from `jupyter_server.base.handlers`
+
 ```python
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
@@ -339,7 +355,7 @@ class DataRouteHandler(APIHandler):
         """Handle GET requests."""
         result = {"status": "success", "data": "Hello"}
         self.finish(result)
-    
+
     def post(self):
         """Handle POST requests."""
         body = self.get_json_body()
@@ -353,6 +369,7 @@ def setup_route_handlers(web_app):
 ```
 
 **❌ Don't**:
+
 - Hardcode URL paths — always use `url_path_join()`
 - Use plain `tornado.web.RequestHandler` — instead, use `APIHandler` from `jupyter_server.base.handlers`
 - Skip error handling in routes
@@ -360,18 +377,19 @@ def setup_route_handlers(web_app):
 ### Frontend API Calls
 
 **✅ Do**: Call backend endpoints from typed API functions in `src/api.ts` (not directly in widgets):
+
 ```ts
 import { requestAPI } from './request';
 
-interface DataResponse { 
+interface DataResponse {
   status: 'success' | 'error';
   data: string;
 }
 
 export async function fetchData(): Promise<string> {
   try {
-    const response = await requestAPI<DataResponse>('data', { 
-      method: 'GET' 
+    const response = await requestAPI<DataResponse>('data', {
+      method: 'GET'
     });
     if (response.status === 'error') {
       throw new Error('Server returned error');
@@ -385,6 +403,7 @@ export async function fetchData(): Promise<string> {
 ```
 
 **✅ Do**:
+
 - Always wrap API calls in try-catch blocks with proper error handling
 - Use matching response types between Python and TypeScript
 - Create typed API wrapper functions in `src/api.ts` instead of calling `requestAPI()` directly from widgets
@@ -392,11 +411,13 @@ export async function fetchData(): Promise<string> {
 ### API Sync and Naming
 
 **✅ Do**: Keep backend and frontend in sync
+
 - Match JSON keys: `{"result": ...}` in Python → `response.result` in TypeScript
 - Update TypeScript interfaces when changing Python responses
 - Define route constants in both `{{ python_name }}/routes.py` and `src/api.ts`
 
 **❌ Don't**:
+
 - Create unused routes or orphaned API calls
 - Use inconsistent field naming across languages
 {% endif %}
@@ -404,7 +425,6 @@ export async function fetchData(): Promise<string> {
 ## Development Workflow
 
 {% set is_full_stack = kind|lower == 'frontend-and-server' %}
-
 ### Environment Activation (CRITICAL)
 
 **Before ANY command**, ensure you're in the correct environment:
@@ -421,6 +441,7 @@ source <path-to-venv>/bin/activate  # On macOS/Linux
 **All `jlpm`, `pip`, and `jupyter` commands MUST run within the activated environment.**
 
 **Symptoms of running outside the environment:**
+
 - `jlpm: command not found`
 - Extension not appearing after build
 - `jupyter: command not found`
@@ -470,11 +491,13 @@ source <path-to-venv>/bin/activate  # On macOS/Linux
 Many issues arise from confusing these two steps:
 
 #### `jlpm build` — Compiles the Extension
+
 - **What it does**: Compiles TypeScript → JavaScript, bundles the extension
 - **Output**: Creates files in `lib/` and `{{ python_name }}/labextension/`
 - **What it does NOT do**: Register the extension with JupyterLab
 
 #### `pip install -e .` + `jupyter labextension develop .` — Registers the Extension
+
 - **What it does**: Tells JupyterLab where to find your extension
 - **Output**: Creates symlinks so changes are reflected{% if is_full_stack %}
 - **Note**: Also installs the Python package in editable mode{% endif %}
@@ -498,6 +521,7 @@ jlpm build
 ### Iterative Development
 
 **Development with auto-rebuild** (recommended):
+
 ```bash
 jlpm run watch                      # Auto-rebuild on file changes (keep running)
 # In another terminal:
@@ -505,20 +529,24 @@ jupyter lab
 ```
 
 **After editing TypeScript** (files in `src/`):
+
 - If using `jlpm run watch`: Just **refresh your browser** (Cmd+R / Ctrl+R)
 - If not using watch: Run `jlpm build`, then **refresh your browser**
 
 **Quick TypeScript validation** (optional, for fast feedback):
+
 ```bash
 npx tsc --noEmit src/index.ts       # Check single file
 ```
 
 {% if is_full_stack %}**After editing Python** (files in `{{ python_name }}/`):
+
 - **Restart the JupyterLab server** (Ctrl+C in terminal, then `jupyter lab` again)
 - No rebuild needed!
 - Only run `pip install -e .` if you changed package structure (added new Python files, renamed package directory, or modified entry points in `pyproject.toml`)
 
 {% endif %}**Memory aid**: "What did you change? Restart that!"
+
 - Changed **JavaScript** → Build (or auto-builds with watch) → **Refresh browser**
 - Changed **Python** → **Restart JupyterLab server** (no build needed)
 
@@ -531,12 +559,14 @@ jlpm run eslint src/                # Lint frontend code
 ```
 
 **Browser console** (ask user to check):
+
 - Request user to open browser console (F12 or Cmd+Option+I)
 - Ask user to report any JavaScript errors
 - Ask user to check for failed network requests{% if is_full_stack %} to backend endpoints{% endif %}
 - Ask user if the extension appears to be loaded
 
 {% if is_full_stack %}**Server logs** (terminal running `jupyter lab`):
+
 - Check for Python errors or exceptions
 - Verify backend routes are registered
 - Look for HTTP request logs{% endif %}
@@ -548,12 +578,15 @@ jlpm run eslint src/                # Lint frontend code
 If your extension doesn't appear in JupyterLab after building:
 
 **1. Check if the extension is installed:**
+
 ```bash
 jupyter labextension list
 ```
+
 Your extension should appear as **"enabled"** and **"OK"**.
 
 **2. If NOT in the list**, run the installation commands:
+
 ```bash
 pip install -e .
 jupyter labextension develop . --overwrite{% if is_full_stack %}
@@ -561,21 +594,25 @@ jupyter server extension enable {{ python_name }}{% endif %}
 ```
 
 **3. Did you restart JupyterLab?**
+
 - Changes require a full restart (Ctrl+C in terminal, then `jupyter lab` again)
 - Simply refreshing the browser is NOT enough for new extensions
 
 **4. Ask user to check the browser console** (F12 or Cmd+Option+I):
+
 - Request user to look for JavaScript errors that might prevent extension activation
 - Ask user to search for the extension ID (`{{ python_name }}`) to see if it loaded
 - Ask user to report any error messages or warnings
 
 **5. Verify the build output:**
+
 ```bash
 ls -la lib/                          # Should contain compiled .js files
 ls -la {{ python_name }}/labextension/  # Should contain bundled extension
 ```
 
 **6. If still not working**, try a clean rebuild:
+
 ```bash
 jlpm clean:all
 jlpm install
@@ -587,6 +624,7 @@ jupyter server extension enable {{ python_name }}{% endif %}
 ```
 
 **Common causes:**
+
 - ❌ Only ran `jlpm build` without installation commands
 - ❌ Forgot to restart JupyterLab after installation
 - ❌ Running commands outside the activated environment
@@ -616,6 +654,7 @@ jupyter server extension enable {{ python_name }}{% endif %}
 ### Project Structure Alignment
 
 **✅ Do**: Follow the template structure
+
 - Keep configuration files in project root: `package.json`, `pyproject.toml`, `tsconfig.json`{% if kind == 'frontend-and-server' %}
 - Backend routes: `{{ python_name }}/routes.py`
 - Server extension config: `jupyter-config/server-config/{{ python_name }}.json`{% endif %}
@@ -628,6 +667,7 @@ jupyter server extension enable {{ python_name }}{% endif %}
 ### Version Management
 
 **✅ Do**: Update version in `package.json` only
+
 - The `package.json` version is the source of truth
 - `pyproject.toml` automatically syncs from `package.json` via `hatch-nodejs-version`
 - Follow semantic versioning: MAJOR.MINOR.PATCH
@@ -639,6 +679,7 @@ jupyter server extension enable {{ python_name }}{% endif %}
 ### Development Approach
 
 **✅ Do**: Start simple and iterate
+
 - Begin with minimal functionality (e.g., a single command or widget){% if kind == 'frontend-and-server' %}
 - **When integrating backend/frontend**: See [Integration Workflow](#integration-workflow-critical) for the correct order
 - Add backend routes or verbs only when frontend needs them{% endif %}
@@ -654,18 +695,21 @@ jupyter server extension enable {{ python_name }}{% endif %}
 ### Package Management
 
 **✅ Do**: Use `jlpm` consistently
+
 ```bash
 jlpm install
 jlpm build
 ```
 
 **❌ Don't**: Mix package managers or lockfiles
+
 - Don't use `package-lock.json` (this project uses `yarn.lock`)
 - Don't run `npm install`
 
 ### Path Handling
 
 **✅ Do**: Use relative imports in TypeScript (`src/` files)
+
 ```typescript
 import { MyWidget } from './widgets/MyWidget';
 ```
@@ -675,6 +719,7 @@ import { MyWidget } from './widgets/MyWidget';
 ### Error Handling
 
 **✅ Do**: Wrap async operations in try-catch (in `src/api.ts`, widget code)
+
 ```typescript
 try {
   const data = await fetchData();
@@ -688,6 +733,7 @@ try {
 ### CSS and Styling
 
 **✅ Do**: Namespace all CSS in `style/index.css`
+
 ```css
 .jp-{{ python_name | replace('_', '-') }}-widget {
   padding: 8px;
@@ -699,6 +745,7 @@ try {
 ### Resource Cleanup
 
 **✅ Do**: Dispose resources in widget `dispose()` methods
+
 ```typescript
 dispose(): void {
   this._signal.disconnect();
@@ -711,6 +758,7 @@ dispose(): void {
 {% if kind == 'frontend-and-server' %}### Backend Integration
 
 **✅ Do**: Use relative imports within your package
+
 ```python
 from .routes import setup_route_handlers
 ```
