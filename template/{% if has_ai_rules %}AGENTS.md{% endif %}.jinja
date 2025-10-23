@@ -642,8 +642,8 @@ jlpm clean:all       # Clean build artifacts
 # git clean -fdX     # (Optional) Remove all ignored files including node_modules
 jlpm install         # Only needed if you used 'git clean -fdX'
 jlpm build
+pip install -e ".[dev{% if test and is_full_stack %},test{% endif %}]"
 jupyter labextension develop . --overwrite{% if is_full_stack %}
-pip install -e .
 jupyter server extension enable {{ python_name }}{% endif %}
 ```
 
