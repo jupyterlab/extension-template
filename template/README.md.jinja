@@ -157,57 +157,35 @@ This project includes an `AGENTS.md` file with coding standards and best practic
 
 ### What's Included
 
-The `AGENTS.md` file provides guidance on:
+### Compatible AI Tools
 
-- Code quality rules and file-scoped validation commands
-- Naming conventions for packages, plugins, and files
-- Coding standards (TypeScript{% if kind.lower() == 'frontend-and-server' %}, Python, backend-frontend integration{% endif %})
-- Development workflow and debugging{% if kind.lower() == 'frontend-and-server' %}
-- Backend integration patterns (`APIHandler`, `requestAPI()`, routing){% endif %}{% if kind.lower() == 'theme' %}
-- Theme-specific patterns (CSS organization, light/dark modes, `IThemeManager`){% endif %}{% if kind.lower() == 'mimerender' %}
-- Renderer implementation (`IRenderMime.IExtension`, security, performance){% endif %}
-- Common pitfalls and how to avoid them
+`AGENTS.md` works with AI coding assistants that support the standard, including Cursor, GitHub Copilot, Windsurf, Aider, and others. For a current list of compatible tools, see [the AGENTS.md standard](https://agents.md).
 
-### Tool-Specific Files
-{%- if create_claude_symlink or create_gemini_symlink %}
+{% if create_claude_symlink or create_gemini_symlink %}This project also includes symlinks for tool-specific compatibility:
+{% if create_claude_symlink %}- `CLAUDE.md` → `AGENTS.md` (for Claude Code){% endif %}
+{% if create_gemini_symlink %}- `GEMINI.md` → `AGENTS.md` (for Gemini Code Assist){% endif %}
+{% endif %}
 
-This project includes symlinks for tool-specific compatibility:
-{%- if create_claude_symlink %}
-
-- `CLAUDE.md` → `AGENTS.md` (for Claude Code)
-{%- endif %}
-{%- if create_gemini_symlink %}
-- `GEMINI.md` → `AGENTS.md` (for Gemini Code Assist)
-{%- endif %}
-{%- endif %}
-
-**Additional symlinks** can be created manually if needed:
-
-```bash
-# On macOS/Linux
-ln -s AGENTS.md CLAUDE.md     # For Claude Code
-ln -s AGENTS.md GEMINI.md     # For Gemini Code Assist
-```
-
-```
-# On Windows (Command Prompt, run as Administrator)
-mklink CLAUDE.md AGENTS.md
-mklink GEMINI.md AGENTS.md
-```
-
-```powershell
-# On Windows (PowerShell, run as Administrator)
-New-Item -ItemType SymbolicLink -Path "CLAUDE.md" -Target "AGENTS.md"
-New-Item -ItemType SymbolicLink -Path "GEMINI.md" -Target "AGENTS.md"
-```
-
-**Other conventions** you might encounter:
+Other conventions you might encounter:
 
 - `.cursorrules` - Cursor's YAML/JSON format (Cursor also supports AGENTS.md natively)
 - `CONVENTIONS.md` / `CONTRIBUTING.md` - For CodeConventions.ai and GitHub bots
 - Project-specific rules in JetBrains AI Assistant settings
 
 All tool-specific files should be symlinks to `AGENTS.md` as the single source of truth.
+
+### What's Included
+
+The `AGENTS.md` file provides guidance on:
+
+- Code quality rules and file-scoped validation commands
+- Naming conventions for packages, plugins, and files
+- Coding standards (TypeScript{% if kind.lower() == 'frontend-and-server' %}, Python{% endif %})
+- Development workflow and debugging{% if kind.lower() == 'frontend-and-server' %}
+- Backend-frontend integration patterns (`APIHandler`, `requestAPI()`, routing){% endif %}{% if kind.lower() == 'theme' %}
+- Theme-specific patterns (CSS organization, light/dark modes, `IThemeManager`){% endif %}{% if kind.lower() == 'mimerender' %}
+- Renderer implementation (`IRenderMime.IExtension`, security, performance){% endif %}
+- Common pitfalls and how to avoid them
 
 ### Customization
 
