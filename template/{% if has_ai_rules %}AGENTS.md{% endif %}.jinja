@@ -203,8 +203,9 @@ activate: (app: JupyterFrontEnd) => {
 {% if kind == 'frontend-and-server' %}- Python package: `{{ python_name }}/` directory{% endif %}
 
 **❌ Don't**: Create catch-all files or directories like `utils.ts` or `helpers.py` or `handlers.py` — partition by feature instead
+{%- if kind == 'theme' %}
 
-{% if kind == 'theme' %}## Theme Extensions
+## Theme Extensions
 
 Theme extensions are **frontend-only** — no backend code needed.
 
@@ -262,9 +263,10 @@ export default plugin;
 **✅ Do**: Use CSS custom properties for all styling
 
 **❌ Don't**: Use hardcoded hex colors or override core JupyterLab styles
-{% endif %}
+{%- endif %}
+{%- if kind == 'mimerender' %}
 
-{% if kind == 'mimerender' %}## MIME Renderer Extensions
+## MIME Renderer Extensions
 
 MIME renderers are **frontend-only** — no backend code needed.
 
@@ -326,9 +328,10 @@ export default extension;
 - Inject HTML without sanitization (use DOMPurify if needed)
 - Mutate global styles or block the main thread
 - Set `safe: true` for renderers that execute code or render active HTML/scripts — use `safe: false` instead, which shows "Run cell to view output" in untrusted notebooks
-{% endif %}
+{%- endif %}
+{%- if kind == 'frontend-and-server' %}
 
-{% if kind == 'frontend-and-server' %}## Backend–Frontend Integration
+## Backend–Frontend Integration
 
 ### Integration Workflow (Critical!)
 
@@ -420,11 +423,11 @@ export async function fetchData(): Promise<string> {
 
 - Create unused routes or orphaned API calls
 - Use inconsistent field naming across languages
-{% endif %}
+{%- endif %}
 
 ## Development Workflow
-
 {% set is_full_stack = kind|lower == 'frontend-and-server' %}
+
 ### Environment Activation (CRITICAL)
 
 **Before ANY command**, ensure you're in the correct environment:
@@ -764,7 +767,7 @@ from .routes import setup_route_handlers
 ```
 
 **❌ Don't**: Use absolute imports like `from {{ python_name }}.routes import ...`
-{% endif %}
+{%- endif %}
 
 ## Quick Reference
 
