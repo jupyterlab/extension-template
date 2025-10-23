@@ -499,7 +499,7 @@ Many issues arise from confusing these two steps:
 - **Output**: Creates files in `lib/` and `{{ python_name }}/labextension/`
 - **What it does NOT do**: Register the extension with JupyterLab
 
-#### `pip install -e .` + `jupyter labextension develop .` — Registers the Extension
+#### `pip install -e .` + `jupyter labextension develop .` — Registers the Extension. Do this once as a setup step.
 
 - **What it does**: Tells JupyterLab where to find your extension
 - **Output**: Creates symlinks so changes are reflected{% if is_full_stack %}
