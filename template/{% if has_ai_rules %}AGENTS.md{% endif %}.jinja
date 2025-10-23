@@ -657,17 +657,7 @@ ls -la lib/                          # Should contain compiled .js files
 ls -la {{ python_name }}/labextension/  # Should contain bundled extension
 ```
 
-**6. If still not working**, try a clean rebuild:
-
-```bash
-jlpm clean:all
-jlpm install
-jlpm build
-pip install -e .
-jupyter labextension develop . --overwrite{% if is_full_stack %}
-jupyter server extension enable {{ python_name }}{% endif %}
-# Then restart JupyterLab
-```
+**6. If still not working**, try a clean rebuild following the reset instructions below
 
 **Common causes:**
 
