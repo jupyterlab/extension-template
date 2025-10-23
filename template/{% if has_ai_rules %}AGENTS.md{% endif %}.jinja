@@ -52,7 +52,6 @@ npx tsc --noEmit               # Check all files
 After editing Python files{% if kind == 'frontend-and-server' %} (like `{{ python_name }}/routes.py`){% endif %}:
 ```bash
 python -m py_compile {{ python_name }}/__init__.py  # Check single file for syntax errors
-ruff check {{ python_name }}/                       # Lint directory
 ```
 
 ## Coding Standards
@@ -447,8 +446,7 @@ npx tsc --noEmit src/index.ts       # Check single file
 ```bash
 jupyter labextension list           # Check if extension is installed
 {% if is_full_stack %}jupyter server extension list        # Check backend extension{% endif %}
-jlpm run eslint src/                # Lint frontend code{% if is_full_stack %}
-ruff check {{ python_name }}/       # Lint backend code{% endif %}
+jlpm run eslint src/                # Lint frontend code
 ```
 
 ### Reset (if build state is broken)
