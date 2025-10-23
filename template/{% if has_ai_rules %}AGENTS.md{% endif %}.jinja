@@ -426,7 +426,7 @@ export async function fetchData(): Promise<string> {
 {%- endif %}
 
 ## Development Workflow
-{% set is_full_stack = kind|lower == 'frontend-and-server' %}
+{%- set is_full_stack = kind|lower == 'frontend-and-server' %}
 
 ### Environment Activation (CRITICAL)
 
