@@ -405,6 +405,87 @@ export async function fetchData(): Promise<string> {
 
 {% set is_full_stack = kind|lower == 'frontend-and-server' %}
 
+### Environment Activation (CRITICAL)
+
+**Before ANY command**, ensure you're in the correct environment:
+
+```bash
+# For conda/mamba/micromamba:
+conda activate <environment-name>
+
+# For venv:
+source <path-to-venv>/bin/activate  # On macOS/Linux
+<path-to-venv>\Scripts\activate.bat # On Windows
+```
+
+**All `jlpm`, `pip`, and `jupyter` commands MUST run within the activated environment.**
+
+**Symptoms of running outside the environment:**
+- `jlpm: command not found`
+- Extension not appearing after build
+- `jupyter: command not found`
+
+**✅ Do**: Always activate your environment first
+**❌ Don't**: Run commands in your base/system environment
+
+---
+
+### Complete Development Workflow Checklist
+
+**When implementing a new feature from scratch, follow this complete sequence:**
+
+1. **Activate environment** (see above — required first!)
+2. **Write the code** (TypeScript in `src/`, styles in `style/`{% if is_full_stack %}, Python in `{{ python_name }}/`{% endif %})
+3. **Install dependencies** (if you added any to `package.json`):
+   ```bash
+   jlpm install
+   ```
+4. **Build the extension**:
+   ```bash
+   jlpm build
+   ```
+5. **Install the extension** (REQUIRED for JupyterLab to recognize it):
+   ```bash
+   pip install -e .
+   jupyter labextension develop . --overwrite{% if is_full_stack %}
+   jupyter server extension enable {{ python_name }}{% endif %}
+   ```
+6. **Verify installation**:
+   ```bash
+   jupyter labextension list  # Should show your extension as "enabled" and "OK"{% if is_full_stack %}
+   jupyter server extension list  # Should show backend extension{% endif %}
+   ```
+7. **Start JupyterLab**:
+   ```bash
+   jupyter lab
+   ```
+8. **Test the feature** in your browser
+
+**Critical: Steps 5-7 are REQUIRED after building. Building alone is not enough!**
+
+---
+
+### Understanding Build vs Install
+
+Many issues arise from confusing these two steps:
+
+#### `jlpm build` — Compiles the Extension
+- **What it does**: Compiles TypeScript → JavaScript, bundles the extension
+- **Output**: Creates files in `lib/` and `{{ python_name }}/labextension/`
+- **What it does NOT do**: Register the extension with JupyterLab
+
+#### `pip install -e .` + `jupyter labextension develop .` — Registers the Extension
+- **What it does**: Tells JupyterLab where to find your extension
+- **Output**: Creates symlinks so changes are reflected{% if is_full_stack %}
+- **Note**: Also installs the Python package in editable mode{% endif %}
+- **Result**: Extension appears in JupyterLab
+
+**You need BOTH steps!** Building prepares the code; installing registers it with JupyterLab.
+
+**Common mistake**: Running only `jlpm build` and expecting the extension to appear. It won't show up until you also run the installation commands.
+
+---
+
 ### Initial Setup (run once)
 
 ```bash
@@ -448,6 +529,68 @@ jupyter labextension list           # Check if extension is installed
 {% if is_full_stack %}jupyter server extension list        # Check backend extension{% endif %}
 jlpm run eslint src/                # Lint frontend code
 ```
+
+**Browser console** (ask user to check):
+- Request user to open browser console (F12 or Cmd+Option+I)
+- Ask user to report any JavaScript errors
+- Ask user to check for failed network requests{% if is_full_stack %} to backend endpoints{% endif %}
+- Ask user if the extension appears to be loaded
+
+{% if is_full_stack %}**Server logs** (terminal running `jupyter lab`):
+- Check for Python errors or exceptions
+- Verify backend routes are registered
+- Look for HTTP request logs{% endif %}
+
+---
+
+### Troubleshooting: Extension Not Appearing
+
+If your extension doesn't appear in JupyterLab after building:
+
+**1. Check if the extension is installed:**
+```bash
+jupyter labextension list
+```
+Your extension should appear as **"enabled"** and **"OK"**.
+
+**2. If NOT in the list**, run the installation commands:
+```bash
+pip install -e .
+jupyter labextension develop . --overwrite{% if is_full_stack %}
+jupyter server extension enable {{ python_name }}{% endif %}
+```
+
+**3. Did you restart JupyterLab?**
+- Changes require a full restart (Ctrl+C in terminal, then `jupyter lab` again)
+- Simply refreshing the browser is NOT enough for new extensions
+
+**4. Ask user to check the browser console** (F12 or Cmd+Option+I):
+- Request user to look for JavaScript errors that might prevent extension activation
+- Ask user to search for the extension ID (`{{ python_name }}`) to see if it loaded
+- Ask user to report any error messages or warnings
+
+**5. Verify the build output:**
+```bash
+ls -la lib/                          # Should contain compiled .js files
+ls -la {{ python_name }}/labextension/  # Should contain bundled extension
+```
+
+**6. If still not working**, try a clean rebuild:
+```bash
+jlpm clean:all
+jlpm install
+jlpm build
+pip install -e .
+jupyter labextension develop . --overwrite{% if is_full_stack %}
+jupyter server extension enable {{ python_name }}{% endif %}
+# Then restart JupyterLab
+```
+
+**Common causes:**
+- ❌ Only ran `jlpm build` without installation commands
+- ❌ Forgot to restart JupyterLab after installation
+- ❌ Running commands outside the activated environment
+- ❌ Build errors that were missed (check terminal output)
 
 ### Reset (if build state is broken)
 
@@ -500,7 +643,7 @@ jupyter server extension enable {{ python_name }}{% endif %}
 - **When integrating backend/frontend**: See [Integration Workflow](#integration-workflow-critical) for the correct order
 - Add backend routes or verbs only when frontend needs them{% endif %}
 - Test in running JupyterLab frequently
-- Check browser console{% if kind == 'frontend-and-server' %} and terminal logs{% endif %} for errors
+- Ask user to check browser console{% if kind == 'frontend-and-server' %} and review terminal logs{% endif %} for errors
 
 **❌ Don't**: Build complex features without incremental testing{% if kind == 'frontend-and-server' %}
 
