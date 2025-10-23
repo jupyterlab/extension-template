@@ -329,7 +329,7 @@ export default extension;
 **❌ Don't**:
 - Inject HTML without sanitization (use DOMPurify if needed)
 - Mutate global styles or block the main thread
-- Set `safe: true` for renderers that execute code or render active HTML/scripts — use `safe: false` instead, which shows "Run cell to view output" in untrusted notebooks
+- Set `safe: true` for renderers that execute code or render active HTML/scripts — use `safe: false` instead
 {%- endif %}
 {%- if kind == 'frontend-and-server' %}
 
