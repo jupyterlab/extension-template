@@ -138,40 +138,47 @@ const PLUGIN_ID = '{{ python_name }}:plugin';
 ```typescript
 // src/commands.ts
 import { JupyterFrontEnd } from '@jupyterlab/application';
+import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
-export interface CommandConfig {
-  id: string;
-  label: string;
-  caption?: string;
-  execute: (app: JupyterFrontEnd) => void | Promise<void>;
+// Command IDs
+export namespace CommandIDs {
+  export const openPanel = '{{ python_name }}:open-panel';
+  export const refreshData = '{{ python_name }}:refresh-data';
 }
 
-export const COMMANDS: Record<string, CommandConfig> = {
-  openPanel: {
-    id: '{{ python_name }}:open-panel',
+// Command argument types
+export namespace CommandArguments {
+  export interface IOpenPanel {
+    filePath?: string;
+  }
+  
+  export interface IRefreshData {
+    force?: boolean;
+  }
+}
+
+/**
+ * Register all commands with the application command registry.
+ * Call this function in your plugin's activate function.
+ */
+export function registerCommands(app: JupyterFrontEnd): void {
+  // Register the openPanel command
+  app.commands.addCommand(CommandIDs.openPanel, {
     label: 'Open Panel',
     caption: 'Open the extension panel',
-    execute: async app => {
-      // Implementation
+    execute: (args: ReadonlyPartialJSONObject) => {
+      const typedArgs = args as CommandArguments.IOpenPanel;
+      // Implementation using typedArgs.filePath
     }
-  },
-  refreshData: {
-    id: '{{ python_name }}:refresh-data',
-    label: 'Refresh Data',
-    execute: async app => {
-      // Implementation
-    }
-  }
-};
+  });
 
-// Register all commands
-export function registerCommands(app: JupyterFrontEnd): void {
-  Object.values(COMMANDS).forEach(cmd => {
-    app.commands.addCommand(cmd.id, {
-      label: cmd.label,
-      caption: cmd.caption,
-      execute: () => cmd.execute(app)
-    });
+  // Register the refreshData command
+  app.commands.addCommand(CommandIDs.refreshData, {
+    label: 'Refresh Data',
+    execute: (args: ReadonlyPartialJSONObject) => {
+      const typedArgs = args as CommandArguments.IRefreshData;
+      // Implementation using typedArgs.force
+    }
   });
 }
 ```
@@ -179,13 +186,47 @@ export function registerCommands(app: JupyterFrontEnd): void {
 Then in `src/index.ts`:
 
 ```typescript
-import { registerCommands } from './commands';
+import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+import { registerCommands, CommandIDs, CommandArguments } from './commands';
 
-activate: (app: JupyterFrontEnd) => {
-  registerCommands(app);
-  // ... rest of activation
+const plugin: JupyterFrontEndPlugin<void> = {
+  id: '{{ python_name }}:plugin',
+  autoStart: true,
+  activate: (app: JupyterFrontEnd) => {
+    // Register all commands with JupyterLab's command registry
+    registerCommands(app);
+    
+    // Commands are now registered and can be executed anywhere:
+    // - From the command palette
+    // - From menus
+    // - Programmatically via app.commands.execute()
+    
+    // ... rest of activation (e.g., add to palette, create widgets, etc.)
+  }
 };
+
+export default plugin;
 ```
+
+**Executing commands with typed arguments:**
+
+```typescript
+import { CommandIDs, CommandArguments } from './commands';
+
+// Execute with typed arguments
+await app.commands.execute(CommandIDs.openPanel, {
+  filePath: '/path/to/file'
+} as CommandArguments.IOpenPanel);
+
+// Execute without arguments
+await app.commands.execute(CommandIDs.refreshData);
+```
+
+**Notes:**
+- Accept `ReadonlyPartialJSONObject` in the execute function signature (required by Lumino)
+- Cast to your typed interface inside the function for type safety
+- Use namespaces (`CommandIDs`, `CommandArguments`) to organize related constants and types
+- This pattern matches how popular extensions like `jupyterlab-git` handle commands
 
 **✅ Do**: For simple extensions with 1-2 commands, you can define them directly in `src/index.ts`
 
