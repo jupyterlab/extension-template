@@ -417,22 +417,30 @@ jlpm build
 
 ### Iterative Development
 
-**After editing TypeScript** (files in `src/`):
+**Development with auto-rebuild** (recommended):
 ```bash
-jlpm build                          # Rebuild all
-npx tsc --noEmit src/index.ts       # Fast check single file
+jlpm run watch                      # Auto-rebuild on file changes (keep running)
+# In another terminal:
+jupyter lab
+```
+
+**After editing TypeScript** (files in `src/`):
+- If using `jlpm run watch`: Just **refresh your browser** (Cmd+R / Ctrl+R)
+- If not using watch: Run `jlpm build`, then **refresh your browser**
+
+**Quick TypeScript validation** (optional, for fast feedback):
+```bash
+npx tsc --noEmit src/index.ts       # Check single file
 ```
 
 {% if is_full_stack %}**After editing Python** (files in `{{ python_name }}/`):
-```bash
-pip install -e .                                # Reinstall if structure changed
-```
+- **Restart the JupyterLab server** (Ctrl+C in terminal, then `jupyter lab` again)
+- No rebuild needed!
+- Only run `pip install -e .` if you changed package structure (added new Python files, renamed package directory, or modified entry points in `pyproject.toml`)
 
-{% endif %}**Restart JupyterLab** to see changes:
-```bash
-# Press Ctrl+C in the terminal running jupyter lab, then:
-jupyter lab
-```
+{% endif %}**Memory aid**: "What did you change? Restart that!"
+- Changed **JavaScript** → Build (or auto-builds with watch) → **Refresh browser**
+- Changed **Python** → **Restart JupyterLab server** (no build needed)
 
 ### Debugging and Diagnostics
 
