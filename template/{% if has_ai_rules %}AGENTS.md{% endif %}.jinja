@@ -413,11 +413,12 @@ def setup_route_handlers(web_app):
     web_app.add_handlers(r".*$", [(data_route, DataRouteHandler)])
 ```
 
+**✅ Do**: Include error handling in route handlers
+
 **❌ Don't**:
 
 - Hardcode URL paths — always use `url_path_join()`
 - Use plain `tornado.web.RequestHandler` — instead, use `APIHandler` from `jupyter_server.base.handlers`
-- Skip error handling in routes
 
 ### Frontend API Calls
 
