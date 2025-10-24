@@ -460,7 +460,7 @@ export async function fetchData(): Promise<string> {
 
 - Match JSON keys: `{"result": ...}` in Python → `response.result` in TypeScript
 - Update TypeScript interfaces when changing Python responses
-- Define route constants in both `{{ python_name }}/routes.py` and `src/api.ts`
+- Define matching endpoint path strings (e.g., `"hello"`, `"get-data"`) in both `{{ python_name }}/routes.py` and `src/api.ts` to ensure routes sync between backend and frontend
 
 **❌ Don't**:
 
