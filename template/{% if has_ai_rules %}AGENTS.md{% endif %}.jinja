@@ -560,7 +560,6 @@ Many issues arise from confusing these two steps:
 pip install -e ".[dev{% if test and is_full_stack %},test{% endif %}]"
 jupyter labextension develop . --overwrite{% if is_full_stack %}
 jupyter server extension enable {{ python_name }}{% endif %}
-jlpm build
 ```
 
 ### Iterative Development
