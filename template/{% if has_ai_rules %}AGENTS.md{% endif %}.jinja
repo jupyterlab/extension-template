@@ -425,6 +425,7 @@ def setup_route_handlers(web_app):
 **✅ Do**: Call backend endpoints from typed API functions in `src/api.ts` (not directly in widgets):
 
 ```ts
+import { ServerConnection } from '@jupyterlab/services';
 import { requestAPI } from './request';
 
 interface DataResponse {
@@ -442,6 +443,19 @@ export async function fetchData(): Promise<string> {
     }
     return response.data;
   } catch (err) {
+    // Extract detailed error information from ResponseError
+    if (err instanceof ServerConnection.ResponseError) {
+      const status = err.response.status;
+      let detail = err.message;
+      
+      // Truncate HTML responses for cleaner error messages
+      if (typeof detail === 'string' && (detail.includes('<!DOCTYPE') || detail.includes('<html'))) {
+        detail = `HTML error page (${detail.substring(0, 100)}...)`;
+      }
+      
+      throw new Error(`API request failed (${status}): ${detail}`);
+    }
+    
     const msg = err instanceof Error ? err.message : 'Unknown error';
     throw new Error(`API request failed: ${msg}`);
   }
@@ -451,6 +465,9 @@ export async function fetchData(): Promise<string> {
 **✅ Do**:
 
 - Always wrap API calls in try-catch blocks with proper error handling
+- Check for `ServerConnection.ResponseError` to extract HTTP status codes and response details
+- Handle HTML error responses gracefully by truncating them (they're often unhelpful error pages)
+- Include response status codes in error messages for better debugging
 - Use matching response types between Python and TypeScript
 - Create typed API wrapper functions in `src/api.ts` instead of calling `requestAPI()` directly from widgets
 
