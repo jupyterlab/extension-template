@@ -308,7 +308,9 @@ await app.commands.execute(CommandIDs.refreshData);
 - API utilities: `src/api.ts` (not `src/utils.ts`){% if kind == 'frontend-and-server' %}
 - Backend routes: `{{ python_name }}/routes.py` (class `DataRouteHandler`){% endif %}
 - Frontend logic: `src/` directory
-{% if kind == 'frontend-and-server' %}- Python package: `{{ python_name }}/` directory{% endif %}
+{%- if kind == 'frontend-and-server' %}
+- Python package: `{{ python_name }}/` directory
+{%- endif %}
 
 **❌ Don't**: Create catch-all files or directories like `utils.ts` or `helpers.py` or `handlers.py` — partition by feature instead
 {%- if kind == 'theme' %}
@@ -696,12 +698,14 @@ jlpm run lint                # Lint frontend code
 - Ask user to report any JavaScript errors
 - Ask user to check for failed network requests{% if is_full_stack %} to backend endpoints{% endif %}
 - Ask user if the extension appears to be loaded
+{%- if is_full_stack %}
 
-{% if is_full_stack %}**Server logs** (terminal running `jupyter lab`):
+**Server logs** (terminal running `jupyter lab`):
 
 - Check for Python errors or exceptions
 - Verify backend routes are registered
-- Look for HTTP request logs{% endif %}
+- Look for HTTP request logs
+{%- endif %}
 
 ---
 
@@ -876,8 +880,9 @@ dispose(): void {
 ```
 
 **❌ Don't**: Leave event listeners or signal connections active after disposal
+{%- if kind == 'frontend-and-server' %}
 
-{% if kind == 'frontend-and-server' %}### Backend Integration
+### Backend Integration
 
 **✅ Do**: Use relative imports within your package
 
