@@ -11,6 +11,7 @@ This guide provides coding standards and best practices for developing JupyterLa
 **When you encounter uncertainty, incomplete information, or need implementation examples, you MUST consult these external resources FIRST before attempting to implement features.**
 
 Use your available tools (web search, documentation search) to access and retrieve content from these resources when:
+
 - You're unsure about API usage, method signatures, or interface requirements
 - You need to verify the correct approach for a feature or pattern
 - You're looking for existing implementation examples or best practices
@@ -40,17 +41,18 @@ Use your available tools (web search, documentation search) to access and retrie
    - URL: https://github.com/jupyterlab/jupyterlab
    - Use for: Reference implementations in `packages/` directory - all core packages are extensions themselves
    - **Action**: When implementing complex features, search this repo for how core extensions solve similar problems
+{%- if kind == 'frontend-and-server' %}
 
-{% if kind == 'frontend-and-server' %}
 5. **Jupyter Server API Documentation**
    - URL: https://jupyter-server.readthedocs.io/
    - Use for: Server-side API handlers, route setup, backend integration patterns
    - **Action**: Consult when working on backend routes or server extension configuration
 
 6. **Project-Specific Documentation**
-{% else %}
+{%- else %}
+
 5. **Project-Specific Documentation**
-{% endif %}
+{%- endif %}
    - Locations: `README.md`, `RELEASE.md` in project root; check for `docs/` directory
    - Use for: Project requirements, specific configuration, custom conventions
    - **Action**: Read these files at the start of work and reference when making architectural decisions
@@ -58,6 +60,7 @@ Use your available tools (web search, documentation search) to access and retrie
 ### When to Use These Resources
 
 **ALWAYS consult external documentation when:**
+
 - ❗ You're about to implement a feature without knowing if there's an established pattern
 - ❗ An API call or method isn't working as expected
 - ❗ You need to understand the correct lifecycle methods or hooks
@@ -65,6 +68,7 @@ Use your available tools (web search, documentation search) to access and retrie
 - ❗ You're implementing something that seems like it should be a common pattern
 
 **HOW to access these resources:**
+
 - 🔍 Use web search tools with specific queries like: "JupyterLab IRenderMime.IRenderer interface documentation"
 - 🔍 Search GitHub repositories for code examples: "JupyterLab extension examples widget"
 - 🔍 Retrieve documentation pages to read API specifications and usage guidelines
@@ -210,7 +214,7 @@ export namespace CommandArguments {
   export interface IOpenPanel {
     filePath?: string;
   }
-  
+
   export interface IRefreshData {
     force?: boolean;
   }
@@ -245,7 +249,10 @@ export function registerCommands(app: JupyterFrontEnd): void {
 Then in `src/index.ts`:
 
 ```typescript
-import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+import {
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin
+} from '@jupyterlab/application';
 import { registerCommands, CommandIDs, CommandArguments } from './commands';
 
 const plugin: JupyterFrontEndPlugin<void> = {
@@ -254,12 +261,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd) => {
     // Register all commands with JupyterLab's command registry
     registerCommands(app);
-    
+
     // Commands are now registered and can be executed anywhere:
     // - From the command palette
     // - From menus
     // - Programmatically via app.commands.execute()
-    
+
     // ... rest of activation (e.g., add to palette, create widgets, etc.)
   }
 };
@@ -282,6 +289,7 @@ await app.commands.execute(CommandIDs.refreshData);
 ```
 
 **Notes:**
+
 - Accept `ReadonlyPartialJSONObject` in the execute function signature (required by Lumino)
 - Cast to your typed interface inside the function for type safety
 - Use namespaces (`CommandIDs`, `CommandArguments`) to organize related constants and types
@@ -506,15 +514,18 @@ export async function fetchData(): Promise<string> {
     if (err instanceof ServerConnection.ResponseError) {
       const status = err.response.status;
       let detail = err.message;
-      
+
       // Truncate HTML responses for cleaner error messages
-      if (typeof detail === 'string' && (detail.includes('<!DOCTYPE') || detail.includes('<html'))) {
+      if (
+        typeof detail === 'string' &&
+        (detail.includes('<!DOCTYPE') || detail.includes('<html'))
+      ) {
         detail = `HTML error page (${detail.substring(0, 100)}...)`;
       }
-      
+
       throw new Error(`API request failed (${status}): ${detail}`);
     }
-    
+
     const msg = err instanceof Error ? err.message : 'Unknown error';
     throw new Error(`API request failed: ${msg}`);
   }
