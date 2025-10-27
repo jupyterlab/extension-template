@@ -157,10 +157,12 @@ This project includes an `AGENTS.md` file with coding standards and best practic
 
 {%- if create_claude_symlink or create_gemini_symlink %}
 This project also includes symlinks for tool-specific compatibility:
-{% if create_claude_symlink %}
+{%- if create_claude_symlink %}
+
 - `CLAUDE.md` → `AGENTS.md` (for Claude Code)
 {%- endif %}
-{% if create_gemini_symlink %}
+{%- if create_gemini_symlink %}
+
 - `GEMINI.md` → `AGENTS.md` (for Gemini Code Assist)
 {%- endif %}
 {%- endif %}
