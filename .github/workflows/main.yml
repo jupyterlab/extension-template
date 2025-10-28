@@ -200,6 +200,108 @@ jobs:
           popd
           rm -rf myextension
 
+  ai-rules:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Test different combinations of AI rules settings
+        include:
+          - has_ai_rules: "y"
+            create_claude_symlink: "y"
+            create_gemini_symlink: "y"
+          - has_ai_rules: "y"
+            create_claude_symlink: "n"
+            create_gemini_symlink: "y"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Install dependencies
+        run: |
+          python -m pip install "copier>=9.2.0" jinja2-time
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create extension with AI rules
+        run: |
+          set -eux
+          mkdir myextension
+          python -m copier copy -l -d author_name="My Name" -d has_ai_rules=${{ matrix.has_ai_rules }} -d create_claude_symlink=${{ matrix.create_claude_symlink }} -d create_gemini_symlink=${{ matrix.create_gemini_symlink }} -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          cd myextension
+
+      - name: Verify AGENTS.md exists
+        run: |
+          set -eux
+          cd myextension
+          test -f AGENTS.md
+          echo "✓ AGENTS.md exists"
+          # Verify it has content
+          test -s AGENTS.md
+          echo "✓ AGENTS.md is not empty"
+          # Check for expected content markers
+          grep -q "JupyterLab Extension Development" AGENTS.md
+          echo "✓ AGENTS.md contains expected content"
+
+      - name: Verify CLAUDE.md symlink (if enabled)
+        if: matrix.create_claude_symlink == 'y'
+        run: |
+          set -eux
+          cd myextension
+          test -L CLAUDE.md
+          echo "✓ CLAUDE.md is a symlink"
+          # Verify it points to AGENTS.md
+          readlink CLAUDE.md | grep -q "AGENTS.md"
+          echo "✓ CLAUDE.md points to AGENTS.md"
+          # Verify content is accessible through symlink
+          test -s CLAUDE.md
+          echo "✓ CLAUDE.md symlink is readable"
+
+      - name: Verify CLAUDE.md does not exist (if disabled)
+        if: matrix.create_claude_symlink == 'n'
+        run: |
+          set -eux
+          cd myextension
+          if [ -f CLAUDE.md ]; then
+            echo "✗ CLAUDE.md should not exist when create_claude_symlink=n"
+            exit 1
+          fi
+          echo "✓ CLAUDE.md correctly not created"
+
+      - name: Verify GEMINI.md symlink (if enabled)
+        if: matrix.create_gemini_symlink == 'y'
+        run: |
+          set -eux
+          cd myextension
+          test -L GEMINI.md
+          echo "✓ GEMINI.md is a symlink"
+          readlink GEMINI.md | grep -q "AGENTS.md"
+          echo "✓ GEMINI.md points to AGENTS.md"
+          test -s GEMINI.md
+          echo "✓ GEMINI.md symlink is readable"
+
+      - name: Install and validate extension still works
+        run: |
+          set -eux
+          cd myextension
+          pip install "jupyterlab>=4.0.0,<5" setuptools
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
+          jlpm lint:check
+          pip install -e .
+          jupyter labextension develop . --overwrite
+          jupyter labextension list
+          jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
+
+      - name: Cleanup
+        if: always()
+        run: rm -rf myextension
+
   server:
     runs-on: ${{ matrix.os }}
     strategy:
