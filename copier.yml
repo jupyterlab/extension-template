@@ -69,17 +69,15 @@ has_ai_rules:
   help: Include AI assistant rules (AGENTS.md) for coding standards?
   default: no
 
-create_claude_symlink:
+ai_assistant_file_name:
   when: "{{ has_ai_rules }}"
-  type: bool
-  help: Create CLAUDE.md symlink for Claude Code compatibility?
-  default: yes
-
-create_gemini_symlink:
-  when: "{{ has_ai_rules }}"
-  type: bool
-  help: Create GEMINI.md symlink for Gemini Code Assist compatibility?
-  default: yes
+  type: str
+  help: What AI assistant file name should be used?
+  default: AGENTS.md
+  choices:
+    - AGENTS.md
+    - CLAUDE.md
+    - GEMINI.md
 
 repository:
   type: str
