@@ -69,10 +69,10 @@ has_ai_rules:
   help: Include AI assistant rules (AGENTS.md) for coding standards?
   default: no
 
-ai_assistant_file_name:
+ai_rules_file_name:
   when: "{{ has_ai_rules }}"
   type: str
-  help: What AI assistant file name should be used?
+  help: What AI rules file name should be used?
   default: AGENTS.md
   choices:
     - AGENTS.md

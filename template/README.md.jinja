@@ -149,35 +149,11 @@ More information are provided within the [ui-tests](./ui-tests/README.md) README
 
 ## AI Coding Assistant Support
 
-This project includes an `AGENTS.md` file with coding standards and best practices for JupyterLab extension development. The file follows the [AGENTS.md standard](https://agents.md) for cross-tool compatibility.
-
-### Compatible AI Tools
-
-`AGENTS.md` works with AI coding assistants that support the standard, including Cursor, GitHub Copilot, Windsurf, Aider, and others. For a current list of compatible tools, see [the AGENTS.md standard](https://agents.md).
-
-{%- if create_claude_symlink or create_gemini_symlink %}
-This project also includes symlinks for tool-specific compatibility:
-{%- if create_claude_symlink %}
-
-- `CLAUDE.md` → `AGENTS.md` (for Claude Code)
-{%- endif %}
-{%- if create_gemini_symlink %}
-
-- `GEMINI.md` → `AGENTS.md` (for Gemini Code Assist)
-{%- endif %}
-{%- endif %}
-
-Other conventions you might encounter:
-
-- `.cursorrules` - Cursor's YAML/JSON format (Cursor also supports AGENTS.md natively)
-- `CONVENTIONS.md` / `CONTRIBUTING.md` - For CodeConventions.ai and GitHub bots
-- Project-specific rules in JetBrains AI Assistant settings
-
-All tool-specific files should be symlinks to `AGENTS.md` as the single source of truth.
+This project includes a `{{ ai_rules_file_name }}` file with coding standards and best practices for JupyterLab extension development.
 
 ### What's Included
 
-The `AGENTS.md` file provides guidance on:
+The `{{ ai_rules_file_name }}` file provides guidance on:
 
 - Code quality rules and file-scoped validation commands
 - Naming conventions for packages, plugins, and files
@@ -190,9 +166,9 @@ The `AGENTS.md` file provides guidance on:
 
 ### Customization
 
-You can edit `AGENTS.md` to add project-specific conventions or adjust guidelines to match your team's practices. The file uses plain Markdown with Do/Don't patterns and references to actual project files.
+You can edit `{{ ai_rules_file_name }}` to add project-specific conventions or adjust guidelines to match your team's practices. The file uses plain Markdown with Do/Don't patterns and references to actual project files.
 
-**Note**: `AGENTS.md` is living documentation. Update it when you change conventions, add dependencies, or discover new patterns. Include `AGENTS.md` updates in commits that modify workflows or coding standards.
+**Note**: AI rules files are living documentation. Update them when you change conventions, add dependencies, or discover new patterns. Include updates in commits that modify workflows or coding standards.
 {%- endif %}
 
 ### Packaging the extension
