@@ -502,9 +502,11 @@ interface DataResponse {
   data: string;
 }
 
-export async function fetchData(): Promise<string> {
+export async function fetchData(
+  serverSettings: ServerConnection.ISettings
+): Promise<string> {
   try {
-    const response = await requestAPI<DataResponse>('data', {
+    const response = await requestAPI<DataResponse>('data', serverSettings, {
       method: 'GET'
     });
     if (response.status === 'error') {
