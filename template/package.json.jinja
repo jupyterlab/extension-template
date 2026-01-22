@@ -125,7 +125,8 @@
         "node_modules",
         "dist",
         "coverage",
-        "**/*.d.ts"{% if test %},
+        "**/*.d.ts",
+        ".venv"{% if test %},
         "tests",
         "**/__tests__",
         "ui-tests"{% endif %}
