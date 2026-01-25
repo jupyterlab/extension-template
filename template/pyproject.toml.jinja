@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling>=1.5.0", "jupyterlab>=4.0.0,<5", "hatch-nodejs-version>=0.3.2", "jupyter_builder"]
+requires = ["hatchling>=1.5.0", "hatch-nodejs-version>=0.3.2", "jupyter_builder"]
 build-backend = "hatchling.build"
 
 [project]
@@ -25,14 +25,14 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [{% if kind.lower() == "frontend-and-server" %}
-    "jupyter_server>=2.4.0,<3",{% endif %}
-    "jupyter_builder"
+    "jupyter_server>=2.4.0,<3"{% endif %}
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
 {% if test and kind.lower() == 'frontend-and-server' %}
 [project.optional-dependencies]
 dev = [
     "jupyterlab>=4",
+    "jupyter_builder"
 ]
 test = [
     "coverage",
