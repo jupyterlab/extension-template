@@ -547,7 +547,7 @@ jobs:
           mkdir myextension
           python -m copier copy -l -d kind=mimerenderer -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
-          python -m pip install "jupyterlab>=4.0.0,<5" setuptools
+          python -m pip install "jupyter_builder" setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
           python -m pip install -e .
