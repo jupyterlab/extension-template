@@ -503,7 +503,7 @@ jobs:
           mkdir mytheme
           python -m copier copy -l -d kind=theme -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . mytheme
           pushd mytheme
-          python -m pip install "jupyterlab>=4.0.0,<5" setuptools
+          python -m pip install "jupyterlab>=4.0.0b0,<5" setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
           python -m pip install -e .
@@ -593,7 +593,7 @@ jobs:
           python -m copier copy -l -d kind=${KIND} -d author_name="My Name" -d labextension_name=myextension -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           pushd myextension
           sed -i 's/^\(nodeLinker:\s\).*$/\1pnpm/' .yarnrc.yml
-          python -m pip install jupyter_builder jupyterlab_server
+          python -m pip install "jupyterlab>=4.0.0,<5"
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           if [ ! -d node_modules/.store ] ; then echo 'nodes_module directory should contain a .store directory when using pnpm nodeLinker'; exit 1; fi;
           jlpm build
