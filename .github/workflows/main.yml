@@ -344,6 +344,7 @@ jobs:
           pip install jupyter_builder setuptools
           jlpm
           jlpm lint:check
+          pip install "jupyterlab>=4.0.0,<5"
 
       - name: Check pip install method
         run: |
