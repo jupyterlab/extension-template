@@ -8,24 +8,15 @@ import jupyterPlugin from '@jupyter/eslint-plugin';
 export default defineConfig([
   {
     ignores: [
-      'node_modules/**',
-      'build/**',
-      'lib/**',
-      '**/static/**',
-      '**/schemas/**',
-      'coverage/**',
-      '.idea/**',
-      '.history/**',
-      '.vscode/**',
-      '.pixi/**',
-      '.venv/**',
-      'docs/**',
-      '**/*.js',
-      '**/*.d.ts'{% if test %},
-      'tests',
-      '**/__tests__',
-      'ui-tests'{% endif %}
-    ]
+      "node_modules",
+      "dist",
+      "coverage",
+      "**/*.js",
+      "**/*.d.ts"{% if test %},
+      "tests",
+      "**/__tests__",
+      "ui-tests"{% endif %}
+    ],
   },
   js.configs.recommended,
   tseslint.configs.recommended,
