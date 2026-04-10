@@ -9,23 +9,22 @@ export default defineConfig([
   {
     ignores: [
       'node_modules/**',
-      '**/build/**',
-      '**/lib/**',
-      '**/node_modules/**',
+      'build/**',
+      'lib/**',
       '**/static/**',
-      '**/typings/**',
       '**/schemas/**',
-      '**/themes/**',
       'coverage/**',
-      '**/*.map.js',
-      '**/*.bundle.js',
       '.idea/**',
       '.history/**',
       '.vscode/**',
       '.pixi/**',
       '.venv/**',
       'docs/**',
-      '**/*.js'
+      '**/*.js',
+      "**/*.d.ts"{% if test %},
+      "tests",
+      "**/__tests__",
+      "ui-tests"{% endif %}
     ]
   },
   js.configs.recommended,
