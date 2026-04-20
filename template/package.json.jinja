@@ -32,8 +32,8 @@
     "scripts": {
         "build": "jlpm build:lib && jlpm build:labextension:dev",
         "build:prod": "jlpm clean && jlpm build:lib:prod && jlpm build:labextension",
-        "build:labextension": "jupyter labextension build .",
-        "build:labextension:dev": "jupyter labextension build --development True .",
+        "build:labextension": "jupyter-builder build .",
+        "build:labextension:dev": "jupyter-builder build --development True .",
         "build:lib": "tsc --sourceMap",
         "build:lib:prod": "tsc",
         "clean": "jlpm clean:lib",
@@ -54,7 +54,7 @@
         "test": "jest --coverage",{% endif %}
         "watch": "run-p watch:src watch:labextension",
         "watch:src": "tsc -w --sourceMap",
-        "watch:labextension": "jupyter labextension watch ."
+        "watch:labextension": "jupyter-builder watch ."
     },
     "dependencies": {
         {% if kind.lower() != 'mimerenderer' %}"@jupyterlab/application": "^4.0.0"{% if kind.lower() == 'theme' %},
@@ -65,6 +65,7 @@
         "@lumino/widgets": "^2.1.0"{% endif %}
     },
     "devDependencies": {
+        "@jupyter/builder": "^0.0.3",
         "@jupyterlab/builder": "^4.0.0",{% if test %}
         "@jupyterlab/testutils": "^4.0.0",
         "@types/jest": "^29.2.0",{% endif %}
