@@ -42,7 +42,7 @@
         "clean:labextension": "rimraf {{ python_name }}/labextension {{ python_name }}/_version.py",
         "clean:all": "jlpm clean:lib && jlpm clean:labextension && jlpm clean:lintcache",
         "eslint": "jlpm eslint:check --fix",
-        "eslint:check": "eslint . --cache --ext .ts,.tsx",
+        "eslint:check": "eslint . --cache",
         "install:extension": "jlpm build",
         "lint": "jlpm stylelint && jlpm prettier && jlpm eslint",
         "lint:check": "jlpm stylelint:check && jlpm prettier:check && jlpm eslint:check",
@@ -65,18 +65,19 @@
         "@lumino/widgets": "^2.1.0"{% endif %}
     },
     "devDependencies": {
+        "@eslint/js": "^9.0.0",
+        "@jupyter/eslint-plugin": "^0.0.5",
         "@jupyterlab/builder": "^4.0.0",{% if test %}
         "@jupyterlab/testutils": "^4.0.0",
         "@types/jest": "^29.2.0",{% endif %}
         "@types/json-schema": "^7.0.11",
         "@types/react": "^18.0.26",
         "@types/react-addons-linked-state-mixin": "^0.14.22",
-        "@typescript-eslint/eslint-plugin": "^6.1.0",
-        "@typescript-eslint/parser": "^6.1.0",
         "css-loader": "^6.7.1",
-        "eslint": "^8.36.0",
-        "eslint-config-prettier": "^8.8.0",
-        "eslint-plugin-prettier": "^5.0.0",{% if test %}
+        "eslint": "^9.0.0",
+        "eslint-config-prettier": "^9.0.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "globals": "^15.0.0",{% if test %}
         "jest": "^29.2.0",{% endif %}{% if kind.lower() == 'frontend-and-server' %}
         "mkdirp": "^1.0.3",{% endif %}
         "npm-run-all2": "^7.0.1",
@@ -90,6 +91,7 @@
         "stylelint-csstree-validator": "^3.0.0",
         "stylelint-prettier": "^4.0.0",
         "typescript": "~5.5.4",
+        "typescript-eslint": "^8.0.0",
         "yjs": "^13.5.0"
     },
     "resolutions": {
@@ -120,69 +122,6 @@
         "outputDir": "{{python_name}}/labextension"{% if has_settings %},
         "schemaDir": "schema"{% endif %}{% if kind.lower() == 'theme' %},
         "themePath": "style/index.css"{% endif %}
-    },
-    "eslintIgnore": [
-        "node_modules",
-        "dist",
-        "coverage",
-        "**/*.d.ts"{% if test %},
-        "tests",
-        "**/__tests__",
-        "ui-tests"{% endif %}
-    ],
-    "eslintConfig": {
-        "extends": [
-            "eslint:recommended",
-            "plugin:@typescript-eslint/eslint-recommended",
-            "plugin:@typescript-eslint/recommended",
-            "plugin:prettier/recommended"
-        ],
-        "parser": "@typescript-eslint/parser",
-        "parserOptions": {
-            "project": "tsconfig.json",
-            "sourceType": "module"
-        },
-        "plugins": [
-            "@typescript-eslint"
-        ],
-        "rules": {
-            "@typescript-eslint/naming-convention": [
-                "error",
-                {
-                    "selector": "interface",
-                    "format": [
-                        "PascalCase"
-                    ],
-                    "custom": {
-                        "regex": "^I[A-Z]",
-                        "match": true
-                    }
-                }
-            ],
-            "@typescript-eslint/no-unused-vars": [
-                "warn",
-                {
-                    "args": "none"
-                }
-            ],
-            "@typescript-eslint/no-explicit-any": "off",
-            "@typescript-eslint/no-namespace": "off",
-            "@typescript-eslint/no-use-before-define": "off",
-            "@typescript-eslint/quotes": [
-                "error",
-                "single",
-                {
-                    "avoidEscape": true,
-                    "allowTemplateLiterals": false
-                }
-            ],
-            "curly": [
-                "error",
-                "all"
-            ],
-            "eqeqeq": "error",
-            "prefer-arrow-callback": "error"
-        }
     },
     "prettier": {
         "singleQuote": true,
