@@ -54,8 +54,8 @@ jobs:
           python -m pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
-          jupyter-builder develop . --overwrite
           python -m pip install -e .
+          jupyter-builder develop . --overwrite
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "${NAME}.*OK"
@@ -99,8 +99,8 @@ jobs:
           pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
-          jupyter-builder develop . --overwrite
           pip install -e .
+          jupyter-builder develop . --overwrite
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
@@ -144,8 +144,8 @@ jobs:
           pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
-          jupyter-builder develop . --overwrite
           pip install -e .
+          jupyter-builder develop . --overwrite
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
@@ -191,8 +191,8 @@ jobs:
           # It is not easily possible to get this version compatible with linter rules
           jlpm lint
           jlpm lint:check
-          jupyter-builder develop . --overwrite
           pip install -e .
+          jupyter-builder develop . --overwrite
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
@@ -297,8 +297,8 @@ jobs:
           pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
-          jupyter-builder develop . --overwrite
           pip install -e .
+          jupyter-builder develop . --overwrite
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
@@ -512,8 +512,8 @@ jobs:
           python -m pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
-          jupyter-builder develop . --overwrite
           python -m pip install -e .
+          jupyter-builder develop . --overwrite
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "mytheme.*OK"
@@ -557,8 +557,8 @@ jobs:
           python -m pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
-          jupyter-builder develop . --overwrite
           python -m pip install -e .
+          jupyter-builder develop . --overwrite
           python -m pip install "jupyterlab>=4.0.0,<5"
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
