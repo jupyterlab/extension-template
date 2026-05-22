@@ -391,7 +391,7 @@ jobs:
       - name: Build server extension in develop mode
         run: |
           jupyter-builder develop ./myextension --overwrite
-          jupyter labextension build ./myextension
+          jupyter-builder build ./myextension
 
           jupyter labextension uninstall myextension
           python -m pip uninstall -y myextension jupyterlab
