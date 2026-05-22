@@ -605,7 +605,7 @@ source <path-to-venv>/bin/activate  # On macOS/Linux
 5. **Install the extension** (REQUIRED for JupyterLab to recognize it):
    ```bash
    pip install -e .
-   jupyter labextension develop . --overwrite{% if is_full_stack %}
+   jupyter-builder develop . --overwrite{% if is_full_stack %}
    jupyter server extension enable {{ python_name }}{% endif %}
    ```
 6. **Verify installation**:
@@ -633,7 +633,7 @@ Many issues arise from confusing these two steps:
 - **Output**: Creates files in `lib/` and `{{ python_name }}/labextension/`
 - **What it does NOT do**: Register the extension with JupyterLab
 
-#### `pip install -e .` + `jupyter labextension develop .` — Registers the Extension. Do this once as a setup step.
+#### `pip install -e .` + `jupyter-builder develop .` — Registers the Extension. Do this once as a setup step.
 
 - **What it does**: Tells JupyterLab where to find your extension
 - **Output**: Creates symlinks so changes are reflected{% if is_full_stack %}
@@ -650,7 +650,7 @@ Many issues arise from confusing these two steps:
 
 ```bash
 pip install -e ".[dev{% if test and is_full_stack %},test{% endif %}]"
-jupyter labextension develop . --overwrite{% if is_full_stack %}
+jupyter-builder develop . --overwrite{% if is_full_stack %}
 jupyter server extension enable {{ python_name }}{% endif %}
 ```
 
@@ -727,7 +727,7 @@ Your extension should appear as **"enabled"** and **"OK"**.
 
 ```bash
 pip install -e .
-jupyter labextension develop . --overwrite{% if is_full_stack %}
+jupyter-builder develop . --overwrite{% if is_full_stack %}
 jupyter server extension enable {{ python_name }}{% endif %}
 ```
 
@@ -766,7 +766,7 @@ jlpm clean:all       # Clean build artifacts
 jlpm install         # Only needed if you used 'git clean -fdX'
 jlpm build
 pip install -e ".[dev{% if test and is_full_stack %},test{% endif %}]"
-jupyter labextension develop . --overwrite{% if is_full_stack %}
+jupyter-builder develop . --overwrite{% if is_full_stack %}
 jupyter server extension enable {{ python_name }}{% endif %}
 ```
 

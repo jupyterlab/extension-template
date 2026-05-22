@@ -54,9 +54,9 @@ jobs:
           python -m pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
+          jupyter-builder develop . --overwrite
           python -m pip install -e .
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jupyter labextension develop . --overwrite
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "${NAME}.*OK"
           python -m jupyterlab.browser_check
@@ -99,9 +99,9 @@ jobs:
           pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
+          jupyter-builder develop . --overwrite
           pip install -e .
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jupyter labextension develop . --overwrite
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
           python -m jupyterlab.browser_check
@@ -144,9 +144,9 @@ jobs:
           pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
+          jupyter-builder develop . --overwrite
           pip install -e .
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jupyter labextension develop . --overwrite
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
           python -m jupyterlab.browser_check
@@ -191,9 +191,9 @@ jobs:
           # It is not easily possible to get this version compatible with linter rules
           jlpm lint
           jlpm lint:check
+          jupyter-builder develop . --overwrite
           pip install -e .
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jupyter labextension develop . --overwrite
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
           python -m jupyterlab.browser_check
@@ -297,9 +297,9 @@ jobs:
           pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
+          jupyter-builder develop . --overwrite
           pip install -e .
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jupyter labextension develop . --overwrite
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
 
@@ -370,7 +370,7 @@ jobs:
           cd myextension
           python -m pip install -e .[test]
           python -m pip install "jupyterlab>=4.0.0,<5" setuptools
-          jupyter labextension develop . --overwrite
+          jupyter-builder develop . --overwrite
           jupyter server extension enable myextension
 
           # Check unit tests are passing
@@ -390,7 +390,7 @@ jobs:
 
       - name: Build server extension in develop mode
         run: |
-          jupyter labextension develop ./myextension --overwrite
+          jupyter-builder develop ./myextension --overwrite
           jupyter labextension build ./myextension
 
           jupyter labextension uninstall myextension
@@ -512,9 +512,9 @@ jobs:
           python -m pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
+          jupyter-builder develop . --overwrite
           python -m pip install -e .
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jupyter labextension develop . --overwrite
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "mytheme.*OK"
           python -m jupyterlab.browser_check
@@ -557,9 +557,9 @@ jobs:
           python -m pip install jupyter-builder setuptools
           YARN_ENABLE_IMMUTABLE_INSTALLS=false jlpm
           jlpm lint:check
+          jupyter-builder develop . --overwrite
           python -m pip install -e .
           python -m pip install "jupyterlab>=4.0.0,<5"
-          jupyter labextension develop . --overwrite
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "myextension.*OK"
           python -m jupyterlab.browser_check
