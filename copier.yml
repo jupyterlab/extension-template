@@ -59,6 +59,20 @@ has_binder:
   help: Do you want to set up Binder example?
   default: no
 
+advanced:
+  type: bool
+  help: Configure advanced options?
+  default: no
+
+yarn_linker:
+  when: "{{ advanced }}"
+  type: str
+  help: Which yarn node linker do you want to use?
+  choices:
+    - node-modules
+    - pnpm
+  default: node-modules
+
 test:
   type: bool
   help: Do you want to set up tests for the extension?
