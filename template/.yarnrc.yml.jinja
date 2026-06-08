@@ -1,2 +1,8 @@
 nodeLinker: {% if yarn_linker == 'pnpm' %}pnpm{% else %}node-modules{% endif %}
 enableScripts: false
+{% if yarn_linker == 'pnpm' %}
+packageExtensions:
+  "@module-federation/sdk@*":
+    dependencies:
+      process: "^0.11.10"
+{% endif %}

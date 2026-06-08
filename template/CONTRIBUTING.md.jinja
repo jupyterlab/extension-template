@@ -20,7 +20,7 @@ source .venv/bin/activate
 pip install --editable ".{% if test and kind.lower() == 'frontend-and-server' %}[dev,test]{% endif %}"
 
 # Link your development version of the extension with JupyterLab
-jupyter labextension develop . --overwrite{% if kind.lower() == 'frontend-and-server' %}
+jupyter-builder develop . --overwrite{% if kind.lower() == 'frontend-and-server' %}
 # Server extension must be manually installed in develop mode
 jupyter server extension enable {{ python_name }}{% endif %}
 
@@ -55,7 +55,7 @@ jupyter server extension disable {{ python_name }}{% endif %}
 pip uninstall {{ python_name }}
 ```
 
-In development mode, you will also need to remove the symlink created by `jupyter labextension develop`
+In development mode, you will also need to remove the symlink created by `jupyter-builder develop`
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
 folder is located. Then you can remove the symlink named `{{ labextension_name }}` within that folder.
 {%- if test %}
@@ -71,7 +71,7 @@ Install test dependencies (needed only once):
 ```sh
 pip install -e ".[test]"
 # Each time you install the Python package, you need to restore the front-end extension link
-jupyter labextension develop . --overwrite
+jupyter-builder develop . --overwrite
 ```
 
 To execute them, run:
