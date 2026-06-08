@@ -28,20 +28,20 @@ dependencies = [{% if kind.lower() == "frontend-and-server" %}
     "jupyter_server>=2.4.0,<3"{% endif %}
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
-{% if test and kind.lower() == 'frontend-and-server' %}
+
 [project.optional-dependencies]
 dev = [
     "jupyterlab>=4",
     "jupyter-builder>=1.0.0",
-]
+]{% if test and kind.lower() == 'frontend-and-server' %}
 test = [
     "coverage",
     "pytest",
     "pytest-asyncio",
     "pytest-cov",
     "pytest-jupyter[server]>=0.6.0"
-]
-{% endif %}
+]{% endif %}
+
 [tool.hatch.version]
 source = "nodejs"
 
