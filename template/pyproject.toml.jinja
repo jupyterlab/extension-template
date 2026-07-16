@@ -5,7 +5,8 @@ build-backend = "hatchling.build"
 [project]
 name = "{{ python_name }}"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
 requires-python = ">=3.10"
 classifiers = [
     "Framework :: Jupyter",
@@ -15,7 +16,6 @@ classifiers = [
     "Framework :: Jupyter :: JupyterLab :: Extensions :: Mime Renderers",{% endif %}
     "Framework :: Jupyter :: JupyterLab :: Extensions :: Prebuilt",{% if kind.lower() == "theme" %}
     "Framework :: Jupyter :: JupyterLab :: Extensions :: Themes",{% endif %}
-    "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
