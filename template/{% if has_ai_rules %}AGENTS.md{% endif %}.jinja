@@ -463,13 +463,16 @@ Create RESTful endpoints in `{{ python_name }}/routes.py`:
 ```python
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
+import tornado
 
 class DataRouteHandler(APIHandler):
+    @tornado.web.authenticated
     def get(self):
         """Handle GET requests."""
         result = {"status": "success", "data": "Hello"}
         self.finish(result)
 
+    @tornado.web.authenticated
     def post(self):
         """Handle POST requests."""
         body = self.get_json_body()
@@ -484,10 +487,17 @@ def setup_route_handlers(web_app):
 
 **✅ Do**: Include error handling in route handlers
 
+**✅ Do**: Decorate **every** verb method (`head`, `get`, `post`, `patch`, `put`, `delete`, `options`) with `@tornado.web.authenticated`; endpoints which are meant to be public need an explicit `@allow_unauthenticated` (or `@ws_authenticated` for websockets) decorator from `jupyter_server.auth.decorator` instead. After adding or editing a handler, verify with:
+
+```bash
+python .github/scripts/check_auth.py
+```
+
 **❌ Don't**:
 
 - Hardcode URL paths — always use `url_path_join()`
 - Use plain `tornado.web.RequestHandler` — instead, use `APIHandler` from `jupyter_server.base.handlers`
+- Leave any verb method undecorated — an unauthenticated endpoint exposes the user's server
 
 ### Frontend API Calls
 

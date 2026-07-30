@@ -83,6 +83,56 @@ jobs:
             myextension/ui-tests/test-results
             myextension/ui-tests/playwright-report
 
+  test-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Install dependencies
+        run: python -m pip install -U "copier>=9.2.0" jinja2-time "jupyterlab>=4.0.0,<5"
+
+      - name: Create the extension
+        run: |
+          set -eux
+          mkdir myextension
+          python -m copier copy -l -d kind=frontend-and-server -d author_name="My Name" -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+
+      - name: Install the extension
+        working-directory: myextension
+        run: |
+          set -eux
+          YARN_ENABLE_IMMUTABLE_INSTALLS=false python -m pip install -v ".[test]"
+
+      - name: List extensions
+        run: |
+          jupyter labextension list
+          jupyter server extension list
+
+      - name: Execute server tests
+        working-directory: myextension
+        run: |
+          set -eux
+          pytest -vv -r ap --cov myextension
+
+      - name: Check that all endpoints are authenticated
+        working-directory: myextension
+        run: |
+          set -eux
+          python .github/scripts/check_auth.py
+
+      # The check above only proves that it does not fail on a correct extension;
+      # make sure that it does fail once the decorator is gone.
+      - name: Check that a missing decorator is detected
+        working-directory: myextension
+        run: |
+          set -eux
+          sed -i '/@tornado.web.authenticated/d' myextension/routes.py
+          ! python .github/scripts/check_auth.py
+
   test-mimerenderer:
     runs-on: ubuntu-latest
     steps:
