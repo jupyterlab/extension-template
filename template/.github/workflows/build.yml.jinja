@@ -47,7 +47,12 @@ jobs:
         jupyter labextension list
         jupyter labextension list 2>&1 | grep -ie "{{ labextension_name }}.*OK"
         python -m jupyterlab.browser_check
-
+{% if kind.lower() == 'frontend-and-server' %}
+    - name: Check that all endpoints are authenticated
+      run: |
+        set -eux
+        python .github/scripts/check_auth.py
+{% endif %}
     - name: Package the extension
       run: |
         set -eux

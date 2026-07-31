@@ -58,6 +58,19 @@ pip uninstall {{ python_name }}
 In development mode, you will also need to remove the symlink created by `jupyter-builder develop`
 command. To find its location, you can run `jupyter labextension list` to figure out where the `labextensions`
 folder is located. Then you can remove the symlink named `{{ labextension_name }}` within that folder.
+{%- if kind.lower() == 'frontend-and-server' %}
+
+## Endpoint authentication
+
+Every verb method of every handler must carry a `@tornado.web.authenticated`
+decorator, or, if the endpoint is meant to be public, an explicit
+`@allow_unauthenticated`/`@ws_authenticated` decorator from
+`jupyter_server.auth.decorator`. The `build` workflow enforces this by running:
+
+```sh
+python .github/scripts/check_auth.py
+```
+{%- endif %}
 {%- if test %}
 
 ## Testing the extension{% if kind.lower() == 'frontend-and-server' %}
