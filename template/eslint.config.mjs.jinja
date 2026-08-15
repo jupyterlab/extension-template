@@ -21,12 +21,14 @@ export default defineConfig([
   },
   js.configs.recommended,
   tseslint.configs.recommended,
+  {
+    plugins: {
+      jupyter: jupyterPlugin
+    }
+  },
   jupyterPlugin.configs.recommended,
   {
     files: ['**/*.ts', '**/*.tsx'],
-    plugins: {
-      jupyter: jupyterPlugin
-    },
     languageOptions: {
       globals: {
         ...globals.browser,
