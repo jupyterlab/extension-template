@@ -375,7 +375,7 @@ export default plugin;
 **✅ Do**: Use CSS custom properties for all styling
 
 {%- endif %}
-{%- if kind == 'mimerender' %}
+{%- if kind == 'mimerenderer' %}
 
 ## MIME Renderer Extensions
 
@@ -383,7 +383,7 @@ MIME renderers are **frontend-only** — no backend code needed.
 
 ### Renderer Implementation
 
-Create your renderer class in `src/renderer.ts`:
+Create your renderer class in `src/index.ts`:
 
 **✅ Do**: Extend `Widget` and implement `IRenderMime.IRenderer`
 - Set `mimeTypes` for the MIME types you handle
@@ -397,7 +397,7 @@ Create your renderer class in `src/renderer.ts`:
 
 ### Widget Structure
 
-Implement in `src/renderer.ts`:
+Implement in `src/index.ts`:
 
 ```ts
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
@@ -430,7 +430,7 @@ export default extension;
 
 ### Security and Performance
 
-**✅ Do**: Follow these guidelines in `src/renderer.ts`
+**✅ Do**: Follow these guidelines in `src/index.ts`
 - Namespace CSS classes: `.jp-{{ python_name | replace('_', '-') }}-renderer { ... }`
 - Keep `renderModel()` fast and non-blocking
 - Use async operations for expensive work
