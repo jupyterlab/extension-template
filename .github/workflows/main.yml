@@ -208,14 +208,29 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # Test different combinations of AI rules settings
+        # Test different combinations of AI rules settings, and the kind-specific
+        # sections of AGENTS.md and README.md for every kind of extension
         include:
           - has_ai_rules: "y"
             create_claude_symlink: "y"
             create_gemini_symlink: "y"
+            kind: "frontend"
           - has_ai_rules: "y"
             create_claude_symlink: "n"
             create_gemini_symlink: "y"
+            kind: "frontend"
+          - has_ai_rules: "y"
+            create_claude_symlink: "y"
+            create_gemini_symlink: "y"
+            kind: "frontend-and-server"
+          - has_ai_rules: "y"
+            create_claude_symlink: "y"
+            create_gemini_symlink: "y"
+            kind: "theme"
+          - has_ai_rules: "y"
+            create_claude_symlink: "y"
+            create_gemini_symlink: "y"
+            kind: "mimerenderer"
 
     steps:
       - name: Checkout
@@ -234,10 +249,13 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create extension with AI rules
+        env:
+          KIND: ${{ matrix.kind }}
         run: |
           set -eux
           mkdir myextension
-          python -m copier copy -l -d author_name="My Name" -d has_ai_rules=${{ matrix.has_ai_rules }} -d create_claude_symlink=${{ matrix.create_claude_symlink }} -d create_gemini_symlink=${{ matrix.create_gemini_symlink }} -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
+          # The MIME type answers are only used by the mimerenderer kind
+          python -m copier copy -l -d kind=${KIND} -d labextension_name=myextension -d viewer_name="My Viewer" -d mimetype="application/vnd.my_org.my_type" -d mimetype_name="my_type" -d file_extension=".my_type" -d author_name="My Name" -d has_ai_rules=${{ matrix.has_ai_rules }} -d create_claude_symlink=${{ matrix.create_claude_symlink }} -d create_gemini_symlink=${{ matrix.create_gemini_symlink }} -d repository="https://github.com/test/lab-extension" --vcs-ref HEAD --UNSAFE . myextension
           cd myextension
 
       - name: Verify AGENTS.md exists
@@ -252,6 +270,29 @@ jobs:
           # Check for expected content markers
           grep -q "JupyterLab Extension Development" AGENTS.md
           echo "✓ AGENTS.md contains expected content"
+
+      - name: Verify the kind-specific sections of AGENTS.md and README.md
+        if: matrix.kind != 'frontend'
+        env:
+          KIND: ${{ matrix.kind }}
+        run: |
+          set -eux
+          cd myextension
+          case "${KIND}" in
+            frontend-and-server)
+              section="## Backend–Frontend Integration"
+              item="Backend-frontend integration patterns" ;;
+            theme)
+              section="## Theme Extensions"
+              item="Theme-specific patterns" ;;
+            mimerenderer)
+              section="## MIME Renderer Extensions"
+              item="Renderer implementation" ;;
+          esac
+          grep -qxF "${section}" AGENTS.md
+          echo "✓ AGENTS.md contains the ${KIND} section"
+          grep -qF "${item}" README.md
+          echo "✓ README.md lists the ${KIND} section"
 
       - name: Verify CLAUDE.md symlink (if enabled)
         if: matrix.create_claude_symlink == 'y'

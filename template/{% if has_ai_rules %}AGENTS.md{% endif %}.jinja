@@ -39,7 +39,7 @@ Use your available tools (web search, documentation search) to access and retrie
 
 4. **JupyterLab Core Repository**
    - URL: https://github.com/jupyterlab/jupyterlab
-   - Use for: Reference implementations in `packages/` directory - all core packages are extensions themselves
+   - Use for: Reference implementations (the core extensions in `packages/*-extension` use the same APIs as your extension)
    - **Action**: When implementing complex features, search this repo for how core extensions solve similar problems
 {%- if kind == 'frontend-and-server' %}
 
@@ -94,7 +94,7 @@ app.commands.notifyCommandChanged();
 
 ### Type Safety
 
-**✅ Do**: Define explicit interfaces (see example patterns in `src/index.ts`)
+**✅ Do**: Define explicit interfaces
 
 ```typescript
 interface PluginConfig {
@@ -111,9 +111,10 @@ interface PluginConfig {
 After editing TypeScript files, run:
 
 ```bash
-npx tsc --noEmit src/index.ts  # Check single file
-npx tsc --noEmit               # Check all files
+jlpm tsc --noEmit  # Type-check all files with the options in tsconfig.json
 ```
+
+**❌ Don't**: Pass file names to `tsc`: it then ignores `tsconfig.json` and reports errors that the build does not have
 
 After editing Python files{% if kind == 'frontend-and-server' %} (like `{{ python_name }}/routes.py`){% endif %}:
 
@@ -190,10 +191,10 @@ function activate(app: JupyterFrontEnd): void {}
 
 ### Plugin and Command IDs
 
-**✅ Do**: Define plugin ID in `src/index.ts`:
+**✅ Do**: Define plugin ID in `src/index.ts`, starting with the npm package name (JupyterLab finds the settings schema of a plugin by this prefix):
 
 ```typescript
-const PLUGIN_ID = '{{ python_name }}:plugin';
+const PLUGIN_ID = '{{ labextension_name }}:plugin';
 ```
 
 **✅ Do**: For extensions with multiple commands, create a `src/commands.ts` module to centralize command definitions:
@@ -205,8 +206,8 @@ import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
 // Command IDs
 export namespace CommandIDs {
-  export const openPanel = '{{ python_name }}:open-panel';
-  export const refreshData = '{{ python_name }}:refresh-data';
+  export const openPanel = '{{ labextension_name }}:open-panel';
+  export const refreshData = '{{ labextension_name }}:refresh-data';
 }
 
 // Command argument types
@@ -253,10 +254,10 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-import { registerCommands, CommandIDs, CommandArguments } from './commands';
+import { registerCommands } from './commands';
 
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: '{{ python_name }}:plugin',
+  id: '{{ labextension_name }}:plugin',
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
     // Register all commands with JupyterLab's command registry
@@ -282,7 +283,7 @@ import { CommandIDs, CommandArguments } from './commands';
 // Execute with typed arguments
 await app.commands.execute(CommandIDs.openPanel, {
   filePath: '/path/to/file'
-} as CommandArguments.IOpenPanel);
+} satisfies CommandArguments.IOpenPanel);
 
 // Execute without arguments
 await app.commands.execute(CommandIDs.refreshData);
@@ -292,6 +293,7 @@ await app.commands.execute(CommandIDs.refreshData);
 
 - Accept `ReadonlyPartialJSONObject` in the execute function signature (required by Lumino)
 - Cast to your typed interface inside the function for type safety
+- Check the arguments of `execute()` with `satisfies`: a value cast with `as` to an interface type is not assignable to `ReadonlyPartialJSONObject`
 - Use namespaces (`CommandIDs`, `CommandArguments`) to organize related constants and types
 - This pattern matches how popular extensions like `jupyterlab-git` handle commands
 
@@ -304,7 +306,7 @@ await app.commands.execute(CommandIDs.refreshData);
 **✅ Do**: Organize related files into directories and name by their purpose
 
 - Widget components: `src/widgets/DataPanel.tsx` (class `DataPanel`)
-- Command definitions (for multiple commands): `src/commands.ts` with `COMMANDS` mapping
+- Command definitions (for multiple commands): `src/commands.ts` with a `CommandIDs` namespace
 - API utilities: `src/api.ts` (not `src/utils.ts`){% if kind == 'frontend-and-server' %}
 - Backend routes: `{{ python_name }}/routes.py` (class `DataRouteHandler`){% endif %}
 - Frontend logic: `src/` directory
@@ -322,6 +324,7 @@ Theme extensions are **frontend-only** — no backend code needed.
 ### File Structure
 
 **✅ Do**: Organize theme files properly
+
 - Custom CSS variables: `style/variables.css`
 - Main theme entry: `style/index.css`
 - Theme registration: `src/index.ts`
@@ -332,34 +335,29 @@ Theme extensions are **frontend-only** — no backend code needed.
 
 ### Light and Dark Mode Support
 
-**✅ Do**: Use attribute selectors in `style/index.css`
-```css
-[data-jp-theme-light='true'] .my-widget {
-  background: var(--jp-layout-color1);
-}
-[data-jp-theme-light='false'] .my-widget {
-  background: var(--jp-layout-color0);
-}
-```
+**✅ Do**: Set `isLight` in `manager.register()` to match the colors of the theme. A theme is either light or dark: JupyterLab copies `isLight` of the active theme to the `data-jp-theme-light` attribute of `<body>`, and other extensions read that attribute to adapt their styles.
 
-**✅ Do**: Always use JupyterLab CSS variables for colors. Learn more here: <https://jupyterlab.readthedocs.io/en/stable/developer/css.html#css-variables>
+**✅ Do**: Define colors once, as values of the JupyterLab CSS variables in `style/variables.css`, and use the variables everywhere else. Learn more here: <https://jupyterlab.readthedocs.io/en/stable/developer/css.html#css-variables>
 
-**❌ Don't**: Hardcode hex colors
+**❌ Don't**: Hardcode colors outside `style/variables.css`
 
 ### Theme Registration
 
 Register in `src/index.ts` via `IThemeManager`:
 
 ```ts
+import {
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin
+} from '@jupyterlab/application';
 import { IThemeManager } from '@jupyterlab/apputils';
-import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 
 const plugin: JupyterFrontEndPlugin<void> = {
-  id: '<your-ext-name>:theme',
+  id: '{{ labextension_name }}:plugin',
   autoStart: true,
   requires: [IThemeManager],
   activate: (app: JupyterFrontEnd, manager: IThemeManager) => {
-      name: '<User-facing Theme Name>',
+    const style = '{{ labextension_name }}/index.css';
     manager.register({
       name: '<User-facing Theme Name>',
       isLight: true, // set appropriately
@@ -383,15 +381,18 @@ MIME renderers are **frontend-only** — no backend code needed.
 
 ### Renderer Implementation
 
-Create your renderer class in `src/index.ts`:
+The generated `src/index.ts` already contains a working renderer, `OutputWidget`, to build on.
 
-**✅ Do**: Extend `Widget` and implement `IRenderMime.IRenderer`
+**✅ Do**: Extend `Widget` and implement `IRenderMime.IRenderer`, and export an `IRenderMime.IExtension` that describes it:
+
 - Set `mimeTypes` for the MIME types you handle
-- Specify `dataType`: `'json'`, `'string'`, or `'object'`
+- Specify `dataType`: `'json'` or `'string'`
 - Set `safe: true` if your renderer can produce useful, sanitized output when rendering untrusted notebook data. Examples: text, images, video, audio, JSON data visualizations.
 - Set `safe: false` if your renderer needs to execute code or render active content (HTML with scripts, interactive widgets). These will show "Run cell to view output" in untrusted notebooks and only render fully when the notebook is trusted.
 
 **❌ Don't**: Skip security checks or render untrusted HTML without sanitization
+
+**❌ Don't**: Register a renderer for a standard MIME type such as `text/plain`, unless it is meant to replace the JupyterLab renderer for that type in every output
 
 **Security Note**: According to the [JupyterLab API docs](https://jupyterlab.readthedocs.io/en/latest/api/interfaces/rendermime-interfaces.IRenderMime.IRendererFactory.html#safe), all renderers must handle untrusted data safely. The `safe` flag indicates whether the sanitized output will be useful (`safe: true`) or if it should show a "Run cell to view output" message instead (`safe: false`). When uncertain about which to use, ask the prompter about the MIME type's capabilities and whether sanitized output would be useful.
 
@@ -403,25 +404,27 @@ Implement in `src/index.ts`:
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 import { Widget } from '@lumino/widgets';
 
+const MIME_TYPE = '{{ mimetype }}';
+
 class MyRenderer extends Widget implements IRenderMime.IRenderer {
   constructor(options: IRenderMime.IRendererOptions) {
     super();
-    this.addClass('myext-Renderer');
+    this.addClass('jp-{{ python_name | replace('_', '-') }}-renderer');
   }
   async renderModel(model: IRenderMime.IMimeModel): Promise<void> {
-    const data = model.data['text/plain'] as string;
+    const data = model.data[MIME_TYPE] as string;
     this.node.textContent = data;
   }
 }
 
 const extension: IRenderMime.IExtension = {
-  id: '<your-ext-name>:renderer',
+  id: '{{ labextension_name }}:plugin',
   rendererFactory: {
-    safe: true,  // Safe: sanitized text output is useful even in untrusted notebooks
-    mimeTypes: ['text/plain'],
+    safe: true, // Safe: sanitized text output is useful even in untrusted notebooks
+    mimeTypes: [MIME_TYPE],
     createRenderer: opts => new MyRenderer(opts)
   },
-  rank: 50,
+  rank: 100,
   dataType: 'string'
 };
 
@@ -431,11 +434,13 @@ export default extension;
 ### Security and Performance
 
 **✅ Do**: Follow these guidelines in `src/index.ts`
+
 - Namespace CSS classes: `.jp-{{ python_name | replace('_', '-') }}-renderer { ... }`
 - Keep `renderModel()` fast and non-blocking
 - Use async operations for expensive work
 
 **❌ Don't**:
+
 - Inject HTML without sanitization (use DOMPurify if needed)
 - Mutate global styles or block the main thread
 - Set `safe: true` for renderers that execute code or render active HTML/scripts — use `safe: false` instead
@@ -481,13 +486,14 @@ class DataRouteHandler(APIHandler):
 
 def setup_route_handlers(web_app):
     base_url = web_app.settings.get("base_url", "/")
-    data_route = url_path_join(base_url, "{{ python_name }}", "data")
+    # The same namespace as in `requestAPI()` of `src/request.ts`
+    data_route = url_path_join(base_url, "{{ python_name | replace('_', '-') }}", "data")
     web_app.add_handlers(r".*$", [(data_route, DataRouteHandler)])
 ```
 
 **✅ Do**: Include error handling in route handlers
 
-**✅ Do**: Decorate **every** verb method (`head`, `get`, `post`, `patch`, `put`, `delete`, `options`) with `@tornado.web.authenticated`; endpoints which are meant to be public need an explicit `@allow_unauthenticated` (or `@ws_authenticated` for websockets) decorator from `jupyter_server.auth.decorator` instead. After adding or editing a handler, verify with:
+**✅ Do**: Decorate **every** verb method (`head`, `get`, `post`, `patch`, `put`, `delete`, `options`) with `@tornado.web.authenticated`, and websocket handlers with `@ws_authenticated` from `jupyter_server.auth.decorator`. An endpoint which is meant to be public needs an explicit `@allow_unauthenticated` decorator from `jupyter_server.auth.decorator` instead. After adding or editing a handler, verify with:
 
 ```bash
 python .github/scripts/check_auth.py
@@ -684,7 +690,7 @@ jupyter lab
 **Quick TypeScript validation** (optional, for fast feedback):
 
 ```bash
-npx tsc --noEmit src/index.ts       # Check single file
+jlpm tsc --noEmit                   # Type-check all files without building
 ```
 
 {% if is_full_stack %}**After editing Python** (files in `{{ python_name }}/`):
@@ -743,15 +749,15 @@ jupyter-builder develop . --overwrite{% if is_full_stack %}
 jupyter server extension enable {{ python_name }}{% endif %}
 ```
 
-**3. Did you restart JupyterLab?**
+**3. Did you reload JupyterLab?**
 
-- Changes require a full restart (Ctrl+C in terminal, then `jupyter lab` again)
-- Simply refreshing the browser is NOT enough for new extensions
+- Refresh the browser page: JupyterLab reads the list of installed extensions each time it loads the page{% if is_full_stack %}
+- Restart the server (Ctrl+C in terminal, then `jupyter lab` again) after enabling the server extension: the server loads extensions only when it starts{% endif %}
 
 **4. Ask user to check the browser console** (F12 or Cmd+Option+I):
 
 - Request user to look for JavaScript errors that might prevent extension activation
-- Ask user to search for the extension ID (`{{ python_name }}`) to see if it loaded
+- Ask user to search for the extension ID (`{{ labextension_name }}`) to see if it loaded
 - Ask user to report any error messages or warnings
 
 **5. Verify the build output:**
@@ -766,7 +772,7 @@ ls -la {{ python_name }}/labextension/  # Should contain bundled extension
 **Common causes:**
 
 - ❌ Only ran `jlpm build` without installation commands
-- ❌ Forgot to restart JupyterLab after installation
+- ❌ Forgot to refresh the browser{% if is_full_stack %} or restart the server{% endif %} after installation
 - ❌ Running commands outside the activated environment
 - ❌ Build errors that were missed (check terminal output)
 
@@ -861,10 +867,12 @@ import { MyWidget } from './widgets/MyWidget';
 **✅ Do**: Wrap async operations in try-catch (in `src/api.ts`, widget code)
 
 ```typescript
+import { showErrorMessage } from '@jupyterlab/apputils';
+
 try {
   const data = await fetchData();
 } catch (err) {
-  showErrorMessage('Failed to fetch data');
+  showErrorMessage('Failed to fetch data', String(err));
 }
 ```
 
@@ -888,7 +896,10 @@ try {
 
 ```typescript
 dispose(): void {
-  this._signal.disconnect();
+  if (this.isDisposed) {
+    return;
+  }
+  this._model.stateChanged.disconnect(this._onStateChanged, this);
   super.dispose();
 }
 ```
@@ -913,12 +924,12 @@ from .routes import setup_route_handlers
 
 Use these patterns consistently throughout your code:
 
-- **Plugin ID** (in `src/index.ts`): `'{{ python_name }}:plugin'`
-- **Command IDs** (in `src/commands.ts` or `src/index.ts`): `'{{ python_name }}:command-name'`
-  - For multiple commands, create `src/commands.ts` with a centralized `COMMANDS` mapping
+- **Plugin ID** (in `src/index.ts`): `'{{ labextension_name }}:plugin'`
+- **Command IDs** (in `src/commands.ts` or `src/index.ts`): `'{{ labextension_name }}:command-name'`
+  - For multiple commands, create `src/commands.ts` with a `CommandIDs` namespace
   - For 1-2 commands, define directly in `src/index.ts`
 - **CSS classes** (in `style/index.css`): `.jp-{{ python_name | replace('_', '-') }}-ClassName`{% if kind == 'frontend-and-server' %}
-- **API routes** (in `{{ python_name }}/routes.py`): `url_path_join(base_url, "{{ python_name }}", "endpoint")`{% endif %}
+- **API routes** (in `{{ python_name }}/routes.py`): `url_path_join(base_url, "{{ python_name | replace('_', '-') }}", "endpoint")`{% endif %}
 
 ### Essential Commands
 
