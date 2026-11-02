@@ -39,9 +39,10 @@ if problems:
     sys.exit(
         "\n".join(problems)
         + "\n\nAdd a `@tornado.web.authenticated` decorator to the verb methods listed"
-        " above. If an endpoint is intended to be public, add an explicit"
-        " `@allow_unauthenticated` (or `@ws_authenticated` for websockets) decorator"
-        " from `jupyter_server.auth.decorator` instead."
+        " above (`@ws_authenticated` from `jupyter_server.auth.decorator` for"
+        " websocket handlers). If an endpoint is intended to be public, add an"
+        " explicit `@allow_unauthenticated` decorator from"
+        " `jupyter_server.auth.decorator` instead."
     )
 
 print("All endpoints of the extension require authentication.")
