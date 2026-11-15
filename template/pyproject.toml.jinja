@@ -7,7 +7,7 @@ name = "{{ python_name }}"
 readme = "README.md"
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 classifiers = [
     "Framework :: Jupyter",
     "Framework :: Jupyter :: JupyterLab",
@@ -18,11 +18,11 @@ classifiers = [
     "Framework :: Jupyter :: JupyterLab :: Extensions :: Themes",{% endif %}
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
 dependencies = [{% if kind.lower() == "frontend-and-server" %}
     "jupyter_server>=2.13.0,<3"{% endif %}
