@@ -85,8 +85,10 @@ Use your available tools (web search, documentation search) to access and retrie
 
 ```typescript
 // In TypeScript files like src/index.ts
-import { INotification } from '@jupyterlab/apputils';
-app.commands.notifyCommandChanged();
+import { Notification } from '@jupyterlab/apputils';
+
+Notification.success('Export finished');
+Notification.error('Could not reach the server', { autoClose: false });
 ```
 
 **✅ Do**: Use `console.error()` to log low-level error details that should not be presented to users in the UI
@@ -298,6 +300,32 @@ await app.commands.execute(CommandIDs.refreshData);
 **✅ Do**: For simple extensions with 1-2 commands, you can define them directly in `src/index.ts`
 
 **❌ Don't**: Use generic IDs like `'mycommand'` or mix casing styles
+
+### Command State
+
+**✅ Do**: Call `app.commands.notifyCommandChanged(commandId)` whenever a value read by `isEnabled`, `isVisible`, `isToggled` or `label` can change. A toolbar button renders a command again only when the command is notified, and when the current widget changes JupyterLab notifies only its own commands:
+
+```typescript
+// In src/index.ts, with `tracker` from the `INotebookTracker` token
+app.commands.addCommand(CommandIDs.exportNotebook, {
+  label: 'Export Notebook',
+  // Enabled only when a notebook is the current widget
+  isEnabled: () =>
+    tracker.currentWidget !== null &&
+    tracker.currentWidget === app.shell.currentWidget,
+  execute: () => {
+    // Export tracker.currentWidget
+  }
+});
+
+// Without this, a button for the command in a side panel stays greyed out
+// after the user opens a notebook
+app.shell.currentChanged?.connect(() => {
+  app.commands.notifyCommandChanged(CommandIDs.exportNotebook);
+});
+```
+
+**❌ Don't**: Call `app.commands.notifyCommandChanged()` without a command ID: it re-renders every command button in JupyterLab
 
 ### File Organization
 
