@@ -17,7 +17,7 @@ The `jlpm` command is JupyterLab's pinned version of
 # Set up a virtual environment and install package in development mode
 python -m venv .venv
 source .venv/bin/activate
-pip install --editable ".{% if test and kind.lower() == 'frontend-and-server' %}[dev,test]{% endif %}"
+pip install --editable ".[dev{% if test and kind.lower() == 'frontend-and-server' %},test{% endif %}]"
 
 # Link your development version of the extension with JupyterLab
 jupyter-builder develop . --overwrite{% if kind.lower() == 'frontend-and-server' %}
