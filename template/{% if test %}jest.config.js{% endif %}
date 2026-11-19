@@ -1,17 +1,7 @@
 const jestJupyterLab = require('@jupyterlab/testutils/lib/jest-config');
 
-const esModules = [
-  '@codemirror',
-  '@jupyter/ydoc',
-  '@jupyterlab/',
-  'lib0',
-  'nanoid',
-  'vscode-ws-jsonrpc',
-  'y-protocols',
-  'y-websocket',
-  'yjs'
-].join('|');
-
+// To transform more packages that ship ES modules, pass their names:
+// jestJupyterLab(__dirname, { esModules: ['d3-array'] })
 const baseConfig = jestJupyterLab(__dirname);
 
 module.exports = {
@@ -23,6 +13,5 @@ module.exports = {
     '!src/**/.ipynb_checkpoints/*'
   ],
   coverageReporters: ['lcov', 'text'],
-  testRegex: 'src/.*/.*.spec.ts[x]?$',
-  transformIgnorePatterns: [`/node_modules/(?!${esModules}).+`]
+  testRegex: 'src/.*/.*.spec.ts[x]?$'
 };
