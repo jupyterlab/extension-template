@@ -63,9 +63,10 @@ folder is located. Then you can remove the symlink named `{{ labextension_name }
 ## Endpoint authentication
 
 Every verb method of every handler must carry a `@tornado.web.authenticated`
-decorator, or, if the endpoint is meant to be public, an explicit
-`@allow_unauthenticated`/`@ws_authenticated` decorator from
-`jupyter_server.auth.decorator`. The `build` workflow enforces this by running:
+decorator (`@ws_authenticated` from `jupyter_server.auth.decorator` for websocket
+handlers), or, if the endpoint is meant to be public, an explicit
+`@allow_unauthenticated` decorator from `jupyter_server.auth.decorator`. The
+`build` workflow enforces this by running:
 
 ```sh
 python .github/scripts/check_auth.py
